@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="tenant1" class="com.structureeng.persistence.model.tenant.Tenant">
+        <property name="referenceId" value="1" />
+        <property name="name" value="tenant1" />
+    </bean>
+    
+    <bean id="tenant2" class="com.structureeng.persistence.model.tenant.Tenant">
+        <property name="referenceId" value="2" />
+        <property name="name" value="tenant2" />
+    </bean>
+    
+    <bean id="tenant3" class="com.structureeng.persistence.model.tenant.Tenant">
+        <property name="referenceId" value="3" />
+        <property name="name" value="tenant3" />
+    </bean>
+    
+    <bean id="violatesPK" class="com.structureeng.persistence.model.tenant.Tenant">
+        <property name="referenceId" value="1" />
+        <property name="name" value="tenant99" />
+    </bean>
+    
+    <bean id="violatesUK" class="com.structureeng.persistence.model.tenant.Tenant">
+        <property name="referenceId" value="99" />
+        <property name="name" value="tenant1" />
+    </bean>
+</beans>
