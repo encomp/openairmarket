@@ -123,7 +123,7 @@ public class PersistenceTestModule implements TransactionManagementConfigurer {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("historyTransactionSynchronization")
     public HistoryTransactionSynchronization providesHistoryTxSynchronization() {
-        return new HistoryTransactionSynchronization(providesProviderEntityManager());
+        return new HistoryTransactionSynchronization(providesProviderEntityManager());        
     }
 
     @Bean

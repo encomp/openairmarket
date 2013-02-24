@@ -2,7 +2,6 @@
 
 package com.structureeng.persistence;
 
-import com.structureeng.persistence.history.NonTenantHistoryListenerTest;
 import com.structureeng.tenancy.context.ThreadLocalTenancyContextHolderTest;
 
 import org.junit.runner.RunWith;
