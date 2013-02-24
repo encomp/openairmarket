@@ -13,7 +13,7 @@ import javax.persistence.LockModeType;
  * Specifies the contract for all the data access objects.
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
- * @param <T> specifies the {@code Model} of the dao
+ * @param <T> specifies the {@code Model} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@Model}
  */
 public interface DAO<T extends Model, S extends Serializable> {

@@ -25,22 +25,39 @@ import javax.persistence.criteria.Root;
  * Provides the implementation for {@code DAO} interface.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
- * @param <T> specifies the {@code Model} of the dao
+ * @param <T> specifies the {@code Model} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@Model}
  */
 public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> implements
         DAO<T, S> {
-
+        
     /**
-     * Specifies the property that will be used to retrieve the.
+     * Property that specifies the error message in case that the primary key passed is not found.
      */
-    protected static final String PERSISTENCE_ERROR_LABEL = "dao.persistence.id";
-    protected static final String PERSISTENCE_ERROR_MESSAGE = "dao.persistence.message";
     protected static final String NORESULT_LABEL = "dao.noResult.id";
+    /**
+     * Property that specifies the error message in case that the specified entity is not found.
+     */
     protected static final String NORESULT_MESSAGE = "dao.noResult.message";
+    /**
+     * Property that specifies the error message in case the primary key has been modified 
+     * recently.
+     */
     protected static final String OPTIMISTIC_LOCK_LABEL = "dao.optimisticLocking.id";
+    /**
+     * Property that specifies the error message in case that the specified entity has been 
+     * modified recently.
+     */
     protected static final String OPTIMISTIC_LOCK_MESSAGE = "dao.optimisticLocking.message";
+    /**
+     * Property that specifies the error message in case that the primary key queried failed 
+     * unexpectedly.
+     */
     protected static final String UNEXPECTED_LABEL = "dao.unexpected.id";
+    /**
+     * Property that specifies the error message in case that the specified entity queried failed
+     * unexpectedly.
+     */
     protected static final String UNEXPECTED_MESSAGE = "dao.unexpected.message";
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
