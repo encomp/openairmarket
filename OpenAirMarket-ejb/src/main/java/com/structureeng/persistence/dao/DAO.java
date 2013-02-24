@@ -14,7 +14,7 @@ import javax.persistence.LockModeType;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@code Model} of the data access object
- * @param <S> specifies the {@code Serializable} identifier of the {@Model}
+ * @param <S> specifies the {@code Serializable} identifier of the {@code Model}
  */
 public interface DAO<T extends Model, S extends Serializable> {
 

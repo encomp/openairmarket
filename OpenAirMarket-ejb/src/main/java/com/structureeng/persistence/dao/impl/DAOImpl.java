@@ -26,11 +26,11 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@code Model} of the data access object
- * @param <S> specifies the {@code Serializable} identifier of the {@Model}
+ * @param <S> specifies the {@code Serializable} identifier of the {@code Model}
  */
 public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> implements
         DAO<T, S> {
-        
+
     /**
      * Property that specifies the error message in case that the primary key passed is not found.
      */
@@ -40,17 +40,17 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      */
     protected static final String NORESULT_MESSAGE = "dao.noResult.message";
     /**
-     * Property that specifies the error message in case the primary key has been modified 
+     * Property that specifies the error message in case the primary key has been modified
      * recently.
      */
     protected static final String OPTIMISTIC_LOCK_LABEL = "dao.optimisticLocking.id";
     /**
-     * Property that specifies the error message in case that the specified entity has been 
+     * Property that specifies the error message in case that the specified entity has been
      * modified recently.
      */
     protected static final String OPTIMISTIC_LOCK_MESSAGE = "dao.optimisticLocking.message";
     /**
-     * Property that specifies the error message in case that the primary key queried failed 
+     * Property that specifies the error message in case that the primary key queried failed
      * unexpectedly.
      */
     protected static final String UNEXPECTED_LABEL = "dao.unexpected.id";
@@ -119,12 +119,12 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public List<T> findRange(int start, int end) {        
+    public List<T> findRange(int start, int end) {
         CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(getEntityClass());
         cq.select(cq.from(entityClass));
         TypedQuery<T> q = getEntityManager().createQuery(cq);
         q.setMaxResults(end - start);
-        q.setFirstResult(start);        
+        q.setFirstResult(start);
         return q.getResultList();
     }
 
@@ -151,8 +151,8 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public boolean hasVersionChanged(T entity) {        
-        try {            
+    public boolean hasVersionChanged(T entity) {
+        try {
             find(getEntityIdClass().cast(entity.getId()), entity.getVersion());
             return true;
         } catch (DAOException ex) {
@@ -172,7 +172,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
 
     /**
      * Provides the class of the Id.
-     * 
+     *
      * @return - the class of the Id of an entity.
      */
     public Class<S> getEntityIdClass() {
