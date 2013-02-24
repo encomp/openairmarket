@@ -103,17 +103,9 @@ public class Company extends AbstractTenantModel<Long> {
         private Integer referenceId;
         private String name;
 
-        public Integer getReferenceId() {
-            return referenceId;
-        }
-
         public Buider setReferenceId(Integer referenceId) {
             this.referenceId = Preconditions.checkNotNull(referenceId);
             return this;
-        }
-
-        public String getName() {
-            return name;
         }
 
         public Buider setName(String name) {
@@ -122,7 +114,7 @@ public class Company extends AbstractTenantModel<Long> {
         }
 
         /**
-         * Creates a new instance of {@code Tenant}.
+         * Creates a new instance of {@code Company}.
          *
          * @return - new instance
          */

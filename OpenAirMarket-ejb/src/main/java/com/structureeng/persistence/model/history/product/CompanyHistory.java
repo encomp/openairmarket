@@ -89,7 +89,7 @@ public class CompanyHistory extends AbstractTenantHistoryModel {
         /**
          * Create an instance of {@code TenantHistory}.
          *
-         * @param company the instance that will be used to create a new {@code Tenant}.
+         * @param company the instance that will be used to create a new {@code Company}.
          * @return a new instance
          */
         @Override

@@ -2,18 +2,25 @@
 
 package com.structureeng.persistence.model.product;
 
+import com.structureeng.persistence.history.HistoryListener;
+import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.history.product.DivisionHistory;
 
 import com.google.common.base.Preconditions;
+
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -23,6 +30,8 @@ import javax.persistence.UniqueConstraint;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
+@EntityListeners(value = {HistoryListener.class})
+@Revision(builder = DivisionHistory.Builder.class)
 @Entity
 @Table(name = "division", uniqueConstraints = {
         @UniqueConstraint(name = "divisionTenantPK", columnNames = {"idTenant", "idReference"}),
@@ -44,6 +53,9 @@ public class Division extends AbstractTenantModel<Long> {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
+    private List<DivisionHistory> divisionHistories;
+
     @Override
     public Long getId() {
         return id;
@@ -51,7 +63,7 @@ public class Division extends AbstractTenantModel<Long> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Integer getReferenceId() {
@@ -59,7 +71,7 @@ public class Division extends AbstractTenantModel<Long> {
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public Division getParentDivision() {
@@ -75,6 +87,48 @@ public class Division extends AbstractTenantModel<Long> {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
+    }
+
+    /**
+     * Creates a new {@code Builder} instance.
+     *
+     * @return - new instance
+     */
+    public static Division.Buider newBuilder() {
+        return new Division.Buider();
+    }
+
+    /**
+     * Builder class that creates instances of {@code Division}.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Buider {
+
+        private Integer referenceId;
+        private String name;
+
+        public Buider setReferenceId(Integer referenceId) {
+            this.referenceId = Preconditions.checkNotNull(referenceId);
+            return this;
+        }
+
+        public Buider setName(String name) {
+            this.name = Preconditions.checkNotNull(name);
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@code Division}.
+         *
+         * @return - new instance
+         */
+        public Division build() {
+            Division division = new Division();
+            division.setReferenceId(referenceId);
+            division.setName(name);
+            return division;
+        }
     }
 }

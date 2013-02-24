@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.model.history.product;
 
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
 import com.structureeng.persistence.model.product.Division;
 
@@ -10,6 +11,7 @@ import com.google.common.base.Preconditions;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +36,7 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
     private Long id;
 
     @JoinColumn(name = "idDivision", referencedColumnName = "idDivision", nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Division division;
 
     @Column(name = "idReference", nullable = false)
@@ -54,7 +56,7 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Division getDivision() {
@@ -70,7 +72,7 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public Division getParentDivision() {
@@ -78,7 +80,7 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setParentDivision(Division parentDivision) {
-        this.parentDivision = Preconditions.checkNotNull(parentDivision);
+        this.parentDivision = parentDivision;
     }
 
     public String getName() {
@@ -86,6 +88,31 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
+    }
+
+    /**
+     * Factory class for the {@code DivisionHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<Division, DivisionHistory> {
+
+        /**
+         * Create an instance of {@code TenantHistory}.
+         *
+         * @param division the instance that will be used to create a new {@code Division}.
+         * @return a new instance
+         */
+        @Override
+        public DivisionHistory build(Division division) {
+            DivisionHistory divisionHistory = new DivisionHistory();
+            divisionHistory.setDivision(division);
+            divisionHistory.setReferenceId(division.getReferenceId());
+            divisionHistory.setName(division.getName());
+            divisionHistory.setActive(division.getActive());
+            divisionHistory.setRevision(division.getVersion());
+            return divisionHistory;
+        }
     }
 }
