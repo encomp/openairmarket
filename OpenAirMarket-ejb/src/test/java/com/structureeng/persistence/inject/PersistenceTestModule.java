@@ -57,7 +57,6 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = {"com.structureeng.persistence"})
 @EnableTransactionManagement
 @Import(value = {Database.class})
-//@ImportResource("classpath:**/persistenceTest.xml")
 public class PersistenceTestModule implements TransactionManagementConfigurer {
 
     static {

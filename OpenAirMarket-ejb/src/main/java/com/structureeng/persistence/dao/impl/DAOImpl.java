@@ -11,15 +11,11 @@ import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Provides the implementation for {@code DAO} interface.
@@ -73,13 +69,16 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public void merge(T entity) throws DAOException {
-        getEntityManager().merge(entity);
+    public T merge(T entity) throws DAOException {
+        if (!getEntityManager().contains(entity)) {
+            return getEntityManager().merge(entity);
+        } 
+        return entity;
     }
 
     @Override
-    public void remove(T entity) throws DAOException {
-        getEntityManager().remove(getEntityManager().merge(entity));
+    public void remove(T entity) throws DAOException {        
+        getEntityManager().remove(merge(entity));
     }
 
     @Override
@@ -95,7 +94,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     @Override
     public T find(S id) {
         try {
-            return getEntityManager().find(entityClass, id);
+            return getEntityManager().find(getEntityClass(), id);
         } catch (NoResultException exc) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug(String.format(exc.getMessage().concat(" id [%s]."), id), exc);
@@ -107,7 +106,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     @Override
     public T find(S id, long version) throws DAOException {
         try {
-            T current = getEntityManager().find(entityClass, id);
+            T current = getEntityManager().find(getEntityClass(), id);
             if (current.getVersion() == version) {
                 return current;
             } else {
@@ -117,26 +116,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
             throw DAOException.Builder.build(NORESULT_LABEL, NORESULT_MESSAGE, exc);
         }
     }
-
-    @Override
-    public List<T> findRange(int start, int end) {
-        CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(getEntityClass());
-        cq.select(cq.from(entityClass));
-        TypedQuery<T> q = getEntityManager().createQuery(cq);
-        q.setMaxResults(end - start);
-        q.setFirstResult(start);
-        return q.getResultList();
-    }
-
-    @Override
-    public long count() {
-        CriteriaQuery<Long> cq = getEntityManager().getCriteriaBuilder().createQuery(Long.class);
-        Root<T> rt = cq.from(entityClass);
-        cq.select(getEntityManager().getCriteriaBuilder().count(rt));
-        TypedQuery<Long> q = getEntityManager().createQuery(cq);
-        return q.getSingleResult().longValue();
-    }
-
+        
     @Override
     public void flush() {
         getEntityManager().flush();

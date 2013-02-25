@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.tenant;
 
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
-import com.structureeng.persistence.model.AbstractActiveModel;
+import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.history.tenant.TenantHistory;
 
 import com.google.common.base.Preconditions;
@@ -33,14 +33,11 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "tenant", uniqueConstraints = {
         @UniqueConstraint(name = "tenantPK", columnNames = {"idReference"}),
         @UniqueConstraint(name = "tenantUK", columnNames = {"name"})})
-public class Tenant extends AbstractActiveModel<Long> {
+public class Tenant extends AbstractCatalogModel<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTenant")
     private Long id;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -60,15 +57,7 @@ public class Tenant extends AbstractActiveModel<Long> {
     public void setId(Long id) {
         this.id = Preconditions.checkNotNull(id);
     }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
+    
     public String getName() {
         return name;
     }

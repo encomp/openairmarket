@@ -1,4 +1,5 @@
 // Copyright 2013 Structure Eng Inc.
+
 package com.structureeng.persistence.history;
 
 import com.google.common.base.Preconditions;

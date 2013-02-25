@@ -30,9 +30,10 @@ public interface DAO<T extends Model, S extends Serializable> {
      * Merge the given entity.
      * 
      * @param entity the instance that will be merged.
+     * @return the managed instance that the state was merged to
      * @throws DAOException - in case of errors; will be propagated to the caller.
      */
-    void merge(T entity) throws DAOException;
+    T merge(T entity) throws DAOException;
 
     /**
      * Removed the given entity.

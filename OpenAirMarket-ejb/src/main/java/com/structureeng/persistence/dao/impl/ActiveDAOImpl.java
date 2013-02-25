@@ -16,7 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
- * Provides the implementation for {@code DAO} interface.
+ * Provides the implementation for {@code ActiveDAO} interface.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@code AbstractActiveModel} of the data access object
@@ -54,6 +54,26 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
     
     @Override
+    public long count() {
+        return count(Boolean.TRUE);
+    }
+
+    @Override
+    public long countInactive() {
+        return count(Boolean.FALSE);
+    }
+    
+    private long count(Boolean active) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();        
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(getEntityClass());        
+        cq.select(cb.count(root));
+        cq.where(cb.equal(root.get(AbstractActiveModel_.active), active));
+        TypedQuery<Long> q = getEntityManager().createQuery(cq);
+        return q.getSingleResult().longValue();
+    }
+    
+    @Override
     public List<T> findRange(int start, int end) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(getEntityClass());        
@@ -63,15 +83,5 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         q.setMaxResults(end - start);
         q.setFirstResult(start);
         return q.getResultList();
-    }
-    
-    @Override
-    public long count() {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<T> root = cq.from(getEntityClass());
-        cq.where(cb.equal(root.get(AbstractActiveModel_.active), Boolean.TRUE));
-        TypedQuery<Long> q = getEntityManager().createQuery(cq);
-        return q.getSingleResult().longValue();
     }
 }

@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class TenantDAOImpl extends DAOImpl<Tenant, Long> implements TenantDAO {
+public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long> implements TenantDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
