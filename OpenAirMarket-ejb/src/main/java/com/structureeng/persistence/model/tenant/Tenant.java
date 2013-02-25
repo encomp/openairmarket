@@ -9,7 +9,7 @@ import com.structureeng.persistence.model.history.tenant.TenantHistory;
 
 import com.google.common.base.Preconditions;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,7 +43,7 @@ public class Tenant extends AbstractCatalogModel<Long> {
     private String name;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)
-    private List<TenantHistory> tenantHistories;
+    private Set<TenantHistory> tenantHistories;
 
     public Tenant() {        
     }
@@ -66,11 +66,11 @@ public class Tenant extends AbstractCatalogModel<Long> {
         this.name = checkNotEmpty(name);
     }
 
-    public List<TenantHistory> getTenantHistories() {
+    public Set<TenantHistory> getTenantHistories() {
         return tenantHistories;
     }
 
-    public void setTenantHistories(List<TenantHistory> tenantHistories) {
+    public void setTenantHistories(Set<TenantHistory> tenantHistories) {
         this.tenantHistories = tenantHistories;
     }
     

@@ -9,7 +9,7 @@ import com.structureeng.persistence.model.history.product.CompanyHistory;
 
 import com.google.common.base.Preconditions;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,7 +45,7 @@ public class Company extends AbstractCatalogModel<Long> {
     private String name;
     
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<CompanyHistory> companyHistories;
+    private Set<CompanyHistory> companyHistories;
 
     @Override
     public Long getId() {
@@ -65,11 +65,11 @@ public class Company extends AbstractCatalogModel<Long> {
         this.name = checkNotEmpty(name);
     }
 
-    public List<CompanyHistory> getCompanyHistories() {
+    public Set<CompanyHistory> getCompanyHistories() {
         return companyHistories;
     }
 
-    public void setCompanyHistories(List<CompanyHistory> companyHistories) {
+    public void setCompanyHistories(Set<CompanyHistory> companyHistories) {
         this.companyHistories = Preconditions.checkNotNull(companyHistories);
     }
     

@@ -87,7 +87,7 @@ public class CompanyHistory extends AbstractTenantHistoryModel {
     public static class Builder extends HistoryEntityBuilder<Company, CompanyHistory> {
 
         /**
-         * Create an instance of {@code TenantHistory}.
+         * Create an instance of {@code CompanyHistory}.
          *
          * @param company the instance that will be used to create a new {@code Company}.
          * @return a new instance

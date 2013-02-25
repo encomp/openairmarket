@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.model.history.product;
 
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
 import com.structureeng.persistence.model.product.Package;
 
@@ -9,6 +10,7 @@ import com.google.common.base.Preconditions;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +36,7 @@ public class PackageHistory extends AbstractTenantHistoryModel {
     private Long id;
 
     @JoinColumn(name = "idPackage", referencedColumnName = "idPackage", nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Package aPackage;
 
     @Column(name = "idReference", nullable = false)
@@ -50,7 +52,7 @@ public class PackageHistory extends AbstractTenantHistoryModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Package getPackage() {
@@ -66,7 +68,7 @@ public class PackageHistory extends AbstractTenantHistoryModel {
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public String getName() {
@@ -74,6 +76,31 @@ public class PackageHistory extends AbstractTenantHistoryModel {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
+    }
+    
+    /**
+     * Factory class for the {@code CompanyHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<Package, PackageHistory> {
+
+        /**
+         * Create an instance of {@code PackageHistory}.
+         *
+         * @param aPackage the instance that will be used to create a new {@code Company}.
+         * @return a new instance
+         */
+        @Override
+        public PackageHistory build(Package aPackage) {
+            PackageHistory companyHistory = new PackageHistory();
+            companyHistory.setPackage(aPackage);
+            companyHistory.setReferenceId(aPackage.getReferenceId());
+            companyHistory.setName(aPackage.getName());
+            companyHistory.setActive(aPackage.getActive());
+            companyHistory.setRevision(aPackage.getVersion());
+            return companyHistory;
+        }
     }
 }

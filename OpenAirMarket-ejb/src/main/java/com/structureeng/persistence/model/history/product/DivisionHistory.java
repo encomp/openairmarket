@@ -99,7 +99,7 @@ public class DivisionHistory extends AbstractTenantHistoryModel {
     public static class Builder extends HistoryEntityBuilder<Division, DivisionHistory> {
 
         /**
-         * Create an instance of {@code TenantHistory}.
+         * Create an instance of {@code DivisionHistory}.
          *
          * @param division the instance that will be used to create a new {@code Division}.
          * @return a new instance

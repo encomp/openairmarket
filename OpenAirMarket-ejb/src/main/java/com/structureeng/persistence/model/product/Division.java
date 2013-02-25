@@ -9,7 +9,7 @@ import com.structureeng.persistence.model.history.product.DivisionHistory;
 
 import com.google.common.base.Preconditions;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,7 +51,7 @@ public class Division extends AbstractCatalogModel<Long> {
     private String name;
 
     @OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
-    private List<DivisionHistory> divisionHistories;
+    private Set<DivisionHistory> divisionHistories;
 
     @Override
     public Long getId() {
@@ -77,6 +77,14 @@ public class Division extends AbstractCatalogModel<Long> {
 
     public void setName(String name) {
         this.name = checkNotEmpty(name);
+    }
+
+    public Set<DivisionHistory> getDivisionHistories() {
+        return divisionHistories;
+    }
+
+    public void setDivisionHistories(Set<DivisionHistory> divisionHistories) {
+        this.divisionHistories = Preconditions.checkNotNull(divisionHistories);
     }
 
     /**
