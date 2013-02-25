@@ -65,7 +65,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         Company company = companyHistory.getCompany();
         HistoryTenant historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
-        deleteTenantHistory(company, new Long[]{companyHistory.getId()},
+        deleteCompanyHistory(company, new Long[]{companyHistory.getId()},
                 new Long[]{historyTenant.getId()});
     }
 
@@ -95,7 +95,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         Company tenant = companyHistory.getCompany();
         historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.UPDATE, companyHistory, historyTenant, tenant);
-        deleteTenantHistory(tenant, new Long[]{companyHistorys[0].getId(),
+        deleteCompanyHistory(tenant, new Long[]{companyHistorys[0].getId(),
                 companyHistorys[1].getId()}, new Long[]{companyHistorys[0].getHistory().getId(),
                 companyHistorys[1].getHistory().getId()});
     }
@@ -122,7 +122,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         Assert.assertNotNull(historyNonTenant.getCreatedDate());
     }
 
-    private void deleteTenantHistory(Company company, Long[] companyHistory,
+    private void deleteCompanyHistory(Company company, Long[] companyHistory,
             Long[] historyTenant) {
         Query q = null;
         for (Long id : companyHistory) {

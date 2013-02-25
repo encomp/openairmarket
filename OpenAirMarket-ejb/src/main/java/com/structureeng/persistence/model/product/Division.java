@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.product;
 
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
-import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.history.product.DivisionHistory;
 
 import com.google.common.base.Preconditions;
@@ -36,15 +36,12 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "division", uniqueConstraints = {
         @UniqueConstraint(name = "divisionTenantPK", columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "divisionUK", columnNames = {"idTenant", "name"})})
-public class Division extends AbstractTenantModel<Long> {
+public class Division extends AbstractCatalogModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idDivision")
     private Long id;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "idParentDivision", referencedColumnName = "idDivision", nullable = true)
@@ -64,14 +61,6 @@ public class Division extends AbstractTenantModel<Long> {
     @Override
     public void setId(Long id) {
         this.id = checkPositive(id);
-    }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
     }
 
     public Division getParentDivision() {

@@ -15,7 +15,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.GregorianCalendar;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
@@ -85,16 +84,14 @@ public class HistoryListener {
         }
     }
 
-    private RevisionInfo getRevisionInfo() {
-        Long threadId = Thread.currentThread().getId();
-        ConcurrentMap<Long, RevisionInfo> map = revisionHolder.asMap();
-        RevisionInfo revisionInfo = map.get(threadId);
+    private RevisionInfo getRevisionInfo() {              
+        RevisionInfo revisionInfo = getCurrentRevisionInfo();
         if (revisionInfo == null) {
             revisionInfo = new RevisionInfo();
             HistoryTransactionSynchronization transactionSynchronization = applicationContext
                     .getBean(HistoryTransactionSynchronization.class);
             TransactionSynchronizationManager.registerSynchronization(transactionSynchronization);
-            revisionHolder.put(threadId, revisionInfo);
+            revisionHolder.put(Thread.currentThread().getId(), revisionInfo);
         }
         return revisionInfo;
     }
