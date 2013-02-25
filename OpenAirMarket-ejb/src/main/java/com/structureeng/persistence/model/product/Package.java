@@ -103,7 +103,7 @@ public class Package extends AbstractCatalogModel<Long> {
         }
 
         /**
-         * Creates a new instance of {@code Company}.
+         * Creates a new instance of {@code Package}.
          *
          * @return - new instance
          */
