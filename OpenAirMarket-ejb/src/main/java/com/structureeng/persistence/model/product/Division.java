@@ -47,9 +47,6 @@ public class Division extends AbstractCatalogModel<Long> {
     @JoinColumn(name = "idParentDivision", referencedColumnName = "idDivision", nullable = true)
     private Division parentDivision;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
     private Set<DivisionHistory> divisionHistories;
 
@@ -69,14 +66,6 @@ public class Division extends AbstractCatalogModel<Long> {
 
     public void setParentDivision(Division parentDivision) {
         this.parentDivision = parentDivision;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     public Set<DivisionHistory> getDivisionHistories() {

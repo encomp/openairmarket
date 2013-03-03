@@ -2,6 +2,8 @@
 
 package com.structureeng.persistence.dao;
 
+import com.structureeng.common.ErrorCode;
+import com.structureeng.common.Excepcion;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
@@ -12,32 +14,20 @@ import javax.inject.Named;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class DAOException extends Exception {
-
-    private String field;
-
-    public DAOException(String message) {
-        super(message);
+public class DAOException extends Excepcion {
+    
+    public DAOException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+    
+    public DAOException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 
-    public DAOException(String message, Throwable throwable) {
-        super(message, throwable);
+    public DAOException(ErrorCode errorCode, Throwable throwable) {
+        super(errorCode, throwable);
     }
-
-    /**
-     * @return the field
-     */
-    public String getField() {
-        return field;
-    }
-
-    /**
-     * @param field the field to set
-     */
-    public void setField(String field) {
-        this.field = field;
-    }
-
+    
     /**
      * Builder that creates instances of {@code DAOException}.
      * 
@@ -46,23 +36,23 @@ public class DAOException extends Exception {
     public static class Builder {
         
         private static ResourceBundle resourceBundle;
-        
-        public static DAOException build(String field, String message) {
-            DAOException dAOException = new DAOException(getResourceBundle().getString(message));
-            dAOException.setField(getResourceBundle().getString(field));
+                
+        public static DAOException build(DAOErrorCode errorCode) {
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            DAOException dAOException = new DAOException(error);
             return dAOException;
         }
 
-        public static DAOException build(String message, Object... params) {
-            message = getResourceBundle().getString(message);
-            DAOException dAOException = new DAOException(String.format(message, params));
+        public static DAOException build(DAOErrorCode errorCode, Object... params) {
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            String message = String.format(error.getDescription(), params);
+            DAOException dAOException = new DAOException(error, message);
             return dAOException;
         }
 
-        public static DAOException build(String field, String message, Throwable throwable) {
-            DAOException dAOException = new DAOException(getResourceBundle().getString(message), 
-                    throwable);
-            dAOException.setField(getResourceBundle().getString(field));
+        public static DAOException build(DAOErrorCode errorCode, Throwable throwable) {
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            DAOException dAOException = new DAOException(error, throwable);
             return dAOException;
         }
 

@@ -40,9 +40,6 @@ public class Package extends AbstractCatalogModel<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPackage")
     private Long id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
     
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL)
     private Set<PackageHistory> packageHistories;
@@ -55,14 +52,6 @@ public class Package extends AbstractCatalogModel<Long> {
     @Override
     public void setId(Long id) {
         this.id = checkPositive(id);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     public Set<PackageHistory> getPackageHistories() {

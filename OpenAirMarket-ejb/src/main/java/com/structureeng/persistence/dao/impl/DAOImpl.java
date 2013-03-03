@@ -3,6 +3,7 @@
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.DAO;
+import com.structureeng.persistence.dao.DAOErrorCode;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.model.AbstractModel;
 
@@ -26,35 +27,7 @@ import javax.persistence.Query;
  */
 public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> implements
         DAO<T, S> {
-
-    /**
-     * Property that specifies the error message in case that the primary key passed is not found.
-     */
-    protected static final String NORESULT_LABEL = "dao.noResult.id";
-    /**
-     * Property that specifies the error message in case that the specified entity is not found.
-     */
-    protected static final String NORESULT_MESSAGE = "dao.noResult.message";
-    /**
-     * Property that specifies the error message in case the primary key has been modified
-     * recently.
-     */
-    protected static final String OPTIMISTIC_LOCK_LABEL = "dao.optimisticLocking.id";
-    /**
-     * Property that specifies the error message in case that the specified entity has been
-     * modified recently.
-     */
-    protected static final String OPTIMISTIC_LOCK_MESSAGE = "dao.optimisticLocking.message";
-    /**
-     * Property that specifies the error message in case that the primary key queried failed
-     * unexpectedly.
-     */
-    protected static final String UNEXPECTED_LABEL = "dao.unexpected.id";
-    /**
-     * Property that specifies the error message in case that the specified entity queried failed
-     * unexpectedly.
-     */
-    protected static final String UNEXPECTED_MESSAGE = "dao.unexpected.message";
+        
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
 
@@ -110,10 +83,10 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
             if (current.getVersion() == version) {
                 return current;
             } else {
-                throw DAOException.Builder.build(OPTIMISTIC_LOCK_LABEL, OPTIMISTIC_LOCK_MESSAGE);
+                throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
             }
         } catch (NoResultException exc) {
-            throw DAOException.Builder.build(NORESULT_LABEL, NORESULT_MESSAGE, exc);
+            throw DAOException.Builder.build(DAOErrorCode.NO_RESULT);
         }
     }
         
@@ -134,11 +107,11 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     public boolean hasVersionChanged(T entity) {
         try {
             find(getEntityIdClass().cast(entity.getId()), entity.getVersion());
-            return true;
+            return false;
         } catch (DAOException ex) {
             getLogger().debug(ex.getMessage());
-        }
-        return false;
+            return true;
+        }        
     }
 
     /**

@@ -3,6 +3,7 @@
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.ActiveDAO;
+import com.structureeng.persistence.dao.DAOErrorCode;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.model.AbstractActiveModel;
 import com.structureeng.persistence.model.AbstractActiveModel_;
@@ -10,6 +11,7 @@ import com.structureeng.persistence.model.AbstractActiveModel_;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,15 +26,24 @@ import javax.persistence.criteria.Root;
  */
 public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serializable> extends 
         DAOImpl<T, S> implements ActiveDAO<T, S> {
-
+    
     public ActiveDAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
         super(entityClass, entityIdClass);
     }
-
+    
     @Override
     public void remove(T entity) throws DAOException {
-        entity.setActive(Boolean.FALSE);
-        super.merge(entity);
+        validateForeignKeys();
+        try {
+            if (!hasVersionChanged(entity)) {
+                entity.setActive(Boolean.FALSE);
+                merge(entity);
+            } else {
+                throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
+            }
+        } catch (PersistenceException persistenceException) {
+            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+        }
     }
 
     @Override
@@ -84,4 +95,6 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         q.setFirstResult(start);
         return q.getResultList();
     }
+    
+    protected abstract void validateForeignKeys() throws DAOException;
 }

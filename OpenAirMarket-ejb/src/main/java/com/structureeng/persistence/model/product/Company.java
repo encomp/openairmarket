@@ -41,9 +41,6 @@ public class Company extends AbstractCatalogModel<Long> {
     @Column(name = "idCompany")
     private Long id;
     
-    @Column(name = "name", nullable = false)
-    private String name;
-    
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private Set<CompanyHistory> companyHistories;
 
@@ -55,14 +52,6 @@ public class Company extends AbstractCatalogModel<Long> {
     @Override
     public void setId(Long id) {
         this.id = checkPositive(id);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     public Set<CompanyHistory> getCompanyHistories() {

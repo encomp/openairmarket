@@ -7,6 +7,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 
 /**
@@ -21,11 +22,22 @@ public abstract class AbstractCatalogModel <T extends Serializable> extends Abst
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
     
+    @Column(name = "name", nullable = false)
+    private String name;
+    
     public Integer getReferenceId() {
         return referenceId;
     }
 
     public void setReferenceId(Integer referenceId) {
         this.referenceId = checkPositive(referenceId);
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {        
+        this.name = checkNotEmpty(name);
     }
 }

@@ -1,8 +1,10 @@
 // Copyright 2013 Structure Eng Inc.
 
-package com.structureeng.persistence.dao.impl;
+package com.structureeng.persistence.dao.impl.tenant;
 
+import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.TenantDAO;
+import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.tenant.Tenant;
 
 import org.slf4j.Logger;
@@ -37,5 +39,9 @@ public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long> implements Tenan
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    protected void validateForeignKeys() throws DAOException {
     }
 }

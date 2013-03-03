@@ -37,10 +37,7 @@ public class Tenant extends AbstractCatalogModel<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTenant")
-    private Long id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    private Long id;   
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)
     private Set<TenantHistory> tenantHistories;
@@ -56,14 +53,6 @@ public class Tenant extends AbstractCatalogModel<Long> {
     @Override
     public void setId(Long id) {
         this.id = Preconditions.checkNotNull(id);
-    }
-    
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {        
-        this.name = checkNotEmpty(name);
     }
 
     public Set<TenantHistory> getTenantHistories() {

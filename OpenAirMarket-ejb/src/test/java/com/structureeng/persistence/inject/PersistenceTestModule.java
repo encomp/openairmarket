@@ -3,7 +3,7 @@
 package com.structureeng.persistence.inject;
 
 import com.structureeng.persistence.dao.TenantDAO;
-import com.structureeng.persistence.dao.impl.TenantDAOImpl;
+import com.structureeng.persistence.dao.impl.tenant.TenantDAOImpl;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.HistoryTransactionSynchronization;
 import com.structureeng.persistence.history.RevisionInfo;

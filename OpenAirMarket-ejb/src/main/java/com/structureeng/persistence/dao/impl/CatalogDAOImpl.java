@@ -3,6 +3,8 @@
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.CatalogDAO;
+import com.structureeng.persistence.dao.DAOErrorCode;
+import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.model.AbstractActiveModel_;
 import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.AbstractCatalogModel_;
@@ -10,6 +12,8 @@ import com.structureeng.persistence.model.AbstractCatalogModel_;
 import java.io.Serializable;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -38,6 +42,39 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         return findByReferenceId(referenceId, Boolean.FALSE);
     }
 
+    @Override
+    public void persist(T entity) throws DAOException {
+        try {
+            long uniqueId = countEntitiesWithReferenceId(getEntityIdClass().cast(entity.getId()));
+            long uniqueName = countEntitiesWithName(entity.getName());
+            if (uniqueId > 0 || uniqueName > 0) {
+                if (uniqueId > 0) {
+                    throw DAOException.Builder.build(getErrorCodeUniqueReferenceId());
+                }
+                if (uniqueName > 0) {
+                    throw DAOException.Builder.build(getErrorCodeUniqueName());
+                }
+            } else {
+                getEntityManager().persist(entity);
+            }
+        } catch (PersistenceException persistenceException) {
+            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+        }
+    }
+
+    @Override
+    public T merge(T almacen) throws DAOException {
+        try {
+            if (isUnique(almacen)) {
+                return super.merge(almacen);
+            } else {
+                throw DAOException.Builder.build(DAOErrorCode.UNEXPECTED);
+            }
+        } catch (PersistenceException persistenceException) {
+            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+        }
+    }
+
     private T findByReferenceId(Integer referenceId, Boolean active) {
         try {
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -54,5 +91,62 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
             }
             return null;
         }
+    }
+
+    private Long countEntitiesWithReferenceId(S referenceId) {
+        return countEntities(0, referenceId);
+    }
+
+    private Long countEntitiesWithName(String name) {
+        return countEntities(1, name);
+    }
+
+    private Long countEntities(int option, Object value) {
+        CriteriaBuilder qBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = qBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(getEntityClass());
+        criteriaQuery.select(qBuilder.count(root));
+        switch (option) {
+            case 0:
+                criteriaQuery.where(
+                        qBuilder.equal(root.get(AbstractCatalogModel_.referenceId), value));
+                break;
+
+            case 1:
+                criteriaQuery.where(qBuilder.equal(root.get(AbstractCatalogModel_.name), value));
+                break;
+        }
+        TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
+    }
+
+    private Long countEntitiesWithSameNameButDiffReferenceId(Integer referenceId, String name) {
+        CriteriaBuilder qBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = qBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(getEntityClass());
+        criteriaQuery.select(qBuilder.count(root));
+        criteriaQuery.where(qBuilder.and(
+                qBuilder.equal(root.get(AbstractCatalogModel_.name), name),
+                qBuilder.notEqual(root.get(AbstractCatalogModel_.referenceId), referenceId)));
+        TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
+    }
+
+    private boolean isUnique(final T entity) throws DAOException {
+        long almacenes = countEntitiesWithSameNameButDiffReferenceId(entity.getReferenceId(), 
+                entity.getName());
+        if (almacenes > 0) {
+            throw DAOException.Builder.build(getErrorCodeUniqueName());
+        } else {
+            return !hasVersionChanged(entity);
+        }
+    }
+
+    public DAOErrorCode getErrorCodeUniqueReferenceId() {
+        return DAOErrorCode.CATALOG_REFERENCE_ID_UK;
+    }
+
+    public DAOErrorCode getErrorCodeUniqueName() {
+        return DAOErrorCode.CATALOG_NAME_UK;
     }
 }
