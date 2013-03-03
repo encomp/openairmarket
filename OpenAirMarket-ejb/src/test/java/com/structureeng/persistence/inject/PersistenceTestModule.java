@@ -2,8 +2,7 @@
 
 package com.structureeng.persistence.inject;
 
-import com.structureeng.persistence.dao.TenantDAO;
-import com.structureeng.persistence.dao.impl.tenant.TenantDAOImpl;
+import com.structureeng.persistence.dao.inject.DAOModule;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.HistoryTransactionSynchronization;
 import com.structureeng.persistence.history.RevisionInfo;
@@ -56,7 +55,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = {"com.structureeng.persistence"})
 @EnableTransactionManagement
-@Import(value = {Database.class})
+@Import(value = {Database.class, DAOModule.class})
 public class PersistenceTestModule implements TransactionManagementConfigurer {
 
     static {
@@ -123,13 +122,6 @@ public class PersistenceTestModule implements TransactionManagementConfigurer {
     @Named("historyTransactionSynchronization")
     public HistoryTransactionSynchronization providesHistoryTxSynchronization() {
         return new HistoryTransactionSynchronization(providesProviderEntityManager());        
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("tenantDAO")
-    public TenantDAO providesTenantDAO() {
-        return new TenantDAOImpl();
     }
 
     @Bean
