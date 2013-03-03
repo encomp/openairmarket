@@ -5,6 +5,7 @@ package com.structureeng.common;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
@@ -12,7 +13,7 @@ import java.util.ResourceBundle;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class ErrorCodeProperty {
+public class ErrorCodeProperty implements Serializable {
 
     private static final String CODE = ".code";
     private static final String NAME = ".name";

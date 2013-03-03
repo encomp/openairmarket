@@ -11,15 +11,15 @@ import javax.inject.Named;
 
 /**
  * Base data access object exception.
- * 
+ *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class DAOException extends Excepcion {
-    
+
     public DAOException(ErrorCode errorCode) {
         super(errorCode);
     }
-    
+
     public DAOException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
@@ -27,31 +27,34 @@ public class DAOException extends Excepcion {
     public DAOException(ErrorCode errorCode, Throwable throwable) {
         super(errorCode, throwable);
     }
-    
+
     /**
      * Builder that creates instances of {@code DAOException}.
-     * 
+     *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
     public static class Builder {
-        
+
         private static ResourceBundle resourceBundle;
-                
+
         public static DAOException build(DAOErrorCode errorCode) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
+                    resourceBundle);
             DAOException dAOException = new DAOException(error);
             return dAOException;
         }
 
         public static DAOException build(DAOErrorCode errorCode, Object... params) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
+                    resourceBundle);
             String message = String.format(error.getDescription(), params);
             DAOException dAOException = new DAOException(error, message);
             return dAOException;
         }
 
         public static DAOException build(DAOErrorCode errorCode, Throwable throwable) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), resourceBundle);
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
+                    resourceBundle);
             DAOException dAOException = new DAOException(error, throwable);
             return dAOException;
         }
@@ -65,5 +68,5 @@ public class DAOException extends Excepcion {
         public static void setResourceBundle(ResourceBundle aResourceBundle) {
             resourceBundle = aResourceBundle;
         }
-    }    
+    }
 }

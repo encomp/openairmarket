@@ -5,7 +5,7 @@ package com.structureeng.persistence.dao;
 import com.structureeng.persistence.model.tenant.Tenant;
 
 /**
- * Specifies the contract for the {@code Tenant} dao.
+ * Specifies the contract for the {@code Tenant} data access object.
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */

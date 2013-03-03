@@ -62,10 +62,10 @@ public class HistoryListener {
         createHistoryEntity(entity, HistoryType.DELETE);
     }
 
-    private void createHistoryEntity(AbstractModel entity, HistoryType historyType) {                 
+    private void createHistoryEntity(AbstractModel entity, HistoryType historyType) {
         HistoryEntityBuilder builder = getHistoryEntityBuilder(entity);
         RevisionInfo revisionInfo = getRevisionInfo();
-        History history = getHistory(builder, historyType, revisionInfo);        
+        History history = getHistory(builder, historyType, revisionInfo);
         HistoryEntity<History> historyEntity = (HistoryEntity<History>) (builder.build(entity));
         historyEntity.setHistoryType(historyType);
         historyEntity.setHistory(history);
@@ -84,7 +84,7 @@ public class HistoryListener {
         }
     }
 
-    private RevisionInfo getRevisionInfo() {              
+    private RevisionInfo getRevisionInfo() {
         RevisionInfo revisionInfo = getCurrentRevisionInfo();
         if (revisionInfo == null) {
             revisionInfo = new RevisionInfo();
@@ -96,7 +96,7 @@ public class HistoryListener {
         return revisionInfo;
     }
 
-    private History getHistory(HistoryEntityBuilder builder, HistoryType historyType, 
+    private History getHistory(HistoryEntityBuilder builder, HistoryType historyType,
             RevisionInfo revisionInfo) {
         ParameterizedType parameterizedType = (ParameterizedType) builder.getClass()
                 .getGenericSuperclass();

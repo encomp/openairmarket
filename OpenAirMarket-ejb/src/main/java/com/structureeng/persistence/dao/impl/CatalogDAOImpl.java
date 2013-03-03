@@ -115,6 +115,9 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
             case 1:
                 criteriaQuery.where(qBuilder.equal(root.get(AbstractCatalogModel_.name), value));
                 break;
+                
+            default:
+                break;
         }
         TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
@@ -133,7 +136,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     private boolean isUnique(final T entity) throws DAOException {
-        long almacenes = countEntitiesWithSameNameButDiffReferenceId(entity.getReferenceId(), 
+        long almacenes = countEntitiesWithSameNameButDiffReferenceId(entity.getReferenceId(),
                 entity.getName());
         if (almacenes > 0) {
             throw DAOException.Builder.build(getErrorCodeUniqueName());

@@ -2,13 +2,13 @@
 
 package com.structureeng.persistence.model;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
+import static com.structureeng.persistence.model.AbstractModel.checkPositive;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 
 /**
  * Specifies the behavior of the entities that are catalogs.
