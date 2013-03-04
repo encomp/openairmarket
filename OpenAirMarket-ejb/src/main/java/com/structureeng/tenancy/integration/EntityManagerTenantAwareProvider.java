@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Map;
 
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -24,6 +25,7 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
+@Singleton
 public class EntityManagerTenantAwareProvider implements Provider<EntityManager> {
     
     private static final String MULTITENANT = "eclipselink.tenant-id";
