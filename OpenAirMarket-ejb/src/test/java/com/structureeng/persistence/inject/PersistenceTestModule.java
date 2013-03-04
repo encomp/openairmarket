@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.inject;
 
+import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.inject.DAOModule;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.HistoryTransactionSynchronization;
@@ -76,6 +77,8 @@ public class PersistenceTestModule implements TransactionManagementConfigurer {
                     }
                 }).build());
         TenancyContextHolder.setStrategy(new ThreadLocalTenancyContextHolder());
+        DAOException.Builder.setResourceBundle(
+                ResourceBundle.getBundle("com.structureeng.persistence.dao.DAOResourceBundle"));
     }
     
     @Autowired
