@@ -1,5 +1,4 @@
 // Copyright 2013 Structure Eng Inc.
-
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.DAO;
@@ -27,7 +26,7 @@ import javax.persistence.Query;
  */
 public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> implements
         DAO<T, S> {
-        
+
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
 
@@ -43,15 +42,15 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
 
     @Override
     public T merge(T entity) throws DAOException {
-        if (!getEntityManager().contains(entity)) {
-            return getEntityManager().merge(entity);
-        } 
-        return entity;
-    }
-
-    @Override
-    public void remove(T entity) throws DAOException {        
-        getEntityManager().remove(merge(entity));
+        if (!hasVersionChanged(entity)) {
+            if (!getEntityManager().contains(entity)) {
+                return getEntityManager().merge(entity);
+            } else {
+                return entity;
+            }
+        } else {
+            throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
+        }
     }
 
     @Override
@@ -89,7 +88,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
             throw DAOException.Builder.build(DAOErrorCode.NO_RESULT);
         }
     }
-        
+
     @Override
     public void flush() {
         getEntityManager().flush();
@@ -111,7 +110,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
         } catch (DAOException ex) {
             getLogger().debug(ex.getMessage());
             return true;
-        }        
+        }
     }
 
     /**

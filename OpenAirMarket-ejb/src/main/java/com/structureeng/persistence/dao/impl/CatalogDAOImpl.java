@@ -1,5 +1,4 @@
 // Copyright 2013 Structure Eng Inc.
-
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.CatalogDAO;
@@ -45,7 +44,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     @Override
     public void persist(T entity) throws DAOException {
         try {
-            long uniqueId = countEntitiesWithReferenceId(getEntityIdClass().cast(entity.getId()));
+            long uniqueId = countEntitiesWithReferenceId(entity.getReferenceId());
             long uniqueName = countEntitiesWithName(entity.getName());
             if (uniqueId > 0 || uniqueName > 0) {
                 if (uniqueId > 0) {
@@ -55,7 +54,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
                     throw DAOException.Builder.build(getErrorCodeUniqueName());
                 }
             } else {
-                getEntityManager().persist(entity);
+                super.persist(entity);
             }
         } catch (PersistenceException persistenceException) {
             throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
@@ -63,13 +62,10 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     @Override
-    public T merge(T almacen) throws DAOException {
+    public T merge(T entity) throws DAOException {
         try {
-            if (isUnique(almacen)) {
-                return super.merge(almacen);
-            } else {
-                throw DAOException.Builder.build(DAOErrorCode.UNEXPECTED);
-            }
+            isUnique(entity);
+            return super.merge(entity);
         } catch (PersistenceException persistenceException) {
             throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
         }
@@ -93,7 +89,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         }
     }
 
-    private Long countEntitiesWithReferenceId(S referenceId) {
+    private Long countEntitiesWithReferenceId(Integer referenceId) {
         return countEntities(0, referenceId);
     }
 
@@ -115,7 +111,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
             case 1:
                 criteriaQuery.where(qBuilder.equal(root.get(AbstractCatalogModel_.name), value));
                 break;
-                
+
             default:
                 break;
         }
@@ -135,13 +131,11 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         return typedQuery.getSingleResult();
     }
 
-    private boolean isUnique(final T entity) throws DAOException {
+    private void isUnique(final T entity) throws DAOException {
         long almacenes = countEntitiesWithSameNameButDiffReferenceId(entity.getReferenceId(),
                 entity.getName());
         if (almacenes > 0) {
             throw DAOException.Builder.build(getErrorCodeUniqueName());
-        } else {
-            return !hasVersionChanged(entity);
         }
     }
 
