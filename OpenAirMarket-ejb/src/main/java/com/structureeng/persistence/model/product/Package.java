@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.product;
 
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
-import com.structureeng.persistence.model.AbstractCatalogModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.history.product.PackageHistory;
 
 import com.google.common.base.Preconditions;
@@ -34,7 +34,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "package", uniqueConstraints = {
         @UniqueConstraint(name = "packageTenantPK", columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "packageUK", columnNames = {"idTenant", "name"})})
-public class Package extends AbstractCatalogModel<Long> {
+public class Package extends AbstractCatalogTenantModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

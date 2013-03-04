@@ -5,7 +5,6 @@ package com.structureeng.persistence.model;
 import org.eclipse.persistence.annotations.Multitenant;
 import org.eclipse.persistence.annotations.MultitenantType;
 import org.eclipse.persistence.annotations.TenantDiscriminatorColumn;
-
 import java.io.Serializable;
 
 import javax.persistence.DiscriminatorType;
@@ -20,6 +19,6 @@ import javax.persistence.MappedSuperclass;
 @Multitenant(MultitenantType.SINGLE_TABLE)
 @TenantDiscriminatorColumn(name = "idTenant", discriminatorType = DiscriminatorType.INTEGER)
 @MappedSuperclass
-public abstract class AbstractTenantModel<T extends Serializable> extends AbstractActiveModel<T> 
-    implements TenantModel<T> {
+public abstract class AbstractCatalogTenantModel <T extends Serializable> extends 
+        AbstractCatalogModel<T> implements TenantModel<T> {
 }

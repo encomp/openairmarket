@@ -20,15 +20,11 @@ import javax.persistence.Version;
  * @param <T> specifies the {@link Class} of the id for the {@link Entity}
  */
 @MappedSuperclass
-public abstract class AbstractModel<T extends Serializable> implements Serializable, Model {
+public abstract class AbstractModel<T extends Serializable> implements Model<T> {
 
     @Version
     @Column(name = "version", nullable = false)
     private Long version;
-
-    public abstract T getId();
-    
-    public abstract void setId(T id);
 
     @Override
     public Long getVersion() {

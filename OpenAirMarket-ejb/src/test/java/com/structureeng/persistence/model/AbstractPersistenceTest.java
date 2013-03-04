@@ -28,7 +28,11 @@ public abstract class AbstractPersistenceTest {
     private ApplicationContext applicationContext;
     
     @Before
-    public void setup() {        
+    public void setup() {
         HistoryListener.setApplicationContext(applicationContext);        
+    }
+    
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 }

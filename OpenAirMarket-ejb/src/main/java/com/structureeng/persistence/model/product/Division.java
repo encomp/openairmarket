@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.product;
 
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
-import com.structureeng.persistence.model.AbstractCatalogModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.history.product.DivisionHistory;
 
 import com.google.common.base.Preconditions;
@@ -36,7 +36,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "division", uniqueConstraints = {
         @UniqueConstraint(name = "divisionTenantPK", columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "divisionUK", columnNames = {"idTenant", "name"})})
-public class Division extends AbstractCatalogModel<Long> {
+public class Division extends AbstractCatalogTenantModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,8 +8,9 @@ import java.io.Serializable;
  * Specifies a persistent instance behavior.
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+ * @param <T> specifies the {@link Class} of the id for the {@link Entity}
  */
-public interface Model extends Serializable {
+public interface Model<T extends Serializable> extends Serializable {
     
     /**
      * Provides the value of the optimistic locking column.
@@ -17,4 +18,18 @@ public interface Model extends Serializable {
      * @return - the value
      */
     Long getVersion();
+    
+    /**
+     * Return the identifier of the entity.
+     * 
+     * @return the key identifier of the entity
+     */
+    T getId();
+    
+    /**
+     * Specifies the key identifier for the entity.
+     * 
+     * @param id specifies the identifier for the entity
+     */
+    void setId(T id);
 }
