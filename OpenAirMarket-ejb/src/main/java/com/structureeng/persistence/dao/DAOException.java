@@ -2,8 +2,8 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.common.ErrorCode;
-import com.structureeng.common.Excepcion;
+import com.structureeng.common.exception.ErrorCode;
+import com.structureeng.common.exception.Excepcion;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;

@@ -1,11 +1,11 @@
 // Copyright 2013 Structure Eng Inc.
 
-package com.structureeng.persistence.dao.impl.tenant;
+package com.structureeng.persistence.dao.impl.product;
 
 import com.structureeng.persistence.dao.DAOException;
-import com.structureeng.persistence.dao.TenantDAO;
+import com.structureeng.persistence.dao.PackageDAO;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.tenant.Tenant;
+import com.structureeng.persistence.model.product.Package;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +15,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Data Access Object for {@code Tenant}.
+ * Data Access Object for {@code Package}.
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long> implements TenantDAO {
+public class PackageDAOImpl extends CatalogDAOImpl<Package, Long> implements PackageDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     @PersistenceContext
     private EntityManager entityManager;
-
+    
     @Inject
-    public TenantDAOImpl() {
-        super(Tenant.class, Long.class);
+    public PackageDAOImpl() {
+        super(Package.class, Long.class);
     }
     
     @Override
-    protected void validateForeignKeys(Tenant tenant) throws DAOException {
+    protected void validateForeignKeys(Package aPackage) throws DAOException {
     }
 
     @Override
@@ -43,5 +43,5 @@ public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long> implements Tenan
     @Override
     public Logger getLogger() {
         return logger;
-    }
+    }  
 }

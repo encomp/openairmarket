@@ -3,8 +3,10 @@
 package com.structureeng.persistence.dao.inject;
 
 import com.structureeng.persistence.dao.CompanyDAO;
+import com.structureeng.persistence.dao.PackageDAO;
 import com.structureeng.persistence.dao.TenantDAO;
 import com.structureeng.persistence.dao.impl.product.CompanyDAOImpl;
+import com.structureeng.persistence.dao.impl.product.PackageDAOImpl;
 import com.structureeng.persistence.dao.impl.tenant.TenantDAOImpl;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -27,6 +29,12 @@ public class DAOModule {
     @Named("companyDAO")
     public CompanyDAO providesCompanyDAO() {
         return new CompanyDAOImpl();
+    }
+    
+    @Bean
+    @Named("packageDAO")
+    public PackageDAO providesPackageDAO() {
+        return new PackageDAOImpl();
     }
     
     @Bean

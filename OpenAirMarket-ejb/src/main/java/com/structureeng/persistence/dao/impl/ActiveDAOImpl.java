@@ -33,7 +33,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     
     @Override
     public void remove(T entity) throws DAOException {
-        validateForeignKeys();
+        validateForeignKeys(entity);
         try {
             if (!hasVersionChanged(entity)) {
                 entity.setActive(Boolean.FALSE);
@@ -96,5 +96,5 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         return q.getResultList();
     }
     
-    protected abstract void validateForeignKeys() throws DAOException;
+    protected abstract void validateForeignKeys(T activeModel) throws DAOException;
 }

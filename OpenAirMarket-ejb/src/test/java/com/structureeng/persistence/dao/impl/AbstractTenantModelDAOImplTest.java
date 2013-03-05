@@ -25,7 +25,8 @@ import javax.persistence.Query;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public abstract class AbstractTenantModelDAOImplTest extends AbstractPersistenceTest {
+public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel, 
+        H extends AbstractTenantHistoryModel> extends AbstractPersistenceTest {
     
     private EntityManager entityManager;    
     private PlatformTransactionManager tx;
@@ -60,8 +61,7 @@ public abstract class AbstractTenantModelDAOImplTest extends AbstractPersistence
         TenancyContextHolder.registerTenancyContext(new TenancyContext(tenant));
     }
     
-    protected void deleteTenantHistories(TenantModel tenantModel, 
-            List<AbstractTenantHistoryModel> tenantHistories) {
+    protected void deleteTenantHistories(T tenantModel, List<H> tenantHistories) {
         Query q = null;
         for (AbstractTenantHistoryModel historyTenant:  tenantHistories) {
             q = getEntityManager().createQuery(String.format("DELETE FROM %s a WHERE a.id = ?1", 

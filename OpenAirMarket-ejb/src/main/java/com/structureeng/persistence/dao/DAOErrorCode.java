@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.common.ErrorCodeProperty;
+import com.structureeng.common.exception.ErrorCodeProperty;
 
 /**
  * Defines the error codes for the {@code DAO}.

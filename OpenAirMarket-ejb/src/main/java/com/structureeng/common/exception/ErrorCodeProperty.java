@@ -1,6 +1,6 @@
 // Copyright 2013 Structure Eng Inc.
 
-package com.structureeng.common;
+package com.structureeng.common.exception;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

@@ -2,15 +2,13 @@
 
 package com.structureeng.persistence.dao.impl.product;
 
+import com.structureeng.persistence.dao.CatalogDAO;
 import com.structureeng.persistence.dao.CompanyDAO;
 import com.structureeng.persistence.dao.impl.AbstractCatalogDAOImplTest;
 import com.structureeng.persistence.model.Model;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
 import com.structureeng.persistence.model.history.product.CompanyHistory;
 import com.structureeng.persistence.model.history.product.CompanyHistory_;
 import com.structureeng.persistence.model.product.Company;
-
-import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -24,7 +22,7 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company> {
+public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company, CompanyHistory> {
 
     private CompanyDAO companyDAO;
     
@@ -42,9 +40,7 @@ public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company
         root.fetch(CompanyHistory_.company, JoinType.INNER);
         cq.where(cb.equal(root.get(CompanyHistory_.company), company));
         List<CompanyHistory> histories = getEntityManager().createQuery(cq).getResultList();
-        List<AbstractTenantHistoryModel> test = Lists.newArrayList();
-        test.addAll(histories);
-        deleteTenantHistories(company, test);
+        deleteTenantHistories(company, histories);
     }
 
     @Override
@@ -53,7 +49,7 @@ public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company
     }
 
     @Override
-    public CompanyDAO getCatalogDAO() {
+    public CatalogDAO<Company, Long> getCatalogDAO() {
         if (companyDAO == null) {
             companyDAO = getApplicationContext().getBean(CompanyDAO.class);
         }
