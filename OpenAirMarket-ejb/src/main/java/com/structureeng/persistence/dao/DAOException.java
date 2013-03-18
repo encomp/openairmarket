@@ -3,6 +3,7 @@
 package com.structureeng.persistence.dao;
 
 import com.structureeng.common.exception.ErrorCode;
+import com.structureeng.common.exception.ErrorPropertyProvider;
 import com.structureeng.common.exception.Excepcion;
 import java.util.ResourceBundle;
 
@@ -37,24 +38,21 @@ public class DAOException extends Excepcion {
 
         private static ResourceBundle resourceBundle;
 
-        public static DAOException build(DAOErrorCode errorCode) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
-                    resourceBundle);
+        public static DAOException build(ErrorPropertyProvider errorCode) {
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.get(), resourceBundle);
             DAOException dAOException = new DAOException(error);
             return dAOException;
         }
 
         public static DAOException build(DAOErrorCode errorCode, Object... params) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
-                    resourceBundle);
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.get(), resourceBundle);
             String message = String.format(error.getDescription(), params);
             DAOException dAOException = new DAOException(error, message);
             return dAOException;
         }
 
         public static DAOException build(DAOErrorCode errorCode, Throwable throwable) {
-            ErrorCode error = ErrorCode.newBuilder().build(errorCode.getErrorCode(), 
-                    resourceBundle);
+            ErrorCode error = ErrorCode.newBuilder().build(errorCode.get(), resourceBundle);
             DAOException dAOException = new DAOException(error, throwable);
             return dAOException;
         }

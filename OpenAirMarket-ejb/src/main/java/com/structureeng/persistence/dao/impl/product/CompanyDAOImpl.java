@@ -1,10 +1,10 @@
 // Copyright 2013 Structure Eng Inc.
+
 package com.structureeng.persistence.dao.impl.product;
 
 import com.structureeng.persistence.dao.CompanyDAO;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.history.product.CompanyHistory_;
 import com.structureeng.persistence.model.product.Company;
 import com.structureeng.persistence.model.product.ProductDefinition;
 import com.structureeng.persistence.model.product.ProductDefinition_;
@@ -28,6 +28,7 @@ import javax.persistence.criteria.Root;
 public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long> implements CompanyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -42,13 +43,13 @@ public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long> implements Com
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<ProductDefinition> cq = cb.createQuery(ProductDefinition.class);
             Root<ProductDefinition> root = cq.from(ProductDefinition.class);
-            root.fetch(ProductDefinition_.company, JoinType.INNER);
+            root.join(ProductDefinition_.company, JoinType.INNER);
             cq.where(cb.and(
                     cb.equal(root.get(ProductDefinition_.company), company),
-                    cb.equal(root.get(ProductDefinition_.active), true)));
+                    cb.equal(root.get(ProductDefinition_.active), Boolean.TRUE)));
             List<ProductDefinition> entities = getEntityManager().createQuery(cq).getResultList();
             if (entities != null && entities.size() > 0) {
-                //throw new DAOException(null);
+                throw DAOException.Builder.build(ProductErrorCode.COMPANY_FK);
             }
         }
     }

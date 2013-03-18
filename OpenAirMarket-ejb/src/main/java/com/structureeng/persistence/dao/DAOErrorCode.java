@@ -3,13 +3,14 @@
 package com.structureeng.persistence.dao;
 
 import com.structureeng.common.exception.ErrorCodeProperty;
+import com.structureeng.common.exception.ErrorPropertyProvider;
 
 /**
  * Defines the error codes for the {@code DAO}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public enum DAOErrorCode {
+public enum DAOErrorCode implements ErrorPropertyProvider {
     /**
      * Property that specifies the error in case the primary key passed is not found.
      */
@@ -45,7 +46,8 @@ public enum DAOErrorCode {
         this.errorCode = new ErrorCodeProperty(property);
     }
 
-    public ErrorCodeProperty getErrorCode() {
+    @Override
+    public ErrorCodeProperty get() {
         return errorCode;
     }
 }
