@@ -3,9 +3,11 @@
 package com.structureeng.persistence.dao.inject;
 
 import com.structureeng.persistence.dao.CompanyDAO;
+import com.structureeng.persistence.dao.DivisionDAO;
 import com.structureeng.persistence.dao.PackageDAO;
 import com.structureeng.persistence.dao.TenantDAO;
 import com.structureeng.persistence.dao.impl.product.CompanyDAOImpl;
+import com.structureeng.persistence.dao.impl.product.DivisionDAOImpl;
 import com.structureeng.persistence.dao.impl.product.PackageDAOImpl;
 import com.structureeng.persistence.dao.impl.tenant.TenantDAOImpl;
 
@@ -29,6 +31,13 @@ public class DAOModule {
     @Named("companyDAO")
     public CompanyDAO providesCompanyDAO() {
         return new CompanyDAOImpl();
+    }
+    
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Named("divisionDAO")
+    public DivisionDAO providesDivisionDAO() {
+        return new DivisionDAOImpl();
     }
     
     @Bean
