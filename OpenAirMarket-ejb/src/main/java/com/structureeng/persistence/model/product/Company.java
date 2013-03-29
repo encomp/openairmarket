@@ -82,12 +82,12 @@ public class Company extends AbstractCatalogTenantModel<Long> {
         private String name;
 
         public Buider setReferenceId(Integer referenceId) {
-            this.referenceId = Preconditions.checkNotNull(referenceId);
+            this.referenceId = checkPositive(referenceId);
             return this;
         }
 
         public Buider setName(String name) {
-            this.name = Preconditions.checkNotNull(name);
+            this.name = checkNotEmpty(name);
             return this;
         }
 

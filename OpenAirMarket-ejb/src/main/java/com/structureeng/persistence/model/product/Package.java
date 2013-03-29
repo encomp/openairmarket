@@ -82,12 +82,12 @@ public class Package extends AbstractCatalogTenantModel<Long> {
         private String name;
 
         public Package.Buider setReferenceId(Integer referenceId) {
-            this.referenceId = Preconditions.checkNotNull(referenceId);
+            this.referenceId = checkPositive(referenceId);
             return this;
         }
 
         public Package.Buider setName(String name) {
-            this.name = Preconditions.checkNotNull(name);
+            this.name = checkNotEmpty(name);
             return this;
         }
 

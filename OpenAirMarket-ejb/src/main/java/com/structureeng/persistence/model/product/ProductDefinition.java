@@ -2,11 +2,9 @@
 
 package com.structureeng.persistence.model.product;
 
-import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 
 import com.google.common.base.Preconditions;
-
-import java.math.BigInteger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,24 +28,18 @@ import javax.persistence.UniqueConstraint;
                 columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "productDefinitionPK", columnNames = {"idTenant", "name"}),
         @UniqueConstraint(name = "productDefinitionUK", columnNames = {"idTenant", "idKey"})})
-public class ProductDefinition extends AbstractTenantModel<Long> {
+public class ProductDefinition extends AbstractCatalogTenantModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProductDefinition")
     private Long id;
-
-    @Column(name = "idReference", nullable = false)
-    private BigInteger referenceId;
-
+    
     @Column(name = "idKey", nullable = false, length = 50)
     private String key;
 
-    @Column(name = "name", nullable = false, length = 500)
-    private String name;
-
-    @Column(name = "imagen", length = 500)
-    private String imagen;
+    @Column(name = "image", length = 500)
+    private String image;
 
     @Column(name = "countable", nullable = false)
     private Boolean countable;
@@ -70,15 +62,7 @@ public class ProductDefinition extends AbstractTenantModel<Long> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
-    }
-
-    public BigInteger getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(BigInteger referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.id = checkPositive(id);
     }
 
     public String getKey() {
@@ -86,23 +70,15 @@ public class ProductDefinition extends AbstractTenantModel<Long> {
     }
 
     public void setKey(String key) {
-        this.key = Preconditions.checkNotNull(key);
+        this.key = checkNotEmpty(key);
     }
 
-    public String getName() {
-        return name;
+    public String getImage() {
+        return image;
     }
 
-    public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Boolean getCountable() {
@@ -135,5 +111,80 @@ public class ProductDefinition extends AbstractTenantModel<Long> {
 
     public void setDivision(Division division) {
         this.division = Preconditions.checkNotNull(division);
+    }
+    
+    /**
+     * Builder class that creates instances of {@code ProductDefinition}.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Buider {
+
+        private Integer referenceId;
+        private String name;
+        private String key;
+        private String image;
+        private Boolean countable;
+        private Boolean expire;
+        private Company company;
+        private Division division;        
+
+        public Buider setReferenceId(Integer referenceId) {
+            this.referenceId = checkPositive(referenceId);
+            return this;
+        }
+
+        public Buider setName(String name) {
+            this.name = checkNotEmpty(name);
+            return this;
+        }
+
+        public Buider setKey(String key) {
+            this.key = checkNotEmpty(key);
+            return this;
+        }
+
+        public Buider setImage(String image) {
+            this.image = image;
+            return this;
+        }
+
+        public Buider setCountable(Boolean countable) {
+            this.countable = Preconditions.checkNotNull(countable);
+            return this;
+        }
+
+        public Buider setExpire(Boolean expire) {
+            this.expire = Preconditions.checkNotNull(expire);
+            return this;
+        }
+
+        public Buider setCompany(Company company) {
+            this.company = Preconditions.checkNotNull(company);
+            return this;
+        }
+
+        public Buider setDivision(Division division) {
+            this.division = Preconditions.checkNotNull(division);
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@code ProductDefinition}.
+         *
+         * @return - new instance
+         */
+        public ProductDefinition build() {
+            ProductDefinition productDefinition = new ProductDefinition();
+            productDefinition.setReferenceId(referenceId);
+            productDefinition.setName(name);
+            productDefinition.setKey(key);
+            productDefinition.setImage(image);
+            productDefinition.setCountable(countable);
+            productDefinition.setExpire(expire);
+            productDefinition.setCompany(company);
+            productDefinition.setDivision(division);
+            return productDefinition;
+        }
     }
 }

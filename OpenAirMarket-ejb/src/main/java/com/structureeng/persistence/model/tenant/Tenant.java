@@ -7,8 +7,6 @@ import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.history.tenant.TenantHistory;
 
-import com.google.common.base.Preconditions;
-
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -52,7 +50,7 @@ public class Tenant extends AbstractCatalogModel<Long> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Set<TenantHistory> getTenantHistories() {
@@ -88,12 +86,12 @@ public class Tenant extends AbstractCatalogModel<Long> {
         private String name;
 
         public Buider setReferenceId(Integer referenceId) {
-            this.referenceId = Preconditions.checkNotNull(referenceId);
+            this.referenceId = checkPositive(referenceId);
             return this;
         }
 
         public Buider setName(String name) {
-            this.name = Preconditions.checkNotNull(name);
+            this.name = checkNotEmpty(name);
             return this;
         }
         
