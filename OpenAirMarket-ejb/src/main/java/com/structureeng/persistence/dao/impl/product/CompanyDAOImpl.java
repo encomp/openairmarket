@@ -25,7 +25,7 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long> implements CompanyDAO {
+public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long, Integer> implements CompanyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -34,7 +34,7 @@ public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long> implements Com
 
     @Inject
     public CompanyDAOImpl() {
-        super(Company.class, Long.class);
+        super(Company.class, Long.class, Integer.class);
     }
 
     @Override

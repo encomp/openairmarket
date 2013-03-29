@@ -31,7 +31,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "tenant", uniqueConstraints = {
         @UniqueConstraint(name = "tenantPK", columnNames = {"idReference"}),
         @UniqueConstraint(name = "tenantUK", columnNames = {"name"})})
-public class Tenant extends AbstractCatalogModel<Long> {
+public class Tenant extends AbstractCatalogModel<Long, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTenant")

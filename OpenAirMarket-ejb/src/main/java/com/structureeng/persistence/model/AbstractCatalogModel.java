@@ -14,22 +14,25 @@ import javax.persistence.MappedSuperclass;
  * Specifies the behavior of the entities that are catalogs.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
- * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}
+ * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}.
+ * @param <RID> specifies the {@link Class} of the referenceId for the 
+ *        {@link javax.persistence.Entity}.
  */
 @MappedSuperclass
-public abstract class AbstractCatalogModel <T extends Serializable> extends AbstractActiveModel<T> {
+public abstract class AbstractCatalogModel <T extends Serializable, RID extends Number> 
+    extends AbstractActiveModel<T> {
 
     @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
+    private RID referenceId;
     
     @Column(name = "name", nullable = false)
     private String name;
     
-    public Integer getReferenceId() {
+    public RID getReferenceId() {
         return referenceId;
     }
 
-    public void setReferenceId(Integer referenceId) {
+    public void setReferenceId(RID referenceId) {
         this.referenceId = checkPositive(referenceId);
     }
     

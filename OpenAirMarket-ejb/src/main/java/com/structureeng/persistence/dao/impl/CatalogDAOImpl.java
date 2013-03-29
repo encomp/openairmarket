@@ -8,6 +8,7 @@ import com.structureeng.persistence.model.AbstractActiveModel_;
 import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.AbstractCatalogModel_;
 
+import com.google.common.base.Preconditions;
 import java.io.Serializable;
 
 import javax.persistence.NoResultException;
@@ -23,28 +24,34 @@ import javax.persistence.criteria.Root;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@code AbstractActiveModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
+ * @param <RID> specifies the {@code Number} identifier of the {@code AbstractCatalogModel}
  */
-public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable>
-        extends ActiveDAOImpl<T, S> implements CatalogDAO<T, S> {
+public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, 
+        RID extends Number> extends ActiveDAOImpl<T, S> implements CatalogDAO<T, S, RID> {
 
-    public CatalogDAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
+    private final Class<RID> referenceIdClass;
+    
+    public CatalogDAOImpl(Class<T> entityClass, Class<S> entityIdClass, 
+            Class<RID> referenceIdClass) {
         super(entityClass, entityIdClass);
+        this.referenceIdClass = Preconditions.checkNotNull(referenceIdClass);
     }
 
     @Override
-    public T findByReferenceId(Integer referenceId) {
+    public T findByReferenceId(RID referenceId) {
         return findByReferenceId(referenceId, Boolean.TRUE);
     }
 
     @Override
-    public T findInactiveByReferenceId(Integer referenceId) {
+    public T findInactiveByReferenceId(RID referenceId) {
         return findByReferenceId(referenceId, Boolean.FALSE);
     }
 
     @Override
     public void persist(T entity) throws DAOException {
         try {
-            long uniqueId = countEntitiesWithReferenceId(entity.getReferenceId());
+            long uniqueId = countEntitiesWithReferenceId(
+                    referenceIdClass.cast(entity.getReferenceId()));
             long uniqueName = countEntitiesWithName(entity.getName());
             if (uniqueId > 0 || uniqueName > 0) {
                 if (uniqueId > 0) {
@@ -71,7 +78,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         }
     }
 
-    private T findByReferenceId(Integer referenceId, Boolean active) {
+    private T findByReferenceId(RID referenceId, Boolean active) {
         try {
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(getEntityClass());
@@ -89,7 +96,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         }
     }
 
-    private Long countEntitiesWithReferenceId(Integer referenceId) {
+    private Long countEntitiesWithReferenceId(RID referenceId) {
         return countEntities(0, referenceId);
     }
 
@@ -119,7 +126,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         return typedQuery.getSingleResult();
     }
 
-    private Long countEntitiesWithSameNameButDiffReferenceId(Integer referenceId, String name) {
+    private Long countEntitiesWithSameNameButDiffReferenceId(RID referenceId, String name) {
         CriteriaBuilder qBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = qBuilder.createQuery(Long.class);
         Root<T> root = criteriaQuery.from(getEntityClass());
@@ -132,8 +139,8 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     private void isUnique(final T entity) throws DAOException {
-        long almacenes = countEntitiesWithSameNameButDiffReferenceId(entity.getReferenceId(),
-                entity.getName());
+        long almacenes = countEntitiesWithSameNameButDiffReferenceId(
+                referenceIdClass.cast(entity.getReferenceId()), entity.getName());
         if (almacenes > 0) {
             throw DAOException.Builder.build(getErrorCodeUniqueName());
         }

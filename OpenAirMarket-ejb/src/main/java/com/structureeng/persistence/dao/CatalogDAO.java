@@ -14,8 +14,8 @@ import java.io.Serializable;
  * @param <T> specifies the {@code AbstractCatalogModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractCatalogModel}
  */
-public interface CatalogDAO<T extends AbstractCatalogModel, S extends Serializable> extends
-        ActiveDAO<T, S> {
+public interface CatalogDAO<T extends AbstractCatalogModel, S extends Serializable, 
+        RID extends Number> extends ActiveDAO<T, S> {
 
     /**
      * Find by reference id.
@@ -25,7 +25,7 @@ public interface CatalogDAO<T extends AbstractCatalogModel, S extends Serializab
      * @throws IllegalArgumentException - if the first argument does not denote an entity type or
      * the second argument is is not a valid type for that entity’s primary key or is null.
      */
-    T findByReferenceId(Integer referenceId);
+    T findByReferenceId(RID referenceId);
     
     /**
      * Find inactive entities by reference id.
@@ -35,5 +35,5 @@ public interface CatalogDAO<T extends AbstractCatalogModel, S extends Serializab
      * @throws IllegalArgumentException - if the first argument does not denote an entity type or
      * the second argument is is not a valid type for that entity’s primary key or is null.
      */
-    T findInactiveByReferenceId(Integer referenceId);
+    T findInactiveByReferenceId(RID referenceId);
 }

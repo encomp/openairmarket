@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class PackageDAOImpl extends CatalogDAOImpl<Package, Long> implements PackageDAO {
+public class PackageDAOImpl extends CatalogDAOImpl<Package, Long, Integer> implements PackageDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -28,11 +28,13 @@ public class PackageDAOImpl extends CatalogDAOImpl<Package, Long> implements Pac
     
     @Inject
     public PackageDAOImpl() {
-        super(Package.class, Long.class);
+        super(Package.class, Long.class, Integer.class);
     }
     
     @Override
     protected void validateForeignKeys(Package aPackage) throws DAOException {
+        if (aPackage.getActive()) {            
+        }
     }
 
     @Override

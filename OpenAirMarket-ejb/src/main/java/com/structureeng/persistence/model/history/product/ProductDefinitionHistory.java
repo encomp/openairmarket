@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.model.history.product;
 
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
 import com.structureeng.persistence.model.product.Company;
 import com.structureeng.persistence.model.product.Division;
@@ -52,8 +53,8 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
     @Column(name = "name", nullable = false, length = 500)
     private String name;
 
-    @Column(name = "imagen", length = 500)
-    private String imagen;
+    @Column(name = "image", length = 500)
+    private String image;
 
     @Column(name = "countable", nullable = false)
     private Boolean countable;
@@ -76,7 +77,7 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public ProductDefinition getProductDefinition() {
@@ -92,7 +93,7 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setReferenceId(BigInteger referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public String getKey() {
@@ -100,7 +101,7 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setKey(String key) {
-        this.key = Preconditions.checkNotNull(key);
+        this.key = checkNotEmpty(key);
     }
 
     public String getName() {
@@ -108,15 +109,15 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getImage() {
+        return image;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Boolean getCountable() {
@@ -149,5 +150,37 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
 
     public void setDivision(Division division) {
         this.division = Preconditions.checkNotNull(division);
+    }
+    
+    /**
+     * Factory class for the {@code ProductDefinitionHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<ProductDefinition, 
+            ProductDefinitionHistory> {
+
+        /**
+         * Create an instance of {@code ProductDefinitionHistory}.
+         *
+         * @param productDefinition the instance that will be used to create a new 
+         *        {@code ProductDefinition}.
+         * @return a new instance
+         */
+        @Override
+        public ProductDefinitionHistory build(ProductDefinition productDefinition) {
+            ProductDefinitionHistory productDefinitionHistory = new ProductDefinitionHistory();            
+            productDefinitionHistory.setReferenceId(productDefinition.getReferenceId());
+            productDefinitionHistory.setName(productDefinition.getName());
+            productDefinitionHistory.setKey(productDefinition.getKey());
+            productDefinitionHistory.setImage(productDefinition.getImage());
+            productDefinitionHistory.setCountable(productDefinition.getCountable());
+            productDefinitionHistory.setExpire(productDefinition.getExpire());
+            productDefinitionHistory.setCompany(productDefinition.getCompany());
+            productDefinitionHistory.setDivision(productDefinition.getDivision());
+            productDefinitionHistory.setActive(productDefinition.getActive());
+            productDefinitionHistory.setRevision(productDefinition.getVersion());
+            return productDefinitionHistory;
+        }
     }
 }

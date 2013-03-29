@@ -9,5 +9,5 @@ import com.structureeng.persistence.model.product.Package;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public interface PackageDAO extends CatalogDAO<Package, Long> {    
+public interface PackageDAO extends CatalogDAO<Package, Long, Integer> {
 }

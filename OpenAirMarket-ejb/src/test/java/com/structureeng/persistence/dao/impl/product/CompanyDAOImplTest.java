@@ -22,7 +22,7 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company, CompanyHistory> {
+public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer, Company, CompanyHistory> {
 
     private CompanyDAO companyDAO;
     
@@ -49,10 +49,15 @@ public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Company
     }
 
     @Override
-    public CatalogDAO<Company, Long> getCatalogDAO() {
+    public Integer toReferenceId(String referenceId) {
+        return new Integer(referenceId);
+    }
+    
+    @Override
+    public CatalogDAO<Company, Long, Integer> getCatalogDAO() {
         if (companyDAO == null) {
             companyDAO = getApplicationContext().getBean(CompanyDAO.class);
         }
         return companyDAO;
-    }    
+    }
 }

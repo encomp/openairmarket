@@ -9,5 +9,5 @@ import com.structureeng.persistence.model.product.Division;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public interface DivisionDAO extends CatalogDAO<Division, Long> {    
+public interface DivisionDAO extends CatalogDAO<Division, Long, Integer> {
 }

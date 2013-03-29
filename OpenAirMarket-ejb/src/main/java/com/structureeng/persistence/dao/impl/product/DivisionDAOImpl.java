@@ -26,7 +26,8 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long> implements DivisionDAO {
+public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long, Integer> 
+    implements DivisionDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -35,7 +36,7 @@ public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long> implements D
 
     @Inject
     public DivisionDAOImpl() {
-        super(Division.class, Long.class);
+        super(Division.class, Long.class, Integer.class);
     }
 
     @Override

@@ -9,5 +9,5 @@ import com.structureeng.persistence.model.product.Company;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public interface CompanyDAO extends CatalogDAO<Company, Long> {
+public interface CompanyDAO extends CatalogDAO<Company, Long, Integer> {
 }

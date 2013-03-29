@@ -14,11 +14,13 @@ import javax.persistence.MappedSuperclass;
  * Specifies the behavior of all {@code Tenant} the entities.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
- * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}
+ * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}.
+ * @param <RID> specifies the {@link Class} of the referenceId for the 
+ *        {@link javax.persistence.Entity}.
  */
 @Multitenant(MultitenantType.SINGLE_TABLE)
 @TenantDiscriminatorColumn(name = "idTenant", discriminatorType = DiscriminatorType.INTEGER)
 @MappedSuperclass
-public abstract class AbstractCatalogTenantModel <T extends Serializable> extends 
-        AbstractCatalogModel<T> implements TenantModel<T> {
+public abstract class AbstractCatalogTenantModel <T extends Serializable, RID extends Number> 
+    extends AbstractCatalogModel<T, RID> implements TenantModel<T> {
 }

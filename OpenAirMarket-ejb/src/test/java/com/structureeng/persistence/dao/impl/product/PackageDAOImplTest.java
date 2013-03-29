@@ -22,7 +22,8 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class PackageDAOImplTest extends AbstractCatalogDAOImplTest<Long, Package, PackageHistory> {
+public class PackageDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer, Package, 
+        PackageHistory> {
     
     private PackageDAO packageDAO;
 
@@ -47,9 +48,14 @@ public class PackageDAOImplTest extends AbstractCatalogDAOImplTest<Long, Package
     public Package build(Integer referenceId, String name) {
         return Package.newBuilder().setReferenceId(referenceId).setName(name).build();
     }
+    
+    @Override
+    public Integer toReferenceId(String referenceId) {
+        return new Integer(referenceId);
+    }
 
     @Override
-    public CatalogDAO<Package, Long> getCatalogDAO() {
+    public CatalogDAO<Package, Long, Integer> getCatalogDAO() {
         if (packageDAO == null) {
             packageDAO = getApplicationContext().getBean(PackageDAO.class);
         }

@@ -2,13 +2,18 @@
 
 package com.structureeng.persistence.model.product;
 
+import com.structureeng.persistence.history.HistoryListener;
+import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
+import com.structureeng.persistence.model.history.product.ProductDefinitionHistory;
 
 import com.google.common.base.Preconditions;
 
+import java.math.BigInteger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,13 +27,15 @@ import javax.persistence.UniqueConstraint;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
+@EntityListeners(value = {HistoryListener.class})
+@Revision(builder = ProductDefinitionHistory.Builder.class)
 @Entity
 @Table(name = "productDefinition", uniqueConstraints = {
         @UniqueConstraint(name = "productDefinitionTenantPK",
                 columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "productDefinitionPK", columnNames = {"idTenant", "name"}),
         @UniqueConstraint(name = "productDefinitionUK", columnNames = {"idTenant", "idKey"})})
-public class ProductDefinition extends AbstractCatalogTenantModel<Long> {
+public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -120,7 +127,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long> {
      */
     public static class Buider {
 
-        private Integer referenceId;
+        private BigInteger referenceId;
         private String name;
         private String key;
         private String image;
@@ -129,7 +136,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long> {
         private Company company;
         private Division division;        
 
-        public Buider setReferenceId(Integer referenceId) {
+        public Buider setReferenceId(BigInteger referenceId) {
             this.referenceId = checkPositive(referenceId);
             return this;
         }

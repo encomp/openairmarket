@@ -22,7 +22,8 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class DivisionDAOImplTest extends AbstractCatalogDAOImplTest<Long, Division, DivisionHistory> {
+public class DivisionDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer, Division, 
+        DivisionHistory> {
 
     private DivisionDAO divisionDAO;
 
@@ -47,9 +48,14 @@ public class DivisionDAOImplTest extends AbstractCatalogDAOImplTest<Long, Divisi
     public Division build(Integer referenceId, String name) {
         return Division.newBuilder().setReferenceId(referenceId).setName(name).build();
     }
+    
+    @Override
+    public Integer toReferenceId(String referenceId) {
+        return new Integer(referenceId);
+    }
 
     @Override
-    public CatalogDAO<Division, Long> getCatalogDAO() {
+    public CatalogDAO<Division, Long, Integer> getCatalogDAO() {
         if (divisionDAO == null) {
             divisionDAO = getApplicationContext().getBean(DivisionDAO.class);
         }

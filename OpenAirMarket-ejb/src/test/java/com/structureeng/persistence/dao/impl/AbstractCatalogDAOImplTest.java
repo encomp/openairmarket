@@ -26,26 +26,26 @@ import java.util.List;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-public abstract class AbstractCatalogDAOImplTest<S extends Serializable, 
-        T extends AbstractCatalogTenantModel<S>, H extends AbstractTenantHistoryModel> 
+public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID extends Number, 
+        T extends AbstractCatalogTenantModel<S, RID>, H extends AbstractTenantHistoryModel> 
             extends AbstractTenantModelDAOImplTest<T, H> {
     
     private static AbstractCatalogModel tempCatalogModel;
     private final Class<T> clase;
     
     public AbstractCatalogDAOImplTest(Class<T> clase) {
-        this.clase = clase;
+        this.clase = clase;        
     }
     
     @Test
     public void testPersistA() throws DAOException {
-        T catalogModel = build(50, "test 50");
+        T catalogModel = build(toReferenceId("50"), "test 50");
         getCatalogDAO().persist(clase.cast(catalogModel));
     }
 
     @Test
     public void testPersistB() throws DAOException {
-        tempCatalogModel = build(55, "test 55");
+        tempCatalogModel = build(toReferenceId("55"), "test 55");
         getCatalogDAO().persist(clase.cast(tempCatalogModel));
     }
 
@@ -57,14 +57,14 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
     
     @Test(expected = DAOException.class)
     public void testPersistMerge() throws DAOException {
-        tempCatalogModel.setReferenceId(50);
+        tempCatalogModel.setReferenceId(toReferenceId("50"));
         try {
             getCatalogDAO().merge(clase.cast(tempCatalogModel));
             Assert.fail("Should have thrown a DAOException.");
         } catch (DAOException daoException) {
             Assert.assertNotNull(daoException.getErrorCode());
         }
-        tempCatalogModel.setReferenceId(55);
+        tempCatalogModel.setReferenceId(toReferenceId("55"));
         tempCatalogModel.setName("test 50");
         try {
             getCatalogDAO().merge(clase.cast(tempCatalogModel));
@@ -78,10 +78,10 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test(expected = DAOException.class)
     public void testPersistMergeDirty() throws DAOException {
-        T catalogModel = build(51, "test 51");
+        T catalogModel = build(toReferenceId("51"), "test 51");
         getCatalogDAO().persist(catalogModel);
         getCatalogDAO().flush();
-        catalogModel.setReferenceId(50);
+        catalogModel.setReferenceId(toReferenceId("50"));
         try {
             getCatalogDAO().merge(catalogModel);
             Assert.fail("Should have thrown a DAOException.");
@@ -94,7 +94,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
     
     @Test(expected = DAOException.class)
     public void testPersistUK() throws DAOException {
-        T catalogModel = build(50, "test 50");
+        T catalogModel = build(toReferenceId("50"), "test 50");
         try {
             getCatalogDAO().persist(catalogModel);
         } catch (DAOException daoException) {
@@ -105,7 +105,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test(expected = DAOException.class)
     public void testPersistUKName() throws DAOException {
-        T catalogModel = build(99, "test 50");
+        T catalogModel = build(toReferenceId("99"), "test 50");
         try {
             getCatalogDAO().persist(catalogModel);
         } catch (DAOException daoException) {
@@ -116,7 +116,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test(expected = DAOException.class)
     public void testPersistUKReferenceId() throws DAOException {
-        T catalogModel = build(50, "test 99");
+        T catalogModel = build(toReferenceId("50"), "test 99");
         try {
             getCatalogDAO().persist(catalogModel);
         } catch (DAOException daoException) {
@@ -135,15 +135,15 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test
     public void testUpdate() throws DAOException {
-        T catalogModel = getCatalogDAO().findByReferenceId(50);
-        catalogModel.setReferenceId(51);
+        T catalogModel = getCatalogDAO().findByReferenceId(toReferenceId("50"));
+        catalogModel.setReferenceId(toReferenceId("51"));
         catalogModel.setName("test 51");
         tempCatalogModel = getCatalogDAO().merge(catalogModel);
     }
 
     @Test
     public void testUpdateFind() throws DAOException {
-        T catalogModel = getCatalogDAO().findByReferenceId(51);
+        T catalogModel = getCatalogDAO().findByReferenceId(toReferenceId("51"));
         Model tmp = getCatalogDAO().find(catalogModel.getId());
         Assert.assertEquals(catalogModel, tmp);
         tmp = getCatalogDAO().find(catalogModel.getId(), catalogModel.getVersion());
@@ -152,14 +152,14 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test
     public void testUpdateMerge() throws DAOException {
-        tempCatalogModel.setReferenceId(52);
+        tempCatalogModel.setReferenceId(toReferenceId("52"));
         tempCatalogModel.setName("test 52");
         getCatalogDAO().merge(clase.cast(tempCatalogModel));
     }
 
     @Test
     public void testUpdateRemove() throws DAOException {
-        T catalogModel = getCatalogDAO().findByReferenceId(52);
+        T catalogModel = getCatalogDAO().findByReferenceId(toReferenceId("52"));
         getCatalogDAO().remove(catalogModel);
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test
     public void testUpdateRemoveFind() throws DAOException {
-        T catalogModel = getCatalogDAO().findInactiveByReferenceId(52);
+        T catalogModel = getCatalogDAO().findInactiveByReferenceId(toReferenceId("52"));
         T tmp = getCatalogDAO().find(catalogModel.getId());
         Assert.assertNull(tmp);
         tmp = getCatalogDAO().findByReferenceId(catalogModel.getReferenceId());
@@ -182,13 +182,15 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable,
 
     @Test
     public void testValidateRemove() {
-        T catalogModel = getCatalogDAO().findInactiveByReferenceId(52);
+        T catalogModel = getCatalogDAO().findInactiveByReferenceId(toReferenceId("52"));
         deleteHistory(catalogModel);
     }
     
     public abstract void deleteHistory(Model company);
     
-    public abstract T build(Integer referenceId, String name);
+    public abstract T build(RID referenceId, String name);
     
-    public abstract CatalogDAO<T,S> getCatalogDAO();
+    public abstract RID toReferenceId(String referenceId);
+    
+    public abstract CatalogDAO<T,S, RID> getCatalogDAO();
 }
