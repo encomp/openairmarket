@@ -1,4 +1,5 @@
 // Copyright 2013 Structure Eng Inc.
+
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.CatalogDAO;
@@ -54,12 +55,15 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
                     referenceIdClass.cast(entity.getReferenceId()));
             long uniqueName = countEntitiesWithName(entity.getName());
             if (uniqueId > 0 || uniqueName > 0) {
+                DAOException daoException = null;
                 if (uniqueId > 0) {
-                    throw DAOException.Builder.build(getErrorCodeUniqueReferenceId());
+                    daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
                 }
                 if (uniqueName > 0) {
-                    throw DAOException.Builder.build(getErrorCodeUniqueName());
+                    daoException = DAOException.Builder.build(getErrorCodeUniqueName(), 
+                            daoException);
                 }
+                throw daoException;
             } else {
                 super.persist(entity);
             }

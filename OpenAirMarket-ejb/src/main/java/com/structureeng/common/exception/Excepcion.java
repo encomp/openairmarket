@@ -4,6 +4,10 @@ package com.structureeng.common.exception;
 
 import com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Base exception that stores the {@code ErrorCode}.
  * 
@@ -11,24 +15,32 @@ import com.google.common.base.Preconditions;
  */
 public class Excepcion extends Exception {
     
-    private final ErrorCode errorCode;
+    private final List<ErrorCode> errorCodes;
     
-    public Excepcion(ErrorCode errorCode) {
+    protected Excepcion(ErrorCode errorCode) {
         super(errorCode.getDescription());
-        this.errorCode = Preconditions.checkNotNull(errorCode);
+        this.errorCodes = new ArrayList<ErrorCode>();
+        this.errorCodes.add(Preconditions.checkNotNull(errorCode));
     }
     
-    public Excepcion(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = Preconditions.checkNotNull(errorCode);
+    protected Excepcion(String message, ErrorCode... errorCodes) {
+        super(message); 
+        Preconditions.checkNotNull(errorCodes);
+        Preconditions.checkState(errorCodes.length > 0);        
+        this.errorCodes = Arrays.asList(errorCodes);
     }
     
-    public Excepcion(ErrorCode errorCode, Throwable cause) {
+    protected Excepcion(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getDescription(), cause);
-        this.errorCode = Preconditions.checkNotNull(errorCode);
+        this.errorCodes = new ArrayList<ErrorCode>();
+        this.errorCodes.add(Preconditions.checkNotNull(errorCode));
     }
     
     public ErrorCode getErrorCode() {
-        return errorCode;
+        return errorCodes.get(0);
+    }
+    
+    public List<ErrorCode> getErrorCodes() {
+        return errorCodes;
     }
 }
