@@ -13,7 +13,6 @@ import com.google.common.base.Preconditions;
 import java.io.Serializable;
 
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -27,12 +26,12 @@ import javax.persistence.criteria.Root;
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  * @param <RID> specifies the {@code Number} identifier of the {@code AbstractCatalogModel}
  */
-public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, 
+public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable,
         RID extends Number> extends ActiveDAOImpl<T, S> implements CatalogDAO<T, S, RID> {
 
     private final Class<RID> referenceIdClass;
-    
-    public CatalogDAOImpl(Class<T> entityClass, Class<S> entityIdClass, 
+
+    public CatalogDAOImpl(Class<T> entityClass, Class<S> entityIdClass,
             Class<RID> referenceIdClass) {
         super(entityClass, entityIdClass);
         this.referenceIdClass = Preconditions.checkNotNull(referenceIdClass);
@@ -49,36 +48,29 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     @Override
-    public void persist(T entity) throws DAOException {
-        try {
-            long uniqueId = countEntitiesWithReferenceId(
-                    referenceIdClass.cast(entity.getReferenceId()));
-            long uniqueName = countEntitiesWithName(entity.getName());
-            if (uniqueId > 0 || uniqueName > 0) {
-                DAOException daoException = null;
-                if (uniqueId > 0) {
-                    daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
-                }
-                if (uniqueName > 0) {
-                    daoException = DAOException.Builder.build(getErrorCodeUniqueName(), 
-                            daoException);
-                }
-                throw daoException;
-            } else {
-                super.persist(entity);
+    protected void validatePersistUniqueKeys(final T entity) throws DAOException {
+        long uniqueId = countEntitiesWithReferenceId(
+                referenceIdClass.cast(entity.getReferenceId()));
+        long uniqueName = countEntitiesWithName(entity.getName());
+        if (uniqueId > 0 || uniqueName > 0) {
+            DAOException daoException = null;
+            if (uniqueId > 0) {
+                daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
             }
-        } catch (PersistenceException persistenceException) {
-            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+            if (uniqueName > 0) {
+                daoException = DAOException.Builder.build(getErrorCodeUniqueName(),
+                        daoException);
+            }
+            throw daoException;
         }
     }
 
     @Override
-    public T merge(T entity) throws DAOException {
-        try {
-            isUnique(entity);
-            return super.merge(entity);
-        } catch (PersistenceException persistenceException) {
-            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+    protected void validateMergeUniqueKeys(final T entity) throws DAOException {
+        long almacenes = countEntitiesWithSameNameButDiffReferenceId(
+                referenceIdClass.cast(entity.getReferenceId()), entity.getName());
+        if (almacenes > 0) {
+            throw DAOException.Builder.build(getErrorCodeUniqueName());
         }
     }
 
@@ -140,14 +132,6 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
                 qBuilder.notEqual(root.get(AbstractCatalogModel_.referenceId), referenceId)));
         TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
-    }
-
-    private void isUnique(final T entity) throws DAOException {
-        long almacenes = countEntitiesWithSameNameButDiffReferenceId(
-                referenceIdClass.cast(entity.getReferenceId()), entity.getName());
-        if (almacenes > 0) {
-            throw DAOException.Builder.build(getErrorCodeUniqueName());
-        }
     }
 
     public DAOErrorCode getErrorCodeUniqueReferenceId() {

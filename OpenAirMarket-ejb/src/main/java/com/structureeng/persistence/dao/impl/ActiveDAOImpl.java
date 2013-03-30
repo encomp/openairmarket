@@ -24,13 +24,33 @@ import javax.persistence.criteria.Root;
  * @param <T> specifies the {@code AbstractActiveModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  */
-public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serializable> extends 
+public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serializable> extends
         DAOImpl<T, S> implements ActiveDAO<T, S> {
-    
+
     public ActiveDAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
         super(entityClass, entityIdClass);
     }
-    
+
+    @Override
+    public void persist(T entity) throws DAOException {
+        try {
+            validatePersistUniqueKeys(entity);
+            super.persist(entity);
+        } catch (PersistenceException persistenceException) {
+            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+        }
+    }
+
+    @Override
+    public T merge(T entity) throws DAOException {
+        try {
+            validateMergeUniqueKeys(entity);
+            return super.merge(entity);
+        } catch (PersistenceException persistenceException) {
+            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
+        }
+    }
+
     @Override
     public void remove(T entity) throws DAOException {
         validateForeignKeys(entity);
@@ -63,7 +83,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         }
         return null;
     }
-    
+
     @Override
     public long count() {
         return count(Boolean.TRUE);
@@ -73,21 +93,21 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     public long countInactive() {
         return count(Boolean.FALSE);
     }
-    
+
     private long count(Boolean active) {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();        
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<T> root = cq.from(getEntityClass());        
+        Root<T> root = cq.from(getEntityClass());
         cq.select(cb.count(root));
         cq.where(cb.equal(root.get(AbstractActiveModel_.active), active));
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult().longValue();
     }
-    
+
     @Override
     public List<T> findRange(int start, int end) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(getEntityClass());        
+        CriteriaQuery<T> cq = cb.createQuery(getEntityClass());
         Root<T> root = cq.from(getEntityClass());
         cq.where(cb.equal(root.get(AbstractActiveModel_.active), Boolean.TRUE));
         TypedQuery<T> q = getEntityManager().createQuery(cq);
@@ -95,6 +115,28 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         q.setFirstResult(start);
         return q.getResultList();
     }
-    
-    protected abstract void validateForeignKeys(T activeModel) throws DAOException;
+
+    /**
+     * Validates the unique keys before an entity will be inserted in the persistence storage.
+     *
+     * @param entity the entity that should be validated.
+     * @throws DAOException this exception will be thrown if the validation process failed.
+     */
+    protected abstract void validatePersistUniqueKeys(final T entity) throws DAOException;
+
+    /**
+     * Validates the unique keys before an entity will be updated from the persistence storage.
+     *
+     * @param entity the entity that should be validated.
+     * @throws DAOException this exception will be thrown if the validation process failed.
+     */
+    protected abstract void validateMergeUniqueKeys(final T entity) throws DAOException;
+
+    /**
+     * Validates the foreign keys before an entity will be deleted from the persistence storage.
+     *
+     * @param entity the entity that should be validated.
+     * @throws DAOException this exception will be thrown if the validation process failed.
+     */
+    protected abstract void validateForeignKeys(T entity) throws DAOException;
 }
