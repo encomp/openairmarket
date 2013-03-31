@@ -101,7 +101,7 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
     
     @Override
-    protected void countEntities(QueryContainer qc, int option, Object value) {
+    protected void countEntities(QueryContainer<Long, T> qc, int option, Object value) {
         switch (option) {            
             case 1:
                 qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(

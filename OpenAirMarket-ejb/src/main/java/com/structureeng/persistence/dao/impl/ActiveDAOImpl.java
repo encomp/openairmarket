@@ -102,7 +102,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         return qc.getSingleResult();
     }
     
-    protected void countEntities(QueryContainer qc, int option, Object value) {
+    protected void countEntities(QueryContainer<Long, T> qc, int option, Object value) {
         switch (option) {
             case 0:
                 qc.getCriteriaQuery().where(qc.getCriteriaBuilder()

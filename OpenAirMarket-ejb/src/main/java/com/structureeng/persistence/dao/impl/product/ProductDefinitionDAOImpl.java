@@ -105,7 +105,8 @@ public class ProductDefinitionDAOImpl extends CatalogDAOImpl<ProductDefinition, 
     }
 
     @Override
-    protected void countEntities(QueryContainer qc, int option, Object value) {
+    protected void countEntities(QueryContainer<Long, ProductDefinition> qc, int option, 
+            Object value) {
         switch (option) {
             case 4:
                 qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
