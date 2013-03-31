@@ -12,25 +12,21 @@ import com.structureeng.persistence.model.product.ProductDefinition_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
 
 /**
  * Data Access Object for {@code Division}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long, Integer> 
+public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long, Integer>
     implements DivisionDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -41,19 +37,25 @@ public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long, Integer>
 
     @Override
     protected void validateForeignKeys(Division division) throws DAOException {
-       if (division.getActive()) {
-            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<ProductDefinition> cq = cb.createQuery(ProductDefinition.class);
-            Root<ProductDefinition> root = cq.from(ProductDefinition.class);
-            root.join(ProductDefinition_.division, JoinType.INNER);
-            cq.where(cb.and(
-                    cb.equal(root.get(ProductDefinition_.division), division),
-                    cb.equal(root.get(ProductDefinition_.active), Boolean.TRUE)));
-            List<ProductDefinition> entities = getEntityManager().createQuery(cq).getResultList();
-            if (entities != null && entities.size() > 0) {
+        if (division.getActive()) {
+            long count = countProductDefinitionWithDivision(division);
+            if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.DIVISION_FK);
             }
-        } 
+        }
+    }
+
+    private long countProductDefinitionWithDivision(Division division) {
+        QueryContainer<Long, ProductDefinition> qc =
+                new QueryContainer<Long, ProductDefinition>(Long.class, ProductDefinition.class);
+        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        qc.getRoot().join(ProductDefinition_.division, JoinType.INNER);
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
+                qc.getCriteriaBuilder().equal(
+                    qc.getRoot().get(ProductDefinition_.division), division),
+                qc.getCriteriaBuilder().equal(
+                    qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
+        return qc.getSingleResult();
     }
 
     @Override

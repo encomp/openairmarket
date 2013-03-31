@@ -1,4 +1,5 @@
 // Copyright 2013 Structure Eng Inc.
+
 package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.dao.DAO;
@@ -11,11 +12,16 @@ import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  * Provides the implementation for {@code DAO} interface.
@@ -144,4 +150,57 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      * @return - the logger instance of the class.
      */
     public abstract Logger getLogger();
+    
+    protected <R> QueryContainer<R, R> newQueryContainer(Class<R> clase) {
+        return new QueryContainer<R, R>(clase, clase);
+    }
+
+    /**
+     * Stores the minimum required objects to perform a @{code Query}.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    protected class QueryContainer<R, F> {
+
+        private final CriteriaBuilder criteriaBuilder;
+        private final CriteriaQuery<R> criteriaQuery;
+        private final Root<F> root;        
+                        
+        public QueryContainer(Class<R> result, Class<F> from) {
+            this.criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            this.criteriaQuery = criteriaBuilder.createQuery(result);
+            this.root = criteriaQuery.from(from);
+        }
+
+        public CriteriaBuilder getCriteriaBuilder() {
+            return criteriaBuilder;
+        }
+
+        public CriteriaQuery<R> getCriteriaQuery() {
+            return criteriaQuery;
+        }
+
+        public Root<F> getRoot() {
+            return root;
+        }       
+        
+        public R getSingleResult() {
+            return createTypedQuery().getSingleResult();
+        }
+        
+        public List<R> getResultList() {
+            return createTypedQuery().getResultList();
+        }
+        
+        public List<R> getResultList(int firstResult, int maxResults) {
+            TypedQuery<R> typedQuery = createTypedQuery();
+            typedQuery.setFirstResult(firstResult);
+            typedQuery.setMaxResults(maxResults);            
+            return typedQuery.getResultList();
+        }
+
+        private TypedQuery<R> createTypedQuery() {
+            return getEntityManager().createQuery(criteriaQuery);
+        }
+    }
 }

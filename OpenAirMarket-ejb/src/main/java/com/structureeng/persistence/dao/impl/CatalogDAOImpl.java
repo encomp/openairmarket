@@ -13,10 +13,6 @@ import com.google.common.base.Preconditions;
 import java.io.Serializable;
 
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Provides the implementation for {@code CatalogDAO} interface.
@@ -67,22 +63,22 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
 
     @Override
     protected void validateMergeUniqueKeys(final T entity) throws DAOException {
-        long almacenes = countEntitiesWithSameNameButDiffReferenceId(
-                referenceIdClass.cast(entity.getReferenceId()), entity.getName());
-        if (almacenes > 0) {
+        long count = countEntitiesWithSameNameButDiffReferenceId(entity);
+        if (count > 0) {
             throw DAOException.Builder.build(getErrorCodeUniqueName());
         }
     }
 
     private T findByReferenceId(RID referenceId, Boolean active) {
         try {
-            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(getEntityClass());
-            Root<T> root = cq.from(getEntityClass());
-            cq.where(cb.and(
-                    cb.equal(root.get(AbstractActiveModel_.active), active),
-                    cb.equal(root.get(AbstractCatalogModel_.referenceId), referenceId)));
-            return getEntityManager().createQuery(cq).getSingleResult();
+            QueryContainer<T, T> qc = newQueryContainer(getEntityClass());
+            qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
+                    .and(
+                    qc.getCriteriaBuilder()
+                        .equal(qc.getRoot().get(AbstractActiveModel_.active), active),
+                    qc.getCriteriaBuilder()
+                        .equal(qc.getRoot().get(AbstractCatalogModel_.referenceId), referenceId)));
+            return qc.getSingleResult();
         } catch (NoResultException exc) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug(String.format(exc.getMessage().concat(" referenceId [%s]."),
@@ -93,45 +89,44 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     private Long countEntitiesWithReferenceId(RID referenceId) {
-        return countEntities(0, referenceId);
+        return countEntities(1, referenceId);
     }
 
     private Long countEntitiesWithName(String name) {
-        return countEntities(1, name);
+        return countEntities(2, name);
     }
-
-    private Long countEntities(int option, Object value) {
-        CriteriaBuilder qBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = qBuilder.createQuery(Long.class);
-        Root<T> root = criteriaQuery.from(getEntityClass());
-        criteriaQuery.select(qBuilder.count(root));
-        switch (option) {
-            case 0:
-                criteriaQuery.where(
-                        qBuilder.equal(root.get(AbstractCatalogModel_.referenceId), value));
+    
+    private Long countEntitiesWithSameNameButDiffReferenceId(T entity) {
+        return countEntities(3, entity);
+    }
+    
+    @Override
+    protected void countEntities(QueryContainer qc, int option, Object value) {
+        switch (option) {            
+            case 1:
+                qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                        qc.getRoot().get(AbstractCatalogModel_.referenceId), value));
                 break;
 
-            case 1:
-                criteriaQuery.where(qBuilder.equal(root.get(AbstractCatalogModel_.name), value));
+            case 2:
+                qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                        qc.getRoot().get(AbstractCatalogModel_.name), value));
+                break;
+                
+            case 3:
+                T entity = getEntityClass().cast(value);
+                qc.getCriteriaQuery().where(
+                        qc.getCriteriaBuilder().and(
+                            qc.getCriteriaBuilder().equal(qc.getRoot()
+                                .get(AbstractCatalogModel_.name), entity.getName()),
+                            qc.getCriteriaBuilder().notEqual(qc.getRoot()
+                                .get(AbstractCatalogModel_.referenceId), entity.getReferenceId())));
                 break;
 
             default:
+                super.countEntities(qc, option, value);
                 break;
         }
-        TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
-        return typedQuery.getSingleResult();
-    }
-
-    private Long countEntitiesWithSameNameButDiffReferenceId(RID referenceId, String name) {
-        CriteriaBuilder qBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = qBuilder.createQuery(Long.class);
-        Root<T> root = criteriaQuery.from(getEntityClass());
-        criteriaQuery.select(qBuilder.count(root));
-        criteriaQuery.where(qBuilder.and(
-                qBuilder.equal(root.get(AbstractCatalogModel_.name), name),
-                qBuilder.notEqual(root.get(AbstractCatalogModel_.referenceId), referenceId)));
-        TypedQuery<Long> typedQuery = getEntityManager().createQuery(criteriaQuery);
-        return typedQuery.getSingleResult();
     }
 
     public DAOErrorCode getErrorCodeUniqueReferenceId() {

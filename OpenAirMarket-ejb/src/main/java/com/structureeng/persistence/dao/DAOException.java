@@ -45,7 +45,8 @@ public class DAOException extends Excepcion {
             return dAOException;
         }
 
-        public static DAOException build(DAOErrorCode errorCode, DAOException daoException) {
+        public static DAOException build(ErrorPropertyProvider errorCode, 
+                DAOException daoException) {
             if (daoException != null) {
                 ErrorCode error = ErrorCode.newBuilder().build(errorCode.get(), getResourceBundle());
                 String message = String.format("%s%s%s", daoException.getMessage(), getSeparator(),
@@ -58,7 +59,7 @@ public class DAOException extends Excepcion {
             }
         }
 
-        public static DAOException build(DAOErrorCode errorCode, Throwable throwable) {
+        public static DAOException build(ErrorPropertyProvider errorCode, Throwable throwable) {
             ErrorCode error = ErrorCode.newBuilder().build(errorCode.get(), getResourceBundle());
             DAOException dAOException = new DAOException(error, throwable);
             return dAOException;

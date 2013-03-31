@@ -20,7 +20,7 @@ public interface ActiveDAO<T extends AbstractActiveModel, S extends Serializable
     /**
      * Count the number of instances in the persistent storage that are inactive.
      * 
-     * @return the number of entities.
+     * @return the number of inactive entities.
      */
     long countInactive();
 }

@@ -12,10 +12,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Provides the implementation for {@code ActiveDAO} interface.
@@ -84,36 +80,46 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
         return null;
     }
 
+    /**
+     * Count the number of instances in the persistent storage that are active.
+     * 
+     * @return the number of active entities.
+     */
     @Override
     public long count() {
-        return count(Boolean.TRUE);
+        return countEntities(0, Boolean.TRUE);
     }
-
+    
     @Override
     public long countInactive() {
-        return count(Boolean.FALSE);
+        return countEntities(0, Boolean.FALSE);
     }
-
-    private long count(Boolean active) {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<T> root = cq.from(getEntityClass());
-        cq.select(cb.count(root));
-        cq.where(cb.equal(root.get(AbstractActiveModel_.active), active));
-        TypedQuery<Long> q = getEntityManager().createQuery(cq);
-        return q.getSingleResult().longValue();
+    
+    protected Long countEntities(int option, Object value) {
+        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(Long.class, getEntityClass());
+        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().count(qc.getRoot()));
+        countEntities(qc, option, value);        
+        return qc.getSingleResult();
+    }
+    
+    protected void countEntities(QueryContainer qc, int option, Object value) {
+        switch (option) {
+            case 0:
+                qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
+                        .equal(qc.getRoot().get(AbstractActiveModel_.active), value));
+                break;
+                
+            default:
+                break;
+        }
     }
 
     @Override
-    public List<T> findRange(int start, int end) {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(getEntityClass());
-        Root<T> root = cq.from(getEntityClass());
-        cq.where(cb.equal(root.get(AbstractActiveModel_.active), Boolean.TRUE));
-        TypedQuery<T> q = getEntityManager().createQuery(cq);
-        q.setMaxResults(end - start);
-        q.setFirstResult(start);
-        return q.getResultList();
+    public List<T> findRange(int start, int end) {        
+        QueryContainer<T, T> qc = newQueryContainer(getEntityClass());
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
+                        .equal(qc.getRoot().get(AbstractActiveModel_.active), Boolean.TRUE));        
+        return qc.getResultList(start, end - start);
     }
 
     /**
