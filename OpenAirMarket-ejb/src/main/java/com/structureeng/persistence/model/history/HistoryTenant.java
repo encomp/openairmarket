@@ -4,15 +4,20 @@ package com.structureeng.persistence.model.history;
 
 import com.structureeng.common.DateUtil;
 import com.structureeng.persistence.history.History;
+import com.structureeng.persistence.model.AbstractModel;
 import com.structureeng.persistence.model.AbstractTenantModel;
 import com.structureeng.persistence.model.security.SystemUser;
 
 import com.google.common.base.Preconditions;
 
+import org.eclipse.persistence.annotations.Multitenant;
+import org.eclipse.persistence.annotations.MultitenantType;
+import org.eclipse.persistence.annotations.TenantDiscriminatorColumn;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,9 +33,11 @@ import javax.persistence.TemporalType;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
+@Multitenant(MultitenantType.SINGLE_TABLE)
+@TenantDiscriminatorColumn(name = "idTenant", discriminatorType = DiscriminatorType.INTEGER)
 @Entity
 @Table(name = "historyTenant")
-public class HistoryTenant extends AbstractTenantModel<Long> implements History {
+public class HistoryTenant extends AbstractModel<Long> implements History {
 
     @Id
     @Column(name = "idHistoryTenant")
