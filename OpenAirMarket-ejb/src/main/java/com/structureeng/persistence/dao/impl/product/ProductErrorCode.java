@@ -11,12 +11,7 @@ import com.structureeng.common.exception.ErrorPropertyProvider;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public enum ProductErrorCode implements ErrorPropertyProvider {    
-    /**
-     * Property that specifies the error in case the unique key for the key attribute has been 
-     * violated.
-     */
-    KEY_UK("dao.company.uniqueKey.productDefinition.key"),
-    
+        
     /**
      * Property that specifies the error in case the foreign key has been violated for a 
      * {@code Company} entity.
@@ -33,7 +28,19 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
      * Property that specifies the error in case the foreign key has been violated for a 
      * {@code Package} entity.
      */
-    PACKAGE_FK("dao.package.foreignKey.retailProduct");
+    PACKAGE_FK("dao.package.foreignKey.retailProduct"),
+    
+    /**
+     * Property that specifies the error in case the foreign key has been violated for a 
+     * {@code ProductDefinition} entity.
+     */
+    PRODUCT_DEFFINITION_FK("dao.productDefinition.foreignKey.product"),
+    
+    /**
+     * Property that specifies the error in case the unique key for the key attribute has been 
+     * violated.
+     */
+    PRODUCT_DEFFINITION_KEY_UK("dao.productDefinition.uniqueKey.key");
 
     private final ErrorCodeProperty errorCodeProperty;
 
