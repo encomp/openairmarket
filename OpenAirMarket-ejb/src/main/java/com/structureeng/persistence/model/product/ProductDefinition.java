@@ -121,6 +121,15 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     }
     
     /**
+     * Creates a new {@code Builder} instance.
+     *
+     * @return - new instance
+     */
+    public static ProductDefinition.Buider newBuilder() {
+        return new ProductDefinition.Buider();
+    }
+    
+    /**
      * Builder class that creates instances of {@code ProductDefinition}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)

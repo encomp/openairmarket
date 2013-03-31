@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
 
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductDefinition productDefinition;
 
     @Column(name = "idReference", nullable = false)
@@ -169,7 +170,8 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
          */
         @Override
         public ProductDefinitionHistory build(ProductDefinition productDefinition) {
-            ProductDefinitionHistory productDefinitionHistory = new ProductDefinitionHistory();            
+            ProductDefinitionHistory productDefinitionHistory = new ProductDefinitionHistory();
+            productDefinitionHistory.setProductDefinition(productDefinition);
             productDefinitionHistory.setReferenceId(productDefinition.getReferenceId());
             productDefinitionHistory.setName(productDefinition.getName());
             productDefinitionHistory.setKey(productDefinition.getKey());
