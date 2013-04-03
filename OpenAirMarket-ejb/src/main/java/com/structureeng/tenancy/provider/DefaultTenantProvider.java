@@ -13,7 +13,7 @@ import com.structureeng.persistence.model.tenant.Tenant;
 public class DefaultTenantProvider implements TenantProvider {
 
     @Override
-    public Tenant findTenant(Long identity) {
+    public Tenant findTenant(Integer identity) {
         Tenant tenant = new Tenant();
         tenant.setId(identity);
         return tenant;
@@ -21,6 +21,6 @@ public class DefaultTenantProvider implements TenantProvider {
 
     @Override
     public Tenant findTenant(String referenceId) {
-        return findTenant(Long.valueOf(referenceId));
+        return findTenant(Integer.valueOf(referenceId));
     }
 }

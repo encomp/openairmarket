@@ -44,8 +44,7 @@ public class RuleDetailHistory extends AbstractTenantHistoryModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Rule rule;
 
-    @JoinColumn(name = "idParentRuleDetail", referencedColumnName = "idRuleDetail",
-            nullable = false)
+    @JoinColumn(name = "idParentRuleDetail", referencedColumnName = "idRuleDetail")
     @ManyToOne(cascade = CascadeType.REFRESH)
     private RuleDetail ruleDetailParent;
 

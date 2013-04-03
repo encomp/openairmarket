@@ -163,7 +163,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         return Company.newBuilder().setReferenceId(referenceId).setName(name).build();
     }
 
-    private Tenant createTenant(long id) {
+    private Tenant createTenant(int id) {
         Tenant tenant = new Tenant();
         tenant.setId(id);
         return tenant;

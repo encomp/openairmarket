@@ -46,20 +46,20 @@ public class ThreadLocalTenancyContextHolderTest {
     
     @Test
     public void testRetrieveTenancyContext() {
-        TenancyContextHolder.registerTenancyContext(createTenancyContext(2L));
+        TenancyContextHolder.registerTenancyContext(createTenancyContext(2));
         TenancyContext tenancyContext = TenancyContextHolder.getCurrentTenancyContext();
-        Assert.assertEquals(createTenancyContext(2L), tenancyContext);
+        Assert.assertEquals(createTenancyContext(2), tenancyContext);
     }
     
     @Test
     public void testClearCurrentTenancyHolder() {
-        TenancyContextHolder.registerTenancyContext(createTenancyContext(5L));
+        TenancyContextHolder.registerTenancyContext(createTenancyContext(5));
         TenancyContextHolder.clearCurrentTenancyContext();
         TenancyContext tenancyContext = TenancyContextHolder.getCurrentTenancyContext();        
         Assert.assertNull(tenancyContext);
     }
 
-    private TenancyContext createTenancyContext(Long tenantId) {        
+    private TenancyContext createTenancyContext(Integer tenantId) {        
         Tenant tenant = new Tenant();
         tenant.setId(tenantId);        
         return new TenancyContext(tenant);

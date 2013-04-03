@@ -31,11 +31,11 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "tenant", uniqueConstraints = {
         @UniqueConstraint(name = "tenantPK", columnNames = {"idReference"}),
         @UniqueConstraint(name = "tenantUK", columnNames = {"name"})})
-public class Tenant extends AbstractCatalogModel<Long, Integer> {
+public class Tenant extends AbstractCatalogModel<Integer, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTenant")
-    private Long id;   
+    private Integer id;   
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)
     private Set<TenantHistory> tenantHistories;
@@ -44,12 +44,12 @@ public class Tenant extends AbstractCatalogModel<Long, Integer> {
     }
     
     @Override
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = checkPositive(id);
     }
 

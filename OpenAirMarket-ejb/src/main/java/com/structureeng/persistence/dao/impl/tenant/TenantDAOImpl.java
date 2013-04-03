@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long, Integer> implements TenantDAO {
+public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Integer, Integer> implements TenantDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -28,7 +28,7 @@ public class TenantDAOImpl extends CatalogDAOImpl<Tenant, Long, Integer> impleme
 
     @Inject
     public TenantDAOImpl() {
-        super(Tenant.class, Long.class, Integer.class);
+        super(Tenant.class, Integer.class, Integer.class);
     }
     
     @Override

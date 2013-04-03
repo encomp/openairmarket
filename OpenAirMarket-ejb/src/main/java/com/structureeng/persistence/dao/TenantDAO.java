@@ -9,5 +9,5 @@ import com.structureeng.persistence.model.tenant.Tenant;
  * 
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public interface TenantDAO extends CatalogDAO<Tenant, Long, Integer> {
+public interface TenantDAO extends CatalogDAO<Tenant, Integer, Integer> {
 }

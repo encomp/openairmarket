@@ -51,7 +51,7 @@ public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel,
         }
     }
     
-    private Tenant createTenant(long id) {
+    private Tenant createTenant(int id) {
         Tenant tenant = new Tenant();
         tenant.setId(id);
         return tenant;

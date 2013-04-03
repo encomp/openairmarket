@@ -27,5 +27,5 @@ public interface TenantProvider {
      * @return a tenant for the corresponding identity, or <code>null</code> if the given identity
      *         has no corresponding tenant.
      */
-    Tenant findTenant(Long identity);
+    Tenant findTenant(Integer identity);
 }
