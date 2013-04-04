@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.history.sale;
 
-import com.structureeng.persistence.model.history.AbstractHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.RetailProduct;
 import com.structureeng.persistence.model.sale.Sale;
 import com.structureeng.persistence.model.sale.SaleDetail;
@@ -31,7 +31,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "saleDetailHistory", uniqueConstraints = {
         @UniqueConstraint(name = "saleDetailHistoryUK",
                 columnNames = {"idSaleDetail", "idAudit"})})
-public class SaleDetailHistory extends AbstractHistoryModel {
+public class SaleDetailHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

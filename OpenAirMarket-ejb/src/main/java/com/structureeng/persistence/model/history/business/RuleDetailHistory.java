@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.history.business;
 
 import com.structureeng.persistence.model.business.Rule;
 import com.structureeng.persistence.model.business.RuleDetail;
-import com.structureeng.persistence.model.history.AbstractHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 
 import com.google.common.base.Preconditions;
 
@@ -29,7 +29,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "ruleDetailHistory", uniqueConstraints = {
         @UniqueConstraint(name = "rulePK", columnNames = {"idRuleDetail", "idAudit"})})
-public class RuleDetailHistory extends AbstractHistoryModel {
+public class RuleDetailHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

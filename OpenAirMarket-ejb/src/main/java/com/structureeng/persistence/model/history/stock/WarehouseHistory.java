@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.history.stock;
 
-import com.structureeng.persistence.model.history.AbstractHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.stock.Warehouse;
 
 import com.google.common.base.Preconditions;
@@ -27,7 +27,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "warehouseHistory", uniqueConstraints = {
         @UniqueConstraint(name = "warehouseHistoryUK", 
             columnNames = {"idWarehouse", "idAudit"})})
-public class WarehouseHistory extends AbstractHistoryModel {
+public class WarehouseHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

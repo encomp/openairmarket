@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.history.AbstractHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.Package;
 
 import com.google.common.base.Preconditions;
@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "packageHistory", uniqueConstraints = {
         @UniqueConstraint(name = "packageHistoryUK", 
             columnNames = {"idPackage", "idAudit"})})
-public class PackageHistory extends AbstractHistoryModel {
+public class PackageHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
