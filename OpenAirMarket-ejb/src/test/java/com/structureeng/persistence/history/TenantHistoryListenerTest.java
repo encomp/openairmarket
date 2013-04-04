@@ -3,7 +3,7 @@
 package com.structureeng.persistence.history;
 
 import com.structureeng.persistence.model.AbstractPersistenceTest;
-import com.structureeng.persistence.model.history.HistoryTenant;
+import com.structureeng.persistence.model.history.Audit;
 import com.structureeng.persistence.model.history.product.CompanyHistory;
 import com.structureeng.persistence.model.history.product.CompanyHistory_;
 import com.structureeng.persistence.model.product.Company;
@@ -63,7 +63,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
     public void testPostPersistValidation() {
         CompanyHistory companyHistory = retrieveCompanyHistory(99, JoinType.INNER);
         Company company = companyHistory.getCompany();
-        HistoryTenant historyTenant = companyHistory.getHistory();
+        Audit historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
         deleteCompanyHistory(company, new Long[]{companyHistory.getId()},
                 new Long[]{historyTenant.getId()});
@@ -88,7 +88,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         CompanyHistory[] companyHistorys = new CompanyHistory[2];
         companyHistorys[0] = retrieveCompanyHistory(100, JoinType.LEFT);
         CompanyHistory companyHistory = companyHistorys[0];
-        HistoryTenant historyTenant = companyHistory.getHistory();
+        Audit historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.CREATE, companyHistory, historyTenant);
         companyHistorys[1] = retrieveCompanyHistory(101, JoinType.INNER);
         companyHistory = companyHistorys[1];
@@ -101,22 +101,22 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
     }
 
     private void assertHistory(HistoryType historyType, CompanyHistory companyHistory,
-            HistoryTenant historyTenant, Company company) {
+            Audit historyTenant, Company company) {
         Assert.assertEquals(historyType, companyHistory.getHistoryType());
         Assert.assertEquals(company.getReferenceId(), companyHistory.getReferenceId());
         Assert.assertEquals(company.getName(), companyHistory.getName());
-        Assert.assertEquals(company.getVersion(), companyHistory.getRevision());
+        Assert.assertNotNull(companyHistory.getVersion());
         Assert.assertNotNull(historyTenant);
         Assert.assertNotNull(historyTenant.getId());
         Assert.assertNotNull(historyTenant.getCreatedDate());
     }
 
     private void assertHistory(HistoryType historyType, CompanyHistory companyHistory,
-            HistoryTenant historyNonTenant) {
+            Audit historyNonTenant) {
         Assert.assertEquals(historyType, companyHistory.getHistoryType());
         Assert.assertNotNull(companyHistory.getReferenceId());
         Assert.assertNotNull(companyHistory.getName());
-        Assert.assertNotNull(companyHistory.getRevision());
+        Assert.assertNotNull(companyHistory.getVersion());
         Assert.assertNotNull(historyNonTenant);
         Assert.assertNotNull(historyNonTenant.getId());
         Assert.assertNotNull(historyNonTenant.getCreatedDate());
@@ -131,7 +131,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
             Assert.assertEquals(1, q.executeUpdate());
         }
         for (Long id : historyTenant) {
-            q = entityManager.createQuery("DELETE FROM HistoryTenant h WHERE h.id = ?1");
+            q = entityManager.createQuery("DELETE FROM Audit h WHERE h.id = ?1");
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }
@@ -145,7 +145,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         CriteriaQuery<CompanyHistory> cq = entityManager.getCriteriaBuilder()
                 .createQuery(CompanyHistory.class);
         Root<CompanyHistory> root = cq.from(CompanyHistory.class);
-        root.fetch(CompanyHistory_.historyTenant, JoinType.INNER);
+        root.fetch(CompanyHistory_.audit, JoinType.INNER);
         root.fetch(CompanyHistory_.company, tenatJoinType);
         cq.where(cb.equal(root.get(CompanyHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();

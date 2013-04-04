@@ -3,7 +3,7 @@
 package com.structureeng.persistence.history;
 
 import com.structureeng.persistence.model.AbstractPersistenceTest;
-import com.structureeng.persistence.model.history.HistoryNonTenant;
+import com.structureeng.persistence.model.history.Audit;
 import com.structureeng.persistence.model.history.tenant.TenantHistory;
 import com.structureeng.persistence.model.history.tenant.TenantHistory_;
 import com.structureeng.persistence.model.tenant.Tenant;
@@ -52,7 +52,7 @@ public class NonTenantHistoryListenerTest extends AbstractPersistenceTest {
     public void testPostPersistValidation() {
         TenantHistory tenantHistory = retrieveTenantHistory(99, JoinType.INNER);
         Tenant tenant = tenantHistory.getTenant();
-        HistoryNonTenant historyNonTenant = tenantHistory.getHistory();
+        Audit historyNonTenant = tenantHistory.getHistory();
         assertHistory(HistoryType.CREATE, tenantHistory, historyNonTenant, tenant);
         deleteTenantHistory(tenant, new Long[]{tenantHistory.getId()},
                 new Long[]{historyNonTenant.getId()});
@@ -72,7 +72,7 @@ public class NonTenantHistoryListenerTest extends AbstractPersistenceTest {
         TenantHistory[] tenantHistorys = new TenantHistory[2];
         tenantHistorys[0] = retrieveTenantHistory(100, JoinType.LEFT);
         TenantHistory tenantHistory = tenantHistorys[0];
-        HistoryNonTenant historyNonTenant = tenantHistory.getHistory();
+        Audit historyNonTenant = tenantHistory.getHistory();
         assertHistory(HistoryType.CREATE, tenantHistory, historyNonTenant);
         tenantHistorys[1] = retrieveTenantHistory(101, JoinType.INNER);
         tenantHistory = tenantHistorys[1];
@@ -85,22 +85,22 @@ public class NonTenantHistoryListenerTest extends AbstractPersistenceTest {
     }
 
     private void assertHistory(HistoryType historyType, TenantHistory tenantHistory,
-            HistoryNonTenant historyNonTenant, Tenant tenant) {
+            Audit historyNonTenant, Tenant tenant) {
         Assert.assertEquals(historyType, tenantHistory.getHistoryType());
         Assert.assertEquals(tenant.getReferenceId(), tenantHistory.getReferenceId());
         Assert.assertEquals(tenant.getName(), tenantHistory.getName());
-        Assert.assertEquals(tenant.getVersion(), tenantHistory.getRevision());
+        Assert.assertNotNull(tenantHistory.getVersion());
         Assert.assertNotNull(historyNonTenant);
         Assert.assertNotNull(historyNonTenant.getId());
         Assert.assertNotNull(historyNonTenant.getCreatedDate());
     }
 
     private void assertHistory(HistoryType historyType, TenantHistory tenantHistory,
-            HistoryNonTenant historyNonTenant) {
+            Audit historyNonTenant) {
         Assert.assertEquals(historyType, tenantHistory.getHistoryType());
         Assert.assertNotNull(tenantHistory.getReferenceId());
         Assert.assertNotNull(tenantHistory.getName());
-        Assert.assertNotNull(tenantHistory.getRevision());
+        Assert.assertNotNull(tenantHistory.getVersion());
         Assert.assertNotNull(historyNonTenant);
         Assert.assertNotNull(historyNonTenant.getId());
         Assert.assertNotNull(historyNonTenant.getCreatedDate());
@@ -111,7 +111,6 @@ public class NonTenantHistoryListenerTest extends AbstractPersistenceTest {
         CriteriaQuery<TenantHistory> cq = entityManager.getCriteriaBuilder()
                 .createQuery(TenantHistory.class);
         Root<TenantHistory> root = cq.from(TenantHistory.class);
-        root.fetch(TenantHistory_.nonTenantHistory, JoinType.INNER);
         root.fetch(TenantHistory_.tenant, tenatJoinType);
         cq.where(cb.equal(root.get(TenantHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();
@@ -126,7 +125,7 @@ public class NonTenantHistoryListenerTest extends AbstractPersistenceTest {
             Assert.assertEquals(1, q.executeUpdate());
         }
         for (Long id : historyNonTenant) {
-            q = entityManager.createQuery("DELETE FROM HistoryNonTenant h WHERE h.id = ?1");
+            q = entityManager.createQuery("DELETE FROM Audit h WHERE h.id = ?1");
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }

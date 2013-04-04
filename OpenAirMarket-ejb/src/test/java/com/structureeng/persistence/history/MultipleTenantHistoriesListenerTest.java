@@ -3,7 +3,7 @@
 package com.structureeng.persistence.history;
 
 import com.structureeng.persistence.model.AbstractPersistenceTest;
-import com.structureeng.persistence.model.history.HistoryTenant;
+import com.structureeng.persistence.model.history.Audit;
 import com.structureeng.persistence.model.history.product.CompanyHistory;
 import com.structureeng.persistence.model.history.product.CompanyHistory_;
 import com.structureeng.persistence.model.history.product.DivisionHistory;
@@ -71,7 +71,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         DivisionHistory divisionHistory = retrieveDivisionHistory(99, JoinType.INNER);
         Company company = companyHistory.getCompany();
         Division division = divisionHistory.getDivision();
-        HistoryTenant historyTenant = companyHistory.getHistory();
+        Audit historyTenant = companyHistory.getHistory();
         assertCompanyHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
         assertDivisionHistory(HistoryType.CREATE, divisionHistory, historyTenant, division);
         deleteCompanyHistory(company, companyHistory.getId());
@@ -80,22 +80,22 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
     }
             
     private void assertCompanyHistory(HistoryType historyType, CompanyHistory companyHistory,
-            HistoryTenant historyTenant, Company company) {
+            Audit historyTenant, Company company) {
         Assert.assertEquals(historyType, companyHistory.getHistoryType());
         Assert.assertEquals(company.getReferenceId(), companyHistory.getReferenceId());
         Assert.assertEquals(company.getName(), companyHistory.getName());
-        Assert.assertEquals(company.getVersion(), companyHistory.getRevision());
+        Assert.assertEquals(company.getVersion(), companyHistory.getVersion());
         Assert.assertNotNull(historyTenant);
         Assert.assertNotNull(historyTenant.getId());
         Assert.assertNotNull(historyTenant.getCreatedDate());
     }
     
     private void assertDivisionHistory(HistoryType historyType, DivisionHistory divisionHistory,
-            HistoryTenant historyTenant, Division division) {
+            Audit historyTenant, Division division) {
         Assert.assertEquals(historyType, divisionHistory.getHistoryType());
         Assert.assertEquals(division.getReferenceId(), divisionHistory.getReferenceId());
         Assert.assertEquals(division.getName(), divisionHistory.getName());
-        Assert.assertEquals(division.getVersion(), divisionHistory.getRevision());
+        Assert.assertEquals(division.getVersion(), divisionHistory.getVersion());
         Assert.assertNotNull(historyTenant);
         Assert.assertNotNull(historyTenant.getId());
         Assert.assertNotNull(historyTenant.getCreatedDate());
@@ -106,7 +106,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         CriteriaQuery<CompanyHistory> cq = entityManager.getCriteriaBuilder()
                 .createQuery(CompanyHistory.class);
         Root<CompanyHistory> root = cq.from(CompanyHistory.class);
-        root.fetch(CompanyHistory_.historyTenant, JoinType.INNER);
+        root.fetch(CompanyHistory_.audit, JoinType.INNER);
         root.fetch(CompanyHistory_.company, tenatJoinType);
         cq.where(cb.equal(root.get(CompanyHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();
@@ -117,7 +117,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         CriteriaQuery<DivisionHistory> cq = entityManager.getCriteriaBuilder()
                 .createQuery(DivisionHistory.class);
         Root<DivisionHistory> root = cq.from(DivisionHistory.class);
-        root.fetch(DivisionHistory_.historyTenant, JoinType.INNER);
+        root.fetch(DivisionHistory_.audit, JoinType.INNER);
         root.fetch(DivisionHistory_.division, tenatJoinType);
         cq.where(cb.equal(root.get(DivisionHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();
@@ -149,7 +149,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
     
     private void deleteTenantHistory(Long... historyTenant) {         
         for (Long id : historyTenant) {
-            Query q = entityManager.createQuery("DELETE FROM HistoryTenant h WHERE h.id = ?1");
+            Query q = entityManager.createQuery("DELETE FROM Audit h WHERE h.id = ?1");
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }

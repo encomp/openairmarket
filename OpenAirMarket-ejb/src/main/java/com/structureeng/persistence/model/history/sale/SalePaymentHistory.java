@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.sale;
 
 import com.structureeng.persistence.model.business.SalePaymentType;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 import com.structureeng.persistence.model.sale.Sale;
 import com.structureeng.persistence.model.sale.SalePayment;
 
@@ -30,8 +30,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "salePaymentHistory", uniqueConstraints = {
         @UniqueConstraint(name = "salePaymentHistoryUK",
-                columnNames = {"idSalePayment", "idHistoryTenant"})})
-public class SalePaymentHistory extends AbstractTenantHistoryModel {
+                columnNames = {"idSalePayment", "idAudit"})})
+public class SalePaymentHistory extends AbstractHistoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

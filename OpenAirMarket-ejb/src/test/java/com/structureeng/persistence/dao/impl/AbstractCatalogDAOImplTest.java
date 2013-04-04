@@ -8,7 +8,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.Model;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -27,7 +27,7 @@ import java.util.List;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID extends Number, 
-        T extends AbstractCatalogTenantModel<S, RID>, H extends AbstractTenantHistoryModel> 
+        T extends AbstractCatalogTenantModel<S, RID>, H extends AbstractHistoryModel> 
             extends AbstractTenantModelDAOImplTest<T, H> {
     
     private static AbstractCatalogModel tempCatalogModel;

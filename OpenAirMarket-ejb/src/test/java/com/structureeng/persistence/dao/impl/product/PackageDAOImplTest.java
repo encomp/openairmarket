@@ -37,7 +37,7 @@ public class PackageDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<PackageHistory> cq = cb.createQuery(PackageHistory.class);
         Root<PackageHistory> root = cq.from(PackageHistory.class);
-        root.fetch(PackageHistory_.historyTenant, JoinType.INNER);
+        root.fetch(PackageHistory_.audit, JoinType.INNER);
         root.fetch(PackageHistory_.aPackage, JoinType.INNER);
         cq.where(cb.equal(root.get(PackageHistory_.aPackage), paquete));
         List<PackageHistory> histories = getEntityManager().createQuery(cq).getResultList();

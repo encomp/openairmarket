@@ -36,7 +36,7 @@ public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<CompanyHistory> cq = cb.createQuery(CompanyHistory.class);
         Root<CompanyHistory> root = cq.from(CompanyHistory.class);
-        root.fetch(CompanyHistory_.historyTenant, JoinType.INNER);
+        root.fetch(CompanyHistory_.audit, JoinType.INNER);
         root.fetch(CompanyHistory_.company, JoinType.INNER);
         cq.where(cb.equal(root.get(CompanyHistory_.company), company));
         List<CompanyHistory> histories = getEntityManager().createQuery(cq).getResultList();

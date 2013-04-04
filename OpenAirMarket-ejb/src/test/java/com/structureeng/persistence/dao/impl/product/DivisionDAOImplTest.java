@@ -37,7 +37,7 @@ public class DivisionDAOImplTest extends AbstractCatalogDAOImplTest<Long, Intege
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<DivisionHistory> cq = cb.createQuery(DivisionHistory.class);
         Root<DivisionHistory> root = cq.from(DivisionHistory.class);
-        root.fetch(DivisionHistory_.historyTenant, JoinType.INNER);
+        root.fetch(DivisionHistory_.audit, JoinType.INNER);
         root.fetch(DivisionHistory_.division, JoinType.INNER);
         cq.where(cb.equal(root.get(DivisionHistory_.division), division));
         List<DivisionHistory> histories = getEntityManager().createQuery(cq).getResultList();

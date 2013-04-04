@@ -4,7 +4,7 @@ package com.structureeng.persistence.dao.impl;
 
 import com.structureeng.persistence.model.AbstractPersistenceTest;
 import com.structureeng.persistence.model.TenantModel;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 import com.structureeng.persistence.model.tenant.Tenant;
 import com.structureeng.tenancy.context.TenancyContext;
 import com.structureeng.tenancy.context.TenancyContextHolder;
@@ -26,7 +26,7 @@ import javax.persistence.Query;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel, 
-        H extends AbstractTenantHistoryModel> extends AbstractPersistenceTest {
+        H extends AbstractHistoryModel> extends AbstractPersistenceTest {
     
     private EntityManager entityManager;    
     private PlatformTransactionManager tx;
@@ -63,14 +63,14 @@ public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel,
     
     protected void deleteTenantHistories(T tenantModel, List<H> tenantHistories) {
         Query q = null;
-        for (AbstractTenantHistoryModel historyTenant:  tenantHistories) {
+        for (AbstractHistoryModel historyTenant:  tenantHistories) {
             q = getEntityManager().createQuery(String.format("DELETE FROM %s a WHERE a.id = ?1", 
                     getClassName(historyTenant)));
             q.setParameter(1, historyTenant.getId());
             Assert.assertEquals(1, q.executeUpdate());
             q = getEntityManager().createQuery(String.format("DELETE FROM %s ht WHERE ht.id = ?1", 
-                    getClassName(historyTenant.getHistoryTenant())));
-            q.setParameter(1, historyTenant.getHistoryTenant().getId());
+                    getClassName(historyTenant.getAudit())));
+            q.setParameter(1, historyTenant.getAudit().getId());
             Assert.assertEquals(1, q.executeUpdate());            
         }
         q = getEntityManager().createQuery(String.format("DELETE FROM %s a WHERE a.id = ?1", 

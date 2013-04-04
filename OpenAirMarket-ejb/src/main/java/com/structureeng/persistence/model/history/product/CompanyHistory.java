@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 import com.structureeng.persistence.model.product.Company;
 
 import com.google.common.base.Preconditions;
@@ -27,8 +27,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "companyHistory", uniqueConstraints = {
     @UniqueConstraint(name = "companyHistoryUK",
-    columnNames = {"idCompany", "idHistoryTenant"})})
-public class CompanyHistory extends AbstractTenantHistoryModel {
+    columnNames = {"idCompany", "idAudit"})})
+public class CompanyHistory extends AbstractHistoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -99,7 +99,7 @@ public class CompanyHistory extends AbstractTenantHistoryModel {
             companyHistory.setReferenceId(company.getReferenceId());
             companyHistory.setName(company.getName());
             companyHistory.setActive(company.getActive());
-            companyHistory.setRevision(company.getVersion());
+            companyHistory.setVersion(company.getVersion());
             return companyHistory;
         }
     }

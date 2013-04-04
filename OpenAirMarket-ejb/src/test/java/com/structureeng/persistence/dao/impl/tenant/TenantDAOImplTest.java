@@ -121,7 +121,7 @@ public class TenantDAOImplTest extends AbstractPersistenceTest {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<TenantHistory> cq = cb.createQuery(TenantHistory.class);
         Root<TenantHistory> root = cq.from(TenantHistory.class);
-        root.fetch(TenantHistory_.nonTenantHistory, JoinType.INNER);
+        root.fetch(TenantHistory_.audit, JoinType.INNER);
         root.fetch(TenantHistory_.tenant, JoinType.INNER);
         cq.where(cb.equal(root.get(TenantHistory_.tenant), tenant));
         List<TenantHistory> tenantHistories = entityManager.createQuery(cq).getResultList();
@@ -130,8 +130,8 @@ public class TenantDAOImplTest extends AbstractPersistenceTest {
             q = entityManager.createQuery("DELETE FROM TenantHistory t WHERE t.id = ?1");
             q.setParameter(1, tenantHistory.getId());
             Assert.assertEquals(1, q.executeUpdate());
-            q = entityManager.createQuery("DELETE FROM HistoryNonTenant h WHERE h.id = ?1");
-            q.setParameter(1, tenantHistory.getNonTenantHistory().getId());
+            q = entityManager.createQuery("DELETE FROM Audit h WHERE h.id = ?1");
+            q.setParameter(1, tenantHistory.getAudit().getId());
             Assert.assertEquals(1, q.executeUpdate());            
         }
         q = entityManager.createQuery("DELETE FROM Tenant t WHERE t.id = ?1");

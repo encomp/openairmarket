@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.history.security;
 
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 import com.structureeng.persistence.model.security.SystemUser;
 
 import com.google.common.base.Preconditions;
@@ -27,8 +27,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "systemUserHistory", uniqueConstraints = {
         @UniqueConstraint(name = "systemUserHistoryUK",
-                columnNames = {"idSystemUser", "idHistoryTenant"})})
-public class SystemUserHistory extends AbstractTenantHistoryModel {
+                columnNames = {"idSystemUser", "idAudit"})})
+public class SystemUserHistory extends AbstractHistoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

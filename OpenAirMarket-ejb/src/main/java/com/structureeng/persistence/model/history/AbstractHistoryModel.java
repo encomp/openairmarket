@@ -5,9 +5,9 @@ package com.structureeng.persistence.model.history;
 import com.structureeng.common.DateUtil;
 import com.structureeng.persistence.history.HistoryEntity;
 import com.structureeng.persistence.history.HistoryType;
-import com.structureeng.persistence.model.AbstractActiveModel;
 
 import com.google.common.base.Preconditions;
+import com.structureeng.persistence.model.AbstractActiveModel;
 
 import java.util.Date;
 
@@ -23,19 +23,19 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Specifies the behavior of the history entities ({@code HistoryNonTenant}) that are 
- * not required to keep tenancy.
+ * Specifies the behavior of the history of the entities ({@code HistoryTenant}) that 
+ * are required to keep tenancy.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @MappedSuperclass
-public abstract class AbstractNonTenantHistoryModel extends AbstractActiveModel<Long> implements
-        HistoryEntity<HistoryNonTenant> {
+public abstract class AbstractHistoryModel extends AbstractActiveModel<Long> implements
+        HistoryEntity<Audit> {
 
-    @JoinColumn(name = "idHistoryNonTenant", referencedColumnName = "idHistoryNonTenant",
+    @JoinColumn(name = "idAudit", referencedColumnName = "idAudit", 
             nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private HistoryNonTenant nonTenantHistory;
+    private Audit audit;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "historyType", length = 25, nullable = false)
@@ -49,15 +49,12 @@ public abstract class AbstractNonTenantHistoryModel extends AbstractActiveModel<
     @Column(name = "effectiveEnd")
     private Date effectiveEnd;
     
-    @Column(name = "revision", nullable = false)
-    private Long revision;
-
-    public HistoryNonTenant getNonTenantHistory() {
-        return nonTenantHistory;
+    public Audit getAudit() {
+        return audit;
     }
 
-    public void setNonTenantHistory(HistoryNonTenant nonTenantHistory) {
-        this.nonTenantHistory = nonTenantHistory;
+    public void setAudit(Audit audit) {
+        this.audit = Preconditions.checkNotNull(audit);
     }
 
     @Override
@@ -93,22 +90,14 @@ public abstract class AbstractNonTenantHistoryModel extends AbstractActiveModel<
             this.effectiveEnd = DateUtil.clone(effectiveEnd);
         }
     }
-
-    public Long getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Long revision) {
-        this.revision = checkPositive(revision);
+    
+    @Override
+    public Audit getHistory() {
+        return getAudit();
     }
 
     @Override
-    public HistoryNonTenant getHistory() {
-        return getNonTenantHistory();
-    }
-
-    @Override
-    public void setHistory(HistoryNonTenant history) {
-        setNonTenantHistory(history);
+    public void setHistory(Audit history) {
+        setAudit(history);
     }
 }

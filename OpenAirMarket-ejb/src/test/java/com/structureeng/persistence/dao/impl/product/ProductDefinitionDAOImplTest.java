@@ -40,7 +40,7 @@ public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Lon
         CriteriaQuery<ProductDefinitionHistory> cq = 
                 cb.createQuery(ProductDefinitionHistory.class);
         Root<ProductDefinitionHistory> root = cq.from(ProductDefinitionHistory.class);
-        root.fetch(ProductDefinitionHistory_.historyTenant, JoinType.INNER);
+        root.fetch(ProductDefinitionHistory_.audit, JoinType.INNER);
         root.fetch(ProductDefinitionHistory_.productDefinition, JoinType.INNER);
         cq.where(cb.equal(
                 root.get(ProductDefinitionHistory_.productDefinition), productDefinition));

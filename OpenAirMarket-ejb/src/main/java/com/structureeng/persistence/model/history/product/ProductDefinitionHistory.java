@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.history.AbstractTenantHistoryModel;
+import com.structureeng.persistence.model.history.AbstractHistoryModel;
 import com.structureeng.persistence.model.product.Company;
 import com.structureeng.persistence.model.product.Division;
 import com.structureeng.persistence.model.product.ProductDefinition;
@@ -32,8 +32,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "productDefinitionHistory", uniqueConstraints = {
         @UniqueConstraint(name = "productDefinitionHistoryUK",
-                columnNames = {"idProductDefinition", "idHistoryTenant"})})
-public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
+                columnNames = {"idProductDefinition", "idAudit"})})
+public class ProductDefinitionHistory extends AbstractHistoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -181,7 +181,7 @@ public class ProductDefinitionHistory extends AbstractTenantHistoryModel {
             productDefinitionHistory.setCompany(productDefinition.getCompany());
             productDefinitionHistory.setDivision(productDefinition.getDivision());
             productDefinitionHistory.setActive(productDefinition.getActive());
-            productDefinitionHistory.setRevision(productDefinition.getVersion());
+            productDefinitionHistory.setVersion(productDefinition.getVersion());
             return productDefinitionHistory;
         }
     }
