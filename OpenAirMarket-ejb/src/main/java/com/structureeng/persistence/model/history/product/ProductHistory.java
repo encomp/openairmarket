@@ -3,6 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.model.business.ProductType;
+import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.ProductDefinition;
@@ -41,16 +42,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
-
-    @Column(name = "taxable", nullable = false)
-    private Boolean taxable;
-
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
-
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
-
+       
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
 
@@ -59,29 +51,32 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "lastCost", nullable = false, precision = 13, scale = 4)
     private BigDecimal lastCost;
-
-    @Column(name = "maximumStock", nullable = false, precision = 13, scale = 4)
-    private BigDecimal maximumStock;
-
-    @Column(name = "minimumStock", nullable = false, precision = 13, scale = 4)
-    private BigDecimal minimumStock;
-
-    @Column(name = "waste", nullable = false, precision = 13, scale = 4)
-    private BigDecimal waste;
-
+   
+    @Column(name = "autoStock", nullable = false)
+    private Boolean autoStock;
+    
+    @Column(name = "wastable", nullable = false)
+    private Boolean wastable;
+    
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductDefinition productDefinition;
 
-    @JoinColumn(name = "idRule", referencedColumnName = "idRule", nullable = false)
+    @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductType productType;
+    
+    @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private TaxType taxType;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = Preconditions.checkNotNull(id);
     }
@@ -92,14 +87,6 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     public void setProduct(Product product) {
         this.product = Preconditions.checkNotNull(product);
-    }
-
-    public Boolean getTaxable() {
-        return taxable;
-    }
-
-    public void setTaxable(Boolean taxable) {
-        this.taxable = Preconditions.checkNotNull(taxable);
     }
 
     public Boolean getAutoStock() {
@@ -117,7 +104,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setWastable(Boolean wastable) {
         this.wastable = Preconditions.checkNotNull(wastable);
     }
-
+    
     public BigDecimal getQuantity() {
         return quantity;
     }
@@ -141,31 +128,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setLastCost(BigDecimal lastCost) {
         this.lastCost = Preconditions.checkNotNull(lastCost);
     }
-
-    public BigDecimal getMaximumStock() {
-        return maximumStock;
-    }
-
-    public void setMaximumStock(BigDecimal maximumStock) {
-        this.maximumStock = Preconditions.checkNotNull(maximumStock);
-    }
-
-    public BigDecimal getMinimumStock() {
-        return minimumStock;
-    }
-
-    public void setMinimumStock(BigDecimal minimumStock) {
-        this.minimumStock = Preconditions.checkNotNull(minimumStock);
-    }
-
-    public BigDecimal getWaste() {
-        return waste;
-    }
-
-    public void setWaste(BigDecimal waste) {
-        this.waste = Preconditions.checkNotNull(waste);
-    }
-
+    
     public ProductDefinition getProductDefinition() {
         return productDefinition;
     }
@@ -180,5 +143,13 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     public void setProductType(ProductType productType) {
         this.productType = Preconditions.checkNotNull(productType);
+    }
+    
+    public TaxType getTaxType() {
+        return taxType;
+    }
+
+    public void setTaxType(TaxType taxType) {
+        this.taxType = Preconditions.checkNotNull(taxType);
     }
 }

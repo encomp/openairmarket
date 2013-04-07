@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.Package;
+import com.structureeng.persistence.model.product.MeasureUnit;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.RetailProduct;
 
@@ -62,9 +62,9 @@ public class RetailProductHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
 
-    @JoinColumn(name = "idPackage", referencedColumnName = "idPackage", nullable = false)
+    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Package aPackage;
+    private MeasureUnit measureUnit;
 
     @JoinColumn(name = "idParentRetailProduct", referencedColumnName = "idRetailProduct",
             nullable = true)
@@ -137,12 +137,12 @@ public class RetailProductHistory extends AbstractHistoryTenantModel {
         this.product = Preconditions.checkNotNull(product);
     }
 
-    public Package getaPackage() {
-        return aPackage;
+    public MeasureUnit getMeasureUnit() {
+        return measureUnit;
     }
 
-    public void setaPackage(Package aPackage) {
-        this.aPackage = Preconditions.checkNotNull(aPackage);
+    public void setMeasureUnit(MeasureUnit measureUnit) {
+        this.measureUnit = Preconditions.checkNotNull(measureUnit);
     }
 
     public RetailProduct getRetailParentProduct() {

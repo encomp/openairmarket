@@ -56,13 +56,7 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "image", length = 500)
     private String image;
-
-    @Column(name = "countable", nullable = false)
-    private Boolean countable;
-
-    @Column(name = "expire", nullable = false)
-    private Boolean expire;
-
+    
     @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Company company;
@@ -121,22 +115,6 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
         this.image = image;
     }
 
-    public Boolean getCountable() {
-        return countable;
-    }
-
-    public void setCountable(Boolean countable) {
-        this.countable = Preconditions.checkNotNull(countable);
-    }
-
-    public Boolean getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Boolean expire) {
-        this.expire = Preconditions.checkNotNull(expire);
-    }
-
     public Company getCompany() {
         return company;
     }
@@ -175,9 +153,7 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
             productDefinitionHistory.setReferenceId(productDefinition.getReferenceId());
             productDefinitionHistory.setName(productDefinition.getName());
             productDefinitionHistory.setKey(productDefinition.getKey());
-            productDefinitionHistory.setImage(productDefinition.getImage());
-            productDefinitionHistory.setCountable(productDefinition.getCountable());
-            productDefinitionHistory.setExpire(productDefinition.getExpire());
+            productDefinitionHistory.setImage(productDefinition.getImage());            
             productDefinitionHistory.setCompany(productDefinition.getCompany());
             productDefinitionHistory.setDivision(productDefinition.getDivision());
             productDefinitionHistory.setActive(productDefinition.getActive());

@@ -56,9 +56,9 @@ public class RetailProduct extends AbstractTenantModel<Long> {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
 
-    @JoinColumn(name = "idPackage", referencedColumnName = "idPackage", nullable = false)
+    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private com.structureeng.persistence.model.product.Package aPackage;
+    private MeasureUnit measureUnit;
 
     @JoinColumn(name = "idParentRetailProduct", referencedColumnName = "idRetailProduct",
             nullable = true)
@@ -123,12 +123,12 @@ public class RetailProduct extends AbstractTenantModel<Long> {
         this.product = Preconditions.checkNotNull(product);
     }
 
-    public Package getaPackage() {
-        return aPackage;
+    public MeasureUnit getMeasureUnit() {
+        return measureUnit;
     }
 
-    public void setaPackage(Package aPackage) {
-        this.aPackage = Preconditions.checkNotNull(aPackage);
+    public void setMeasureUnit(MeasureUnit measureUnit) {
+        this.measureUnit = Preconditions.checkNotNull(measureUnit);
     }
 
     public RetailProduct getRetailParentProduct() {

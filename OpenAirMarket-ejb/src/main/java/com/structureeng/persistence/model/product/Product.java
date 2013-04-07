@@ -2,8 +2,9 @@
 
 package com.structureeng.persistence.model.product;
 
-import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.business.ProductType;
+import com.structureeng.persistence.model.business.TaxType;
 
 import com.google.common.base.Preconditions;
 
@@ -28,25 +29,16 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "productTenantPK",
-                columnNames = {"idTenant", "idProductDefinition"}),
+                columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "productUK",
                 columnNames = {"idTenant", "idProductDefinition", "idRule"})})
-public class Product extends AbstractTenantModel<Long> {
+public class Product extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProduct")
     private Long id;
-
-    @Column(name = "taxable", nullable = false)
-    private Boolean taxable;
-
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
-
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
-
+        
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
 
@@ -55,25 +47,26 @@ public class Product extends AbstractTenantModel<Long> {
 
     @Column(name = "lastCost", nullable = false, precision = 13, scale = 4)
     private BigDecimal lastCost;
-
-    @Column(name = "maximumStock", nullable = false, precision = 13, scale = 4)
-    private BigDecimal maximumStock;
-
-    @Column(name = "minimumStock", nullable = false, precision = 13, scale = 4)
-    private BigDecimal minimumStock;
-
-    @Column(name = "waste", nullable = false, precision = 13, scale = 4)
-    private BigDecimal waste;
+    
+    @Column(name = "autoStock", nullable = false)
+    private Boolean autoStock;
+    
+    @Column(name = "wastable", nullable = false)
+    private Boolean wastable;
 
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductDefinition productDefinition;
-
-    @JoinColumn(name = "idRule", referencedColumnName = "idRule", nullable = false)
+    
+    @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductType productType;
-
+    
+    @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private TaxType taxType;
+    
     @Override
     public Long getId() {
         return id;
@@ -83,15 +76,7 @@ public class Product extends AbstractTenantModel<Long> {
     public void setId(Long id) {
         this.id = Preconditions.checkNotNull(id);
     }
-
-    public Boolean getTaxable() {
-        return taxable;
-    }
-
-    public void setTaxable(Boolean taxable) {
-        this.taxable = Preconditions.checkNotNull(taxable);
-    }
-
+    
     public Boolean getAutoStock() {
         return autoStock;
     }
@@ -107,7 +92,7 @@ public class Product extends AbstractTenantModel<Long> {
     public void setWastable(Boolean wastable) {
         this.wastable = Preconditions.checkNotNull(wastable);
     }
-
+    
     public BigDecimal getQuantity() {
         return quantity;
     }
@@ -132,30 +117,6 @@ public class Product extends AbstractTenantModel<Long> {
         this.lastCost = Preconditions.checkNotNull(lastCost);
     }
 
-    public BigDecimal getMaximumStock() {
-        return maximumStock;
-    }
-
-    public void setMaximumStock(BigDecimal maximumStock) {
-        this.maximumStock = Preconditions.checkNotNull(maximumStock);
-    }
-
-    public BigDecimal getMinimumStock() {
-        return minimumStock;
-    }
-
-    public void setMinimumStock(BigDecimal minimumStock) {
-        this.minimumStock = Preconditions.checkNotNull(minimumStock);
-    }
-
-    public BigDecimal getWaste() {
-        return waste;
-    }
-
-    public void setWaste(BigDecimal waste) {
-        this.waste = Preconditions.checkNotNull(waste);
-    }
-
     public ProductDefinition getProductDefinition() {
         return productDefinition;
     }
@@ -170,5 +131,13 @@ public class Product extends AbstractTenantModel<Long> {
 
     public void setProductType(ProductType productType) {
         this.productType = Preconditions.checkNotNull(productType);
+    }
+
+    public TaxType getTaxType() {
+        return taxType;
+    }
+
+    public void setTaxType(TaxType taxType) {
+        this.taxType = Preconditions.checkNotNull(taxType);
     }
 }

@@ -56,8 +56,8 @@ public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Lon
         company.setId(1L);        
         division.setId(1L);
         ProductDefinition.Buider builder = ProductDefinition.newBuilder();
-        builder.setReferenceId(referenceId).setName(name).setKey(name).setCountable(Boolean.TRUE)
-               .setExpire(Boolean.FALSE).setCompany(company).setDivision(division);
+        builder.setReferenceId(referenceId).setName(name).setKey(name).setCompany(company)
+                .setDivision(division);
         return builder.build();
     }
 

@@ -9,14 +9,20 @@ import com.google.common.base.Preconditions;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 
 /**
  * Define the revision for the {@code Rule} entities.
@@ -26,7 +32,9 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "ruleHistory", uniqueConstraints = {
         @UniqueConstraint(name = "rulePK", columnNames = {"idRule", "idAudit"})})
-public class RuleHistory extends AbstractHistoryTenantModel {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "ruleType", discriminatorType = DiscriminatorType.STRING, length = 50)
+public abstract class RuleHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +51,9 @@ public class RuleHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
+    
+    @Column(name = "code", nullable = false)
+    private String code;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -78,7 +89,15 @@ public class RuleHistory extends AbstractHistoryTenantModel {
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
+    }
+    
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = checkNotEmpty(code);
     }
 
     public String getName() {
@@ -86,6 +105,6 @@ public class RuleHistory extends AbstractHistoryTenantModel {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
     }
 }

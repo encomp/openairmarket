@@ -21,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
+
 /**
  * Define the revision for the {@code RuleDetail} entities.
  *
@@ -85,7 +87,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     }
 
     public void setCode(String code) {
-        this.code = Preconditions.checkNotNull(code);
+        this.code = checkNotEmpty(code);
     }
 
     public String getValue() {
@@ -93,7 +95,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     }
 
     public void setValue(String value) {
-        this.value = Preconditions.checkNotNull(value);
+        this.value = checkNotEmpty(value);
     }
 
     public BigDecimal getBigDecimalValue() {
@@ -101,7 +103,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     }
 
     public void setValue(BigDecimal value) {
-        this.value = Preconditions.checkNotNull(value).toPlainString();
+        this.value = checkPositive(value).toPlainString();
     }
 
     public RuleDetail getRuleDetailParent() {

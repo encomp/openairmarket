@@ -46,7 +46,7 @@ public class SalePaymentType extends Rule {
         private static final PaymentAttributes ORDER[] = new PaymentAttributes[]
                 {PaymentAttributes.MAXIMUM_AMOUNT, PaymentAttributes.MINIMUM_AMOUNT};
         private final Map<PaymentAttributes, BigDecimal> paymentAttributes =
-                new HashMap<PaymentAttributes, BigDecimal>();
+                new HashMap<PaymentAttributes, BigDecimal>();        
         private Integer referenceId;
         private String code;
         private String name;
@@ -102,12 +102,12 @@ public class SalePaymentType extends Rule {
          *
          * @return a new rule.
          */
-        public SalePaymentType build() {
+        public SalePaymentType build() {           
             Preconditions.checkNotNull(referenceId);
             Preconditions.checkNotNull(code);
             Preconditions.checkNotNull(name);
             Preconditions.checkState(paymentAttributes.size() == 2);
-            SalePaymentType salePaymentType = new SalePaymentType();
+            SalePaymentType salePaymentType = new SalePaymentType();            
             salePaymentType.setReferenceId(referenceId);
             salePaymentType.setCode(code);
             salePaymentType.setName(name);
@@ -128,11 +128,11 @@ public class SalePaymentType extends Rule {
     @OrderBy(value = "code")
     private List<RuleDetail> ruleDetails;
 
-    public List<RuleDetail> getRuleDetails() {
+    private List<RuleDetail> getRuleDetails() {
         return ruleDetails;
     }
 
-    public void setRuleDetails(List<RuleDetail> ruleDetails) {
+    private void setRuleDetails(List<RuleDetail> ruleDetails) {
         this.ruleDetails = Preconditions.checkNotNull(ruleDetails);
     }
 

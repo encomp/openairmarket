@@ -7,18 +7,12 @@ import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.history.product.CompanyHistory;
 
-import com.google.common.base.Preconditions;
-
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -40,10 +34,7 @@ public class Company extends AbstractCatalogTenantModel<Long, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCompany")
     private Long id;
-    
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private Set<CompanyHistory> companyHistories;
-
+        
     @Override
     public Long getId() {
         return id;
@@ -52,14 +43,6 @@ public class Company extends AbstractCatalogTenantModel<Long, Integer> {
     @Override
     public void setId(Long id) {
         this.id = checkPositive(id);
-    }
-
-    public Set<CompanyHistory> getCompanyHistories() {
-        return companyHistories;
-    }
-
-    public void setCompanyHistories(Set<CompanyHistory> companyHistories) {
-        this.companyHistories = Preconditions.checkNotNull(companyHistories);
     }
     
     /**

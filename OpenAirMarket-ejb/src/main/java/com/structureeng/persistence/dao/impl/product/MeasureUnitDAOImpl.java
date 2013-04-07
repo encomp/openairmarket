@@ -3,9 +3,9 @@
 package com.structureeng.persistence.dao.impl.product;
 
 import com.structureeng.persistence.dao.DAOException;
-import com.structureeng.persistence.dao.PackageDAO;
+import com.structureeng.persistence.dao.MeasureUnitDAO;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.product.Package;
+import com.structureeng.persistence.model.product.MeasureUnit;
 import com.structureeng.persistence.model.product.ProductDefinition_;
 import com.structureeng.persistence.model.product.RetailProduct;
 import com.structureeng.persistence.model.product.RetailProduct_;
@@ -19,11 +19,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
 
 /**
- * Data Access Object for {@code Package}.
+ * Data Access Object for {@code MeasureUnit}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class PackageDAOImpl extends CatalogDAOImpl<Package, Long, Integer> implements PackageDAO {
+public class MeasureUnitDAOImpl extends CatalogDAOImpl<MeasureUnit, Long, Integer> implements MeasureUnitDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -31,28 +31,28 @@ public class PackageDAOImpl extends CatalogDAOImpl<Package, Long, Integer> imple
     private EntityManager entityManager;
 
     @Inject
-    public PackageDAOImpl() {
-        super(Package.class, Long.class, Integer.class);
+    public MeasureUnitDAOImpl() {
+        super(MeasureUnit.class, Long.class, Integer.class);
     }
 
     @Override
-    protected void validateForeignKeys(Package aPackage) throws DAOException {
+    protected void validateForeignKeys(MeasureUnit aPackage) throws DAOException {
         if (aPackage.getActive()) {
-            long count = countRetailProductWithPackage(aPackage);
+            long count = countRetailProductWithmeasureUnit(aPackage);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.DIVISION_FK);
             }
         }
     }
 
-    private long countRetailProductWithPackage(Package aPackage) {
+    private long countRetailProductWithmeasureUnit(MeasureUnit measureUnit) {
         QueryContainer<Long, RetailProduct> qc =
                 new QueryContainer<Long, RetailProduct>(Long.class, RetailProduct.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        qc.getRoot().join(RetailProduct_.aPackage, JoinType.INNER);
+        qc.getRoot().join(RetailProduct_.measureUnit, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(RetailProduct_.aPackage), aPackage),
+                    qc.getRoot().get(RetailProduct_.measureUnit), measureUnit),
                 qc.getCriteriaBuilder().equal(
                     qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
         return qc.getSingleResult();

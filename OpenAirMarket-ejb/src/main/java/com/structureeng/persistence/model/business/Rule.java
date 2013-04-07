@@ -19,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
+
 /**
  * Defines the different types of business rules.
  *
@@ -26,8 +28,9 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "rule", uniqueConstraints = {
-        @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "idReference"}),
-        @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "code"})})
+        @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType", 
+            "idReference"}),
+        @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ruleType", discriminatorType = DiscriminatorType.STRING, length = 50)
 public abstract class Rule extends AbstractTenantModel<Long> {
@@ -35,10 +38,6 @@ public abstract class Rule extends AbstractTenantModel<Long> {
     @Id
     @Column(name = "idRule")
     private Long id;
-
-    @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private Rule parentRule;
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
@@ -48,6 +47,10 @@ public abstract class Rule extends AbstractTenantModel<Long> {
 
     @Column(name = "name", nullable = false)
     private String name;
+    
+    @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private Rule parentRule;
 
     @Override
     public Long getId() {
@@ -72,7 +75,7 @@ public abstract class Rule extends AbstractTenantModel<Long> {
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public String getCode() {
@@ -80,7 +83,7 @@ public abstract class Rule extends AbstractTenantModel<Long> {
     }
 
     public void setCode(String code) {
-        this.code = Preconditions.checkNotNull(code);
+        this.code = checkNotEmpty(code);
     }
 
     public String getName() {
@@ -88,6 +91,6 @@ public abstract class Rule extends AbstractTenantModel<Long> {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
     }
 }

@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
+
 /**
  * Defines the attributes of a {@code Rule}.
  *
@@ -77,7 +79,7 @@ public class RuleDetail extends AbstractTenantModel<Long> {
     }
 
     public void setCode(String code) {
-        this.code = Preconditions.checkNotNull(code);
+        this.code = checkNotEmpty(code);
     }
 
     public String getValue() {
@@ -85,7 +87,7 @@ public class RuleDetail extends AbstractTenantModel<Long> {
     }
 
     public void setValue(String value) {
-        this.value = Preconditions.checkNotNull(value);
+        this.value = checkNotEmpty(value);
     }
 
     public BigDecimal getBigDecimalValue() {
@@ -93,6 +95,6 @@ public class RuleDetail extends AbstractTenantModel<Long> {
     }
 
     public void setValue(BigDecimal value) {
-        this.value = Preconditions.checkNotNull(value).toPlainString();
+        this.value = checkPositive(value).toPlainString();
     }
 }

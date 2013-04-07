@@ -48,12 +48,6 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     @Column(name = "image", length = 500)
     private String image;
 
-    @Column(name = "countable", nullable = false)
-    private Boolean countable;
-
-    @Column(name = "expire", nullable = false)
-    private Boolean expire;
-
     @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Company company;
@@ -86,22 +80,6 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public Boolean getCountable() {
-        return countable;
-    }
-
-    public void setCountable(Boolean countable) {
-        this.countable = Preconditions.checkNotNull(countable);
-    }
-
-    public Boolean getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Boolean expire) {
-        this.expire = Preconditions.checkNotNull(expire);
     }
 
     public Company getCompany() {
@@ -139,9 +117,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         private BigInteger referenceId;
         private String name;
         private String key;
-        private String image;
-        private Boolean countable;
-        private Boolean expire;
+        private String image;        
         private Company company;
         private Division division;        
 
@@ -165,16 +141,6 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             return this;
         }
 
-        public Buider setCountable(Boolean countable) {
-            this.countable = Preconditions.checkNotNull(countable);
-            return this;
-        }
-
-        public Buider setExpire(Boolean expire) {
-            this.expire = Preconditions.checkNotNull(expire);
-            return this;
-        }
-
         public Buider setCompany(Company company) {
             this.company = Preconditions.checkNotNull(company);
             return this;
@@ -195,9 +161,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             productDefinition.setReferenceId(referenceId);
             productDefinition.setName(name);
             productDefinition.setKey(key);
-            productDefinition.setImage(image);
-            productDefinition.setCountable(countable);
-            productDefinition.setExpire(expire);
+            productDefinition.setImage(image);            
             productDefinition.setCompany(company);
             productDefinition.setDivision(division);
             return productDefinition;

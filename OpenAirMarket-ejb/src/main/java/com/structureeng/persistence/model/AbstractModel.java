@@ -37,7 +37,11 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        if (getId() != null) {
+            return Objects.hashCode(getId());
+        } else {
+            return super.hashCode();
+        }
     }
 
     @Override

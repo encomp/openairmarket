@@ -7,10 +7,6 @@ import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.history.product.DivisionHistory;
 
-import com.google.common.base.Preconditions;
-
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -46,10 +41,7 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "idParentDivision", referencedColumnName = "idDivision", nullable = true)
     private Division parentDivision;
-
-    @OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
-    private Set<DivisionHistory> divisionHistories;
-
+    
     @Override
     public Long getId() {
         return id;
@@ -66,14 +58,6 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
 
     public void setParentDivision(Division parentDivision) {
         this.parentDivision = parentDivision;
-    }
-
-    public Set<DivisionHistory> getDivisionHistories() {
-        return divisionHistories;
-    }
-
-    public void setDivisionHistories(Set<DivisionHistory> divisionHistories) {
-        this.divisionHistories = Preconditions.checkNotNull(divisionHistories);
     }
 
     /**
