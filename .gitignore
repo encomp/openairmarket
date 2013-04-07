@@ -1,0 +1,10 @@
+*.iml
+/OpenAirMarket.iml
+/target/
+/.idea/
+/OpenAirMarket-ear/target/
+/OpenAirMarket-ejb/target/
+/OpenAirMarket-web/target/
+/OpenAirMarket-ear/OpenAirMarket-ear.iml
+/OpenAirMarket-ejb/OpenAirMarket-ejb.iml
+/OpenAirMarket-web/OpenAirMarket-web.iml
