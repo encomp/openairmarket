@@ -23,7 +23,8 @@ import javax.persistence.criteria.JoinType;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class MeasureUnitDAOImpl extends CatalogDAOImpl<MeasureUnit, Long, Integer> implements MeasureUnitDAO {
+public class MeasureUnitDAOImpl extends CatalogDAOImpl<MeasureUnit, Long, Integer> implements
+        MeasureUnitDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -36,16 +37,16 @@ public class MeasureUnitDAOImpl extends CatalogDAOImpl<MeasureUnit, Long, Intege
     }
 
     @Override
-    protected void validateForeignKeys(MeasureUnit aPackage) throws DAOException {
-        if (aPackage.getActive()) {
-            long count = countRetailProductWithmeasureUnit(aPackage);
+    protected void validateForeignKeys(MeasureUnit measureUnit) throws DAOException {
+        if (measureUnit.getActive()) {
+            long count = countRetailProductWithMeasureUnit(measureUnit);
             if (count > 0) {
-                throw DAOException.Builder.build(ProductErrorCode.DIVISION_FK);
+                throw DAOException.Builder.build(ProductErrorCode.MEASURE_UNIT_FK);
             }
         }
     }
 
-    private long countRetailProductWithmeasureUnit(MeasureUnit measureUnit) {
+    private long countRetailProductWithMeasureUnit(MeasureUnit measureUnit) {
         QueryContainer<Long, RetailProduct> qc =
                 new QueryContainer<Long, RetailProduct>(Long.class, RetailProduct.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
