@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.business;
 
-import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 
 import com.google.common.base.Preconditions;
 
@@ -19,8 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-
 /**
  * Defines the different types of business rules.
  *
@@ -30,23 +28,17 @@ import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 @Table(name = "rule", uniqueConstraints = {
         @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType", 
             "idReference"}),
-        @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "code"})})
+        @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "name"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ruleType", discriminatorType = DiscriminatorType.STRING, length = 50)
-public abstract class Rule extends AbstractTenantModel<Long> {
+public abstract class Rule extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @Column(name = "idRule")
     private Long id;
 
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "code", nullable = false)
-    private String code;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "description", nullable = false)
+    private String description;
     
     @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
     @ManyToOne(cascade = CascadeType.REFRESH)
@@ -70,27 +62,11 @@ public abstract class Rule extends AbstractTenantModel<Long> {
         this.parentRule = parentRule;
     }
 
-    public Integer getReferenceId() {
-        return referenceId;
+    public String getDescription() {
+        return description;
     }
 
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = checkNotEmpty(code);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
+    public void setDescription(String description) {
+        this.description = checkNotEmpty(description);
     }
 }

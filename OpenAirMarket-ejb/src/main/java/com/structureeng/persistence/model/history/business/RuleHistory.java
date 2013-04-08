@@ -22,8 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-
 /**
  * Define the revision for the {@code Rule} entities.
  *
@@ -51,12 +49,12 @@ public abstract class RuleHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
-    
-    @Column(name = "code", nullable = false)
-    private String code;
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Override
     public Long getId() {
@@ -91,14 +89,6 @@ public abstract class RuleHistory extends AbstractHistoryTenantModel {
     public void setReferenceId(Integer referenceId) {
         this.referenceId = checkPositive(referenceId);
     }
-    
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = checkNotEmpty(code);
-    }
 
     public String getName() {
         return name;
@@ -106,5 +96,13 @@ public abstract class RuleHistory extends AbstractHistoryTenantModel {
 
     public void setName(String name) {
         this.name = checkNotEmpty(name);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = checkNotEmpty(description);
     }
 }

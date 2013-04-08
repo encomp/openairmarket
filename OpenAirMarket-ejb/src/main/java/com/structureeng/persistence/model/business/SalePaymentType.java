@@ -46,10 +46,10 @@ public class SalePaymentType extends Rule {
         private static final PaymentAttributes ORDER[] = new PaymentAttributes[]
                 {PaymentAttributes.MAXIMUM_AMOUNT, PaymentAttributes.MINIMUM_AMOUNT};
         private final Map<PaymentAttributes, BigDecimal> paymentAttributes =
-                new HashMap<PaymentAttributes, BigDecimal>();        
-        private Integer referenceId;
-        private String code;
+                new HashMap<PaymentAttributes, BigDecimal>();
+        private Integer referenceId;        
         private String name;
+        private String description;
 
         public Integer getReferenceId() {
             return referenceId;
@@ -60,21 +60,21 @@ public class SalePaymentType extends Rule {
             return this;
         }
 
-        public String getCode() {
-            return code;
-        }
-
-        public Builder setCode(String code) {
-            this.code = Preconditions.checkNotNull(code);
-            return this;
-        }
-
         public String getName() {
             return name;
         }
 
         public Builder setName(String name) {
             this.name = Preconditions.checkNotNull(name);
+            return this;
+        }
+        
+        public String getDescription() {
+            return description;
+        }
+
+        public Builder setDescription(String description) {
+            this.description = Preconditions.checkNotNull(description);
             return this;
         }
 
@@ -102,20 +102,20 @@ public class SalePaymentType extends Rule {
          *
          * @return a new rule.
          */
-        public SalePaymentType build() {           
+        public SalePaymentType build() {
             Preconditions.checkNotNull(referenceId);
-            Preconditions.checkNotNull(code);
             Preconditions.checkNotNull(name);
+            Preconditions.checkNotNull(description);            
             Preconditions.checkState(paymentAttributes.size() == 2);
-            SalePaymentType salePaymentType = new SalePaymentType();            
+            SalePaymentType salePaymentType = new SalePaymentType();
             salePaymentType.setReferenceId(referenceId);
-            salePaymentType.setCode(code);
             salePaymentType.setName(name);
+            salePaymentType.setDescription(description);
             ImmutableList.Builder<RuleDetail> ruleDetails = ImmutableList.builder();
             for (PaymentAttributes paymentAttribute : ORDER) {
                 RuleDetail ruleDetail = new RuleDetail();
                 ruleDetail.setRule(salePaymentType);
-                ruleDetail.setCode(paymentAttribute.toString());
+                ruleDetail.setReferenceId(paymentAttribute.toString());
                 ruleDetail.setValue(paymentAttributes.get(paymentAttribute));
                 ruleDetails.add(ruleDetail);
             }
@@ -125,7 +125,7 @@ public class SalePaymentType extends Rule {
     }
 
     @OneToMany(mappedBy = "rule", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OrderBy(value = "code")
+    @OrderBy(value = "name")
     private List<RuleDetail> ruleDetails;
 
     private List<RuleDetail> getRuleDetails() {
@@ -166,7 +166,7 @@ public class SalePaymentType extends Rule {
         Preconditions.checkNotNull(ruleDetails);
         Preconditions.checkState(ruleDetails.size() == 2);
         RuleDetail ruleDetail = ruleDetails.get(index);
-        Preconditions.checkState(paymentAttribute.toString().equals(ruleDetail.getCode()));
+        Preconditions.checkState(paymentAttribute.toString().equals(ruleDetail.getReferenceId()));
         return ruleDetail;
     }
 }

@@ -63,11 +63,11 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
      * Ensures that an object reference passed as a parameter to the calling method is 
      * not null, as well as is not negative.
      * 
-     * @param <T> a Number
+     * @param <E> a Number
      * @param value an object reference
      * @return the reference that was validated 
      */
-    public static <T extends Number> T checkPositive(T value) {
+    public static <E extends Number> E checkPositive(E value) {
         Preconditions.checkNotNull(value);        
         Preconditions.checkState(value.doubleValue() > 0.0);
         return value;
