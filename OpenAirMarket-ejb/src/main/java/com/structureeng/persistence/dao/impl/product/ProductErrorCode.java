@@ -46,7 +46,13 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
      * Property that specifies the error in case the foreign key has been violated for a
      * {@code ProductType} entity.
      */
-    PRODUCT_TYPE_FK("dao.productType.foreignKey.Product");
+    PRODUCT_TYPE_FK("dao.productType.foreignKey.product"),
+
+    /**
+     * Property that specifies the error in case the foreign key has been violated for a
+     * {@code TaxType} entity.
+     */
+    TAX_TYPE_FK("dao.taxType.foreignKey.product");
 
     private final ErrorCodeProperty errorCodeProperty;
 

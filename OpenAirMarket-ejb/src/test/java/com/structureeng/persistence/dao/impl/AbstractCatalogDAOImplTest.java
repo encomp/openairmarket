@@ -186,7 +186,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
         deleteHistory(catalogModel);
     }
     
-    public abstract void deleteHistory(Model company);
+    public abstract void deleteHistory(Model model);
     
     public abstract T build(RID referenceId, String name);
     

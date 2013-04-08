@@ -18,7 +18,7 @@ import javax.persistence.Entity;
 public class ProductTypeHistory extends RuleHistory {
 
     /**
-     * Factory class for the {@code MeasureUnitHistory} entities.
+     * Factory class for the {@code ProductTypeHistory} entities.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
