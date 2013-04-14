@@ -22,14 +22,15 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer, Company, CompanyHistory> {
+public class CompanyDAOImplTest extends
+        AbstractCatalogDAOImplTest<Long, Integer, Company, CompanyHistory> {
 
     private CompanyDAO companyDAO;
-    
+
     public CompanyDAOImplTest() {
         super(Company.class);
     }
-    
+
     @Override
     public void deleteHistory(Model model) {
         Company company = Company.class.cast(model);
@@ -52,7 +53,7 @@ public class CompanyDAOImplTest extends AbstractCatalogDAOImplTest<Long, Integer
     public Integer toReferenceId(String referenceId) {
         return new Integer(referenceId);
     }
-    
+
     @Override
     public CatalogDAO<Company, Long, Integer> getCatalogDAO() {
         if (companyDAO == null) {

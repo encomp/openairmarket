@@ -21,6 +21,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -66,15 +67,15 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private ProductDefinition productDefinition;
     
     @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private ProductType productType;
     
     @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private TaxType taxType;
     
     @Override

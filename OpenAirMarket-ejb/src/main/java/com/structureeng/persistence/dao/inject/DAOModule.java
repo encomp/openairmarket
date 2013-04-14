@@ -8,9 +8,11 @@ import com.structureeng.persistence.dao.MeasureUnitDAO;
 import com.structureeng.persistence.dao.ProductDAO;
 import com.structureeng.persistence.dao.ProductDefinitionDAO;
 import com.structureeng.persistence.dao.ProductTypeDAO;
+import com.structureeng.persistence.dao.StoreDAO;
 import com.structureeng.persistence.dao.TaxTypeDAO;
 import com.structureeng.persistence.dao.TenantDAO;
 import com.structureeng.persistence.dao.impl.business.ProductTypeDAOImpl;
+import com.structureeng.persistence.dao.impl.business.StoreDAOImpl;
 import com.structureeng.persistence.dao.impl.business.TaxTypeDAOImpl;
 import com.structureeng.persistence.dao.impl.product.CompanyDAOImpl;
 import com.structureeng.persistence.dao.impl.product.DivisionDAOImpl;
@@ -70,6 +72,12 @@ public class DAOModule {
     @Named("productTypeDAO")
     public ProductTypeDAO providesProductTypeDAO() {
         return new ProductTypeDAOImpl();
+    }
+    
+    @Bean
+    @Named("storeDAO")
+    public StoreDAO providesStoreDAO() {
+        return new StoreDAOImpl();
     }
 
     @Bean
