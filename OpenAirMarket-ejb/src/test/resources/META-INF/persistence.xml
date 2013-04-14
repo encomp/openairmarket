@@ -6,12 +6,14 @@
         <class>com.structureeng.persistence.model.business.Rule</class>
         <class>com.structureeng.persistence.model.business.RuleDetail</class>
         <class>com.structureeng.persistence.model.business.SalePaymentType</class>
+        <class>com.structureeng.persistence.model.business.Store</class>
         <class>com.structureeng.persistence.model.business.TaxType</class>
         <class>com.structureeng.persistence.model.history.Audit</class>
         <class>com.structureeng.persistence.model.history.business.ProductTypeHistory</class>
         <class>com.structureeng.persistence.model.history.business.RuleDetailHistory</class>
         <class>com.structureeng.persistence.model.history.business.RuleHistory</class>
-        <class>com.structureeng.persistence.model.history.business.SalePaymentTypeHistory</class>        
+        <class>com.structureeng.persistence.model.history.business.SalePaymentTypeHistory</class>
+        <class>com.structureeng.persistence.model.history.business.StoreHistory</class>
         <class>com.structureeng.persistence.model.history.business.TaxTypeHistory</class>
         <class>com.structureeng.persistence.model.history.product.CompanyHistory</class>
         <class>com.structureeng.persistence.model.history.product.DivisionHistory</class>

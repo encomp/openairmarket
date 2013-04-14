@@ -2,13 +2,18 @@
 
 package com.structureeng.persistence.model.stock;
 
-import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.AbstractCatalogTenantModel;
+import com.structureeng.persistence.model.business.Store;
 
 import com.google.common.base.Preconditions;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -22,17 +27,15 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "warehouse", uniqueConstraints = {
         @UniqueConstraint(name = "warehouseTenantPK", columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "warehouseUK", columnNames = {"idTenant", "name"})})
-public class Warehouse extends AbstractTenantModel<Long> {
+public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @Column(name = "idWarehouse")
     private Long id;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    
+    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private Store store;
 
     @Override
     public Long getId() {
@@ -41,22 +44,14 @@ public class Warehouse extends AbstractTenantModel<Long> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
-    public Integer getReferenceId() {
-        return referenceId;
+    public Store getStore() {
+        return store;
     }
 
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+    public void setStore(Store store) {
+        this.store = Preconditions.checkNotNull(store);
     }
 }
