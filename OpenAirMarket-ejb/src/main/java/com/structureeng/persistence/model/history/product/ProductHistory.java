@@ -2,6 +2,10 @@
 
 package com.structureeng.persistence.model.history.product;
 
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
+import static com.structureeng.persistence.model.AbstractModel.checkPositive;
+
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.business.ProductType;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
@@ -11,6 +15,7 @@ import com.structureeng.persistence.model.product.ProductDefinition;
 import com.google.common.base.Preconditions;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,6 +47,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
+    
+    @Column(name = "idReference", nullable = false)
+    private BigInteger referenceId;
+    
+    @Column(name = "name", nullable = false)
+    private String name;
        
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
@@ -87,6 +98,22 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     public void setProduct(Product product) {
         this.product = Preconditions.checkNotNull(product);
+    }
+    
+    public BigInteger getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(BigInteger referenceId) {
+        this.referenceId = checkPositive(referenceId);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = checkNotEmpty(name);
     }
 
     public Boolean getAutoStock() {
@@ -151,5 +178,38 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     public void setTaxType(TaxType taxType) {
         this.taxType = Preconditions.checkNotNull(taxType);
+    }
+    
+    /**
+     * Factory class for the {@code ProductHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<Product, ProductHistory> {
+        
+        /**
+         * Create an instance of {@code ProductHistory}.
+         *
+         * @param product the instance that will be used to create a new {@code Product}.
+         * @return a new instance
+         */
+        @Override
+        public ProductHistory build(Product product) {
+            ProductHistory productHistory = new ProductHistory();
+            productHistory.setProduct(product);
+            productHistory.setReferenceId(product.getReferenceId());
+            productHistory.setName(product.getName());
+            productHistory.setActive(product.getActive());
+            productHistory.setAutoStock(product.getAutoStock());
+            productHistory.setWastable(product.getWastable());
+            productHistory.setCost(product.getCost());
+            productHistory.setLastCost(product.getLastCost());
+            productHistory.setQuantity(product.getQuantity());
+            productHistory.setProductDefinition(product.getProductDefinition());
+            productHistory.setProductType(product.getProductType());
+            productHistory.setTaxType(product.getTaxType());
+            productHistory.setVersion(product.getVersion());
+            return productHistory;
+        }
     }
 }
