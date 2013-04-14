@@ -151,6 +151,38 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      */
     public abstract Logger getLogger();
     
+    /**
+     * Create a new count {@link QueryContainer}.
+     * 
+     * @return new instance
+     */
+    protected QueryContainer<Long, T> newQueryContainerCount() {
+        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(Long.class, getEntityClass());
+        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        return qc;
+    }
+    
+    /**
+     * Create a new count {@link QueryContainer}.
+     * @param <TT>  the type that will be use to create the {@code QueryContainer}.
+     * @param clase the class that will be use to create the {@code CriteriaQuery} and the 
+     *              {@code Root}.
+     * @return new instance
+     */
+    protected <TT> QueryContainer<Long, TT> newQueryContainerCount(Class<TT> clase) {
+        QueryContainer<Long, TT> qc = new QueryContainer<Long, TT>(Long.class, clase);
+        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        return qc;
+    }
+    
+    /**
+     * Creates a new instance of {@link QueryContainer}.
+     * 
+     * @param <R>   the type that will be use to create the {@code QueryContainer}.
+     * @param clase the class that will be use to create the {@code CriteriaQuery} and the 
+     *              {@code Root}.
+     * @return new instance
+     */
     protected <R> QueryContainer<R, R> newQueryContainer(Class<R> clase) {
         return new QueryContainer<R, R>(clase, clase);
     }

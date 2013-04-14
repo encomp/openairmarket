@@ -9,6 +9,7 @@ import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.business.ProductType;
+import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.product.ProductHistory;
 
@@ -41,8 +42,9 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "productTenantPK",
                 columnNames = {"idTenant", "idReference"}),
+        @UniqueConstraint(name = "productNameUK", columnNames = {"idTenant", "name"}),
         @UniqueConstraint(name = "productUK",
-                columnNames = {"idTenant", "idProductDefinition", "idRule"})})
+                columnNames = {"idTenant", "idProductDefinition", "idProductType"})})
 public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @Id
@@ -65,6 +67,10 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     @Column(name = "wastable", nullable = false)
     private Boolean wastable;
 
+    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private Store store;
+    
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
@@ -128,6 +134,14 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         this.lastCost = checkPositive(lastCost);
     }
 
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = Preconditions.checkNotNull(store);
+    }
+
     public ProductDefinition getProductDefinition() {
         return productDefinition;
     }
@@ -175,6 +189,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         private BigDecimal lastCost;
         private Boolean autoStock = Boolean.FALSE;
         private Boolean wastable = Boolean.FALSE;
+        private Store store;
         private ProductDefinition productDefinition;
         private ProductType productType;
         private TaxType taxType;
@@ -213,6 +228,11 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             this.wastable = Preconditions.checkNotNull(wastable);
             return this;
         }
+        
+        public Product.Buider setStore(Store store) {
+            this.store = Preconditions.checkNotNull(store);
+            return this;
+        }
 
         public Product.Buider setProductDefinition(ProductDefinition productDefinition) {
             this.productDefinition = Preconditions.checkNotNull(productDefinition);
@@ -243,6 +263,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             product.setQuantity(quantity);
             product.setCost(cost);
             product.setLastCost(lastCost);
+            product.setStore(store);
             product.setProductDefinition(productDefinition);
             product.setProductType(productType);
             product.setTaxType(taxType);

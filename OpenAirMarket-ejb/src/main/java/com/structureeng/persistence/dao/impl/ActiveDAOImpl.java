@@ -87,31 +87,19 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
      */
     @Override
     public long count() {
-        return countEntities(0, Boolean.TRUE);
+        return countEntities(Boolean.TRUE);
     }
     
     @Override
     public long countInactive() {
-        return countEntities(0, Boolean.FALSE);
+        return countEntities(Boolean.FALSE);
     }
     
-    protected Long countEntities(int option, Object value) {
-        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(Long.class, getEntityClass());
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().count(qc.getRoot()));
-        countEntities(qc, option, value);        
+    private long countEntities(Boolean value) {
+        QueryContainer<Long, T> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
+                .equal(qc.getRoot().get(AbstractActiveModel_.active), value));
         return qc.getSingleResult();
-    }
-    
-    protected void countEntities(QueryContainer<Long, T> qc, int option, Object value) {
-        switch (option) {
-            case 0:
-                qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
-                        .equal(qc.getRoot().get(AbstractActiveModel_.active), value));
-                break;
-                
-            default:
-                break;
-        }
     }
 
     @Override

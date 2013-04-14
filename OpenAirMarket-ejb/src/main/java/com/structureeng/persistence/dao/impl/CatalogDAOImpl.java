@@ -44,29 +44,32 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     @Override
-    protected void validatePersistUniqueKeys(final T entity) throws DAOException {
+    protected final void validatePersistUniqueKeys(final T entity) throws DAOException {
+        DAOException daoException = validateUniqueKeysForPersistEvent(entity);
         long uniqueId = countEntitiesWithReferenceId(
                 referenceIdClass.cast(entity.getReferenceId()));
         long uniqueName = countEntitiesWithName(entity.getName());
-        if (uniqueId > 0 || uniqueName > 0) {
-            DAOException daoException = null;
+        if (uniqueId > 0 || uniqueName > 0) {            
             if (uniqueId > 0) {
-                daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
+                daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId(), 
+                        daoException);
             }
             if (uniqueName > 0) {
                 daoException = DAOException.Builder.build(getErrorCodeUniqueName(),
                         daoException);
-            }
-            throw daoException;
+            }            
         }
+        shouldThrowDAOException(daoException);
     }
 
     @Override
-    protected void validateMergeUniqueKeys(final T entity) throws DAOException {
+    protected final void validateMergeUniqueKeys(final T entity) throws DAOException {
+        DAOException daoException = validateUniqueKeysForMergeEvent(entity);
         long count = countEntitiesWithSameNameButDiffReferenceId(entity);
         if (count > 0) {
-            throw DAOException.Builder.build(getErrorCodeUniqueName());
+            daoException = DAOException.Builder.build(getErrorCodeUniqueName(), daoException);
         }
+        shouldThrowDAOException(daoException);
     }
 
     private T findByReferenceId(RID referenceId, Boolean active) {
@@ -88,45 +91,28 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         }
     }
 
-    private Long countEntitiesWithReferenceId(RID referenceId) {
-        return countEntities(1, referenceId);
+    private Long countEntitiesWithReferenceId(RID referenceId) {        
+        QueryContainer<Long, T> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                    qc.getRoot().get(AbstractCatalogModel_.referenceId), referenceId));
+        return qc.getSingleResult();
     }
 
     private Long countEntitiesWithName(String name) {
-        return countEntities(2, name);
+        QueryContainer<Long, T> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                        qc.getRoot().get(AbstractCatalogModel_.name), name));
+        return qc.getSingleResult();
     }
     
     private Long countEntitiesWithSameNameButDiffReferenceId(T entity) {
-        return countEntities(3, entity);
-    }
-    
-    @Override
-    protected void countEntities(QueryContainer<Long, T> qc, int option, Object value) {
-        switch (option) {            
-            case 1:
-                qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
-                        qc.getRoot().get(AbstractCatalogModel_.referenceId), value));
-                break;
-
-            case 2:
-                qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
-                        qc.getRoot().get(AbstractCatalogModel_.name), value));
-                break;
-                
-            case 3:
-                T entity = getEntityClass().cast(value);
-                qc.getCriteriaQuery().where(
-                        qc.getCriteriaBuilder().and(
-                            qc.getCriteriaBuilder().equal(qc.getRoot()
-                                .get(AbstractCatalogModel_.name), entity.getName()),
-                            qc.getCriteriaBuilder().notEqual(qc.getRoot()
-                                .get(AbstractCatalogModel_.referenceId), entity.getReferenceId())));
-                break;
-
-            default:
-                super.countEntities(qc, option, value);
-                break;
-        }
+        QueryContainer<Long, T> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
+                qc.getCriteriaBuilder().equal(qc.getRoot()
+                    .get(AbstractCatalogModel_.name), entity.getName()),
+                qc.getCriteriaBuilder().notEqual(qc.getRoot()
+                    .get(AbstractCatalogModel_.referenceId), entity.getReferenceId())));
+        return qc.getSingleResult();
     }
 
     public DAOErrorCode getErrorCodeUniqueReferenceId() {
@@ -135,5 +121,19 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
 
     public DAOErrorCode getErrorCodeUniqueName() {
         return DAOErrorCode.CATALOG_NAME_UK;
+    }
+    
+    private void shouldThrowDAOException(DAOException daoException) throws DAOException {
+        if (daoException != null) {
+            throw daoException;
+        }
+    }
+    
+    protected DAOException validateUniqueKeysForPersistEvent(final T entity) {
+        return null;
+    }
+    
+    protected DAOException validateUniqueKeysForMergeEvent(final T entity) {
+        return null;
     }
 }

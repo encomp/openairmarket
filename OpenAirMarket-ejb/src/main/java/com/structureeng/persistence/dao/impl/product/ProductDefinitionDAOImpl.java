@@ -38,39 +38,21 @@ public class ProductDefinitionDAOImpl extends CatalogDAOImpl<ProductDefinition, 
     }
 
     @Override
-    protected void validatePersistUniqueKeys(ProductDefinition entity) throws DAOException {
-        DAOException daoException = null;
-        try {
-            super.validatePersistUniqueKeys(entity);
-        } catch (DAOException exc) {
-            daoException = exc;
-        }
-        Long count = countEntitiesWithKey(entity);
+    protected DAOException validateUniqueKeysForPersistEvent(final ProductDefinition entity) {        
+        long count = countEntitiesWithKey(entity);
         if (count > 0) {
-            daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK,
-                    daoException);
+            return DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK);
         }
-        if (daoException != null) {
-            throw daoException;
-        }
+        return null;
     }
 
     @Override
-    protected void validateMergeUniqueKeys(ProductDefinition entity) throws DAOException {
-        DAOException daoException = null;
-        try {
-            super.validateMergeUniqueKeys(entity);
-        } catch (DAOException exc) {
-            daoException = exc;
-        }
-        Long count = countEntitiesWithSameKeyButDiffReferenceId(entity);
+    protected DAOException validateUniqueKeysForMergeEvent(final ProductDefinition entity) {
+        long count = countEntitiesWithSameKeyButDiffReferenceId(entity);
         if (count > 0) {
-            daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK,
-                    daoException);
+            return DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK);
         }
-        if (daoException != null) {
-            throw daoException;
-        }
+        return null;
     }
 
     @Override
@@ -83,16 +65,25 @@ public class ProductDefinitionDAOImpl extends CatalogDAOImpl<ProductDefinition, 
         }
     }
 
-    private Long countEntitiesWithKey(ProductDefinition productDefinition) {
-        return countEntities(4, productDefinition.getKey());
+    private long countEntitiesWithKey(ProductDefinition productDefinition) {
+        QueryContainer<Long, ProductDefinition> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                        qc.getRoot().get(ProductDefinition_.key), productDefinition.getKey()));
+        return qc.getSingleResult();
     }
 
-    private Long countEntitiesWithSameKeyButDiffReferenceId(ProductDefinition entity) {
-        return countEntities(5, entity);
+    private long countEntitiesWithSameKeyButDiffReferenceId(ProductDefinition entity) {
+        QueryContainer<Long, ProductDefinition> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
+                qc.getCriteriaBuilder().equal(qc.getRoot().get(ProductDefinition_.key), 
+                    entity.getName()),
+                qc.getCriteriaBuilder().notEqual(qc.getRoot().get(ProductDefinition_.referenceId), 
+                    entity.getReferenceId())));
+        return qc.getSingleResult();
     }
 
     private long countProductWithProductDefinition(final ProductDefinition entity) {
-        QueryContainer<Long, Product> qc =
+        QueryContainer<Long, Product> qc = 
                 new QueryContainer<Long, Product>(Long.class, Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.productDefinition, JoinType.INNER);
@@ -103,32 +94,7 @@ public class ProductDefinitionDAOImpl extends CatalogDAOImpl<ProductDefinition, 
                     .equal(qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
         return qc.getSingleResult();
     }
-
-    @Override
-    protected void countEntities(QueryContainer<Long, ProductDefinition> qc, int option, 
-            Object value) {
-        switch (option) {
-            case 4:
-                qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
-                        qc.getRoot().get(ProductDefinition_.key), value));
-                break;
-
-            case 5:
-                ProductDefinition entity = getEntityClass().cast(value);
-                qc.getCriteriaQuery().where(
-                        qc.getCriteriaBuilder().and(
-                            qc.getCriteriaBuilder().equal(qc.getRoot()
-                                .get(ProductDefinition_.key), entity.getName()),
-                            qc.getCriteriaBuilder().notEqual(qc.getRoot()
-                                .get(ProductDefinition_.referenceId), entity.getReferenceId())));
-                break;
-
-            default:
-                super.countEntities(qc, option, value);
-                break;
-        }
-    }
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return entityManager;

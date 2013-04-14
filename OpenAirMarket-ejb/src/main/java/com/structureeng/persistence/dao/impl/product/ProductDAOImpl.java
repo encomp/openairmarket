@@ -6,6 +6,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.ProductDAO;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.Product_;
 import com.structureeng.persistence.model.product.ProductDefinition_;
 import com.structureeng.persistence.model.product.RetailProduct;
 import com.structureeng.persistence.model.product.RetailProduct_;
@@ -38,9 +39,27 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     public ProductDAOImpl() {
         super(Product.class, Long.class, BigInteger.class);
     }
+    
+    @Override
+    protected DAOException validateUniqueKeysForPersistEvent(final Product entity) {        
+        long count = countProductstWithSameDefinitionAndType(entity);
+        if (count > 0) {
+            return DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
+        }
+        return null;
+    }
+    
+    @Override
+    protected DAOException validateUniqueKeysForMergeEvent(final Product entity) {
+        long count = countProductstWithSameDefinitionAndTypeButDiffId(entity);
+        if (count > 0) {
+            return DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
+        }
+        return null;
+    }
 
     @Override
-    protected void validateForeignKeys(Product entity) throws DAOException {
+    protected void validateForeignKeys(final Product entity) throws DAOException {
         if (entity.getActive()) {
             DAOException daoException = null;
             if (countRetailProductsWithProduct(entity) > 0) {
@@ -55,11 +74,31 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
             }
         }
     }
+    
+    private long countProductstWithSameDefinitionAndType(Product product) {
+        QueryContainer<Long, Product> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(                
+                qc.getCriteriaBuilder()
+                    .equal(qc.getRoot().get(Product_.productDefinition), 
+                        product.getProductDefinition()),
+                qc.getCriteriaBuilder()
+                    .equal(qc.getRoot().get(Product_.productType), product.getProductType())));
+        return qc.getSingleResult();
+    }
+    
+    private long countProductstWithSameDefinitionAndTypeButDiffId(Product product) {
+        QueryContainer<Long, Product> qc = newQueryContainerCount();
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(                
+                qc.getCriteriaBuilder()
+                    .equal(qc.getRoot().get(Product_.productType), product.getProductType()),
+                qc.getCriteriaBuilder()
+                    .notEqual(qc.getRoot().get(Product_.productDefinition), 
+                        product.getProductDefinition())));
+        return qc.getSingleResult();
+    }
 
     private long countRetailProductsWithProduct(final Product product) {
-        QueryContainer<Long, RetailProduct> qc =
-                new QueryContainer<Long, RetailProduct>(Long.class, RetailProduct.class);
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        QueryContainer<Long, RetailProduct> qc = newQueryContainerCount(RetailProduct.class);
         qc.getRoot().join(RetailProduct_.product, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
@@ -70,9 +109,7 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     }
 
     private long countStocksWithProduct(final Product product) {
-        QueryContainer<Long, Stock> qc =
-                new QueryContainer<Long, Stock>(Long.class, Stock.class);
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        QueryContainer<Long, Stock> qc = newQueryContainerCount(Stock.class);
         qc.getRoot().join(Stock_.product, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
