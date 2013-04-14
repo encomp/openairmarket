@@ -7,21 +7,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.structureeng.persistence.dao.DAO;
 import com.structureeng.persistence.dao.DAOErrorCode;
 import com.structureeng.persistence.dao.DAOException;
+import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.model.AbstractModel;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.PersistenceContext;
 
 /**
  * Provides the implementation for {@code DAO} interface.
@@ -30,13 +29,15 @@ import javax.persistence.criteria.Root;
  * @param <T> specifies the {@code Model} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code Model}
  */
-public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> implements
-        DAO<T, S> {
+public final class DAOImpl<T extends AbstractModel, S extends Serializable> implements DAO<T, S> {
 
+    private EntityManager entityManager;    
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public DAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
+    @Inject
+    public DAOImpl(Class<T> entityClass, Class<S> entityIdClass) {    
         this.entityClass = checkNotNull(entityClass);
         this.entityIdClass = checkNotNull(entityIdClass);
     }
@@ -60,12 +61,17 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public final void refresh(T entity) {
+    public void remove(T entity) throws DAOException {
+        getEntityManager().remove(entity);
+    }
+
+    @Override
+    public void refresh(T entity) {
         getEntityManager().refresh(entity);
     }
 
     @Override
-    public final void refresh(T entity, LockModeType modeType) {
+    public void refresh(T entity, LockModeType modeType) {
         getEntityManager().refresh(entity, modeType);
     }
 
@@ -96,16 +102,22 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public final void flush() {
-        getEntityManager().flush();
+    public List<T> findRange(int start, int end) {
+        QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(), 
+                getEntityClass());
+        return qc.getResultList(start, end - start);
     }
 
-    protected int update(String jpaQL, Object... listedParam) {
-        Query query = getEntityManager().createQuery(jpaQL);
-        for (int i = 0; i < listedParam.length; i++) {
-            query.setParameter(i + 1, listedParam[i]);
-        }
-        return query.executeUpdate();
+    @Override
+    public long count() {
+        QueryContainer<Long, T> qc = QueryContainer.newQueryContainerCount(getEntityManager(), 
+                getEntityClass());
+        return qc.getSingleResult();
+    }
+
+    @Override
+    public void flush() {
+        getEntityManager().flush();
     }
 
     @Override
@@ -124,7 +136,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @return - the class of the dao
      */
-    public final Class<T> getEntityClass() {
+    public Class<T> getEntityClass() {
         return entityClass;
     }
 
@@ -133,8 +145,13 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @return - the class of the Id of an entity.
      */
-    public final Class<S> getEntityIdClass() {
+    public Class<S> getEntityIdClass() {
         return entityIdClass;
+    }
+    
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = checkNotNull(entityManager);
     }
 
     /**
@@ -142,105 +159,16 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @return - the instance
      */
-    protected abstract EntityManager getEntityManager();
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 
     /**
      * Provides the {@code Logger} of the concrete class.
      *
      * @return - the logger instance of the class.
      */
-    public abstract Logger getLogger();
-    
-    /**
-     * Create a new count {@link QueryContainer}.
-     * 
-     * @return new instance
-     */
-    public final QueryContainer<Long, T> newQueryContainerCount() {
-        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(getEntityManager(), Long.class, 
-                getEntityClass());
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        return qc;
-    }
-    
-    /**
-     * Create a new count {@link QueryContainer}.
-     * @param <TT>  the type that will be use to create the {@code QueryContainer}.
-     * @param clase the class that will be use to create the {@code CriteriaQuery} and the 
-     *              {@code Root}.
-     * @return new instance
-     */
-    public final <TT> QueryContainer<Long, TT> newQueryContainerCount(Class<TT> clase) {
-        QueryContainer<Long, TT> qc = new QueryContainer<Long, TT>(getEntityManager(), Long.class, 
-                clase);
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        return qc;
-    }
-    
-    /**
-     * Creates a new instance of {@link QueryContainer}.
-     * 
-     * @param <R>   the type that will be use to create the {@code QueryContainer}.
-     * @param clase the class that will be use to create the {@code CriteriaQuery} and the 
-     *              {@code Root}.
-     * @return new instance
-     */
-    public final <R> QueryContainer<R, R> newQueryContainer(Class<R> clase) {
-        return new QueryContainer<R, R>(getEntityManager(), clase, clase);
-    }
-
-    /**
-     * Stores the minimum required objects to perform a @{code Query}.
-     *
-     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
-     */
-    public static class QueryContainer<R, F> {
-
-        private final EntityManager entityManager;
-        private final CriteriaBuilder criteriaBuilder;
-        private final CriteriaQuery<R> criteriaQuery;
-        private final Root<F> root;        
-                        
-        public QueryContainer(EntityManager entityManager, Class<R> result, Class<F> from) {
-            this.entityManager = checkNotNull(entityManager);
-            this.criteriaBuilder = checkNotNull(getEntityManager().getCriteriaBuilder());
-            this.criteriaQuery = checkNotNull(criteriaBuilder.createQuery(result));
-            this.root = checkNotNull(criteriaQuery.from(from));
-        }
-
-        public EntityManager getEntityManager() {
-            return entityManager;
-        }
-                
-        public CriteriaBuilder getCriteriaBuilder() {
-            return criteriaBuilder;
-        }
-
-        public CriteriaQuery<R> getCriteriaQuery() {
-            return criteriaQuery;
-        }
-
-        public Root<F> getRoot() {
-            return root;
-        }       
-        
-        public R getSingleResult() {
-            return createTypedQuery().getSingleResult();
-        }
-        
-        public List<R> getResultList() {
-            return createTypedQuery().getResultList();
-        }
-        
-        public List<R> getResultList(int firstResult, int maxResults) {
-            TypedQuery<R> typedQuery = createTypedQuery();
-            typedQuery.setFirstResult(firstResult);
-            typedQuery.setMaxResults(maxResults);            
-            return typedQuery.getResultList();
-        }
-
-        private TypedQuery<R> createTypedQuery() {
-            return getEntityManager().createQuery(criteriaQuery);
-        }
+    public Logger getLogger() {
+        return logger;
     }
 }

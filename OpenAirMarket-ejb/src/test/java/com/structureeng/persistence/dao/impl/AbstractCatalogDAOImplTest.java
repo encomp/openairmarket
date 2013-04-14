@@ -19,6 +19,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 /**
  * Test for {@code CatalogDAO}.
  *
@@ -76,7 +78,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
         }
     }
 
-    @Test(expected = DAOException.class)
+    @Test(expected = PersistenceException.class)
     public void testPersistMergeDirty() throws DAOException {
         T catalogModel = build(toReferenceId("51"), "test 51");
         getCatalogDAO().persist(catalogModel);
@@ -85,8 +87,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
         try {
             getCatalogDAO().merge(catalogModel);
             Assert.fail("Should have thrown a DAOException.");
-        } catch (DAOException daoException) {
-            Assert.assertNotNull(daoException.getErrorCode());
+        } catch (PersistenceException daoException) {            
             commit = false;
             throw daoException;
         }
