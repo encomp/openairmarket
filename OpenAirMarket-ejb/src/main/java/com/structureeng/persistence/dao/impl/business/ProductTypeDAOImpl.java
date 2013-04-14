@@ -48,8 +48,7 @@ public class ProductTypeDAOImpl extends CatalogDAOImpl<ProductType, Long, Intege
     }
 
     private long countProductWithProductType(ProductType productType) {
-        QueryContainer<Long, Product> qc =
-                new QueryContainer<Long, Product>(Long.class, Product.class);
+        QueryContainer<Long, Product> qc = newQueryContainerCount(Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.productType, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(

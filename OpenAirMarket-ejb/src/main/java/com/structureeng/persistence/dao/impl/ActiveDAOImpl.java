@@ -28,7 +28,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public void persist(T entity) throws DAOException {
+    public final void persist(T entity) throws DAOException {
         try {
             validatePersistUniqueKeys(entity);
             super.persist(entity);
@@ -38,7 +38,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public T merge(T entity) throws DAOException {
+    public final T merge(T entity) throws DAOException {
         try {
             validateMergeUniqueKeys(entity);
             return super.merge(entity);
@@ -48,7 +48,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public void remove(T entity) throws DAOException {
+    public final void remove(T entity) throws DAOException {
         validateForeignKeys(entity);
         try {
             if (!hasVersionChanged(entity)) {
@@ -63,7 +63,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public T find(S id) {
+    public final T find(S id) {
         T entity = super.find(id);
         if (entity.getActive()) {
             return entity;
@@ -72,7 +72,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public T find(S id, long version) throws DAOException {
+    public final T find(S id, long version) throws DAOException {
         T entity = super.find(id, version);
         if (entity.getActive()) {
             return entity;
@@ -86,12 +86,12 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
      * @return the number of active entities.
      */
     @Override
-    public long count() {
+    public final long count() {
         return countEntities(Boolean.TRUE);
     }
     
     @Override
-    public long countInactive() {
+    public final long countInactive() {
         return countEntities(Boolean.FALSE);
     }
     
@@ -103,7 +103,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public List<T> findRange(int start, int end) {        
+    public final List<T> findRange(int start, int end) {        
         QueryContainer<T, T> qc = newQueryContainer(getEntityClass());
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
                         .equal(qc.getRoot().get(AbstractActiveModel_.active), Boolean.TRUE));        

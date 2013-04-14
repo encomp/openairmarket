@@ -34,12 +34,12 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
     }
 
     @Override
-    public T findByReferenceId(RID referenceId) {
+    public final T findByReferenceId(RID referenceId) {
         return findByReferenceId(referenceId, Boolean.TRUE);
     }
 
     @Override
-    public T findInactiveByReferenceId(RID referenceId) {
+    public final T findInactiveByReferenceId(RID referenceId) {
         return findByReferenceId(referenceId, Boolean.FALSE);
     }
 
@@ -115,11 +115,11 @@ public abstract class CatalogDAOImpl<T extends AbstractCatalogModel, S extends S
         return qc.getSingleResult();
     }
 
-    public DAOErrorCode getErrorCodeUniqueReferenceId() {
+    public final DAOErrorCode getErrorCodeUniqueReferenceId() {
         return DAOErrorCode.CATALOG_REFERENCE_ID_UK;
     }
 
-    public DAOErrorCode getErrorCodeUniqueName() {
+    public final DAOErrorCode getErrorCodeUniqueName() {
         return DAOErrorCode.CATALOG_NAME_UK;
     }
     

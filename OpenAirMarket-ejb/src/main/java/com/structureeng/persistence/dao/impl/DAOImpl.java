@@ -2,12 +2,12 @@
 
 package com.structureeng.persistence.dao.impl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.dao.DAO;
 import com.structureeng.persistence.dao.DAOErrorCode;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.model.AbstractModel;
-
-import com.google.common.base.Preconditions;
 
 import org.slf4j.Logger;
 
@@ -37,8 +37,8 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     private final Class<S> entityIdClass;
 
     public DAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
-        this.entityClass = Preconditions.checkNotNull(entityClass);
-        this.entityIdClass = Preconditions.checkNotNull(entityIdClass);
+        this.entityClass = checkNotNull(entityClass);
+        this.entityIdClass = checkNotNull(entityIdClass);
     }
 
     @Override
@@ -60,12 +60,12 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public void refresh(T entity) {
+    public final void refresh(T entity) {
         getEntityManager().refresh(entity);
     }
 
     @Override
-    public void refresh(T entity, LockModeType modeType) {
+    public final void refresh(T entity, LockModeType modeType) {
         getEntityManager().refresh(entity, modeType);
     }
 
@@ -96,7 +96,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
     }
 
     @Override
-    public void flush() {
+    public final void flush() {
         getEntityManager().flush();
     }
 
@@ -124,7 +124,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @return - the class of the dao
      */
-    public Class<T> getEntityClass() {
+    public final Class<T> getEntityClass() {
         return entityClass;
     }
 
@@ -133,7 +133,7 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @return - the class of the Id of an entity.
      */
-    public Class<S> getEntityIdClass() {
+    public final Class<S> getEntityIdClass() {
         return entityIdClass;
     }
 
@@ -156,8 +156,9 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      * 
      * @return new instance
      */
-    protected QueryContainer<Long, T> newQueryContainerCount() {
-        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(Long.class, getEntityClass());
+    public final QueryContainer<Long, T> newQueryContainerCount() {
+        QueryContainer<Long, T> qc = new QueryContainer<Long, T>(getEntityManager(), Long.class, 
+                getEntityClass());
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         return qc;
     }
@@ -169,8 +170,9 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *              {@code Root}.
      * @return new instance
      */
-    protected <TT> QueryContainer<Long, TT> newQueryContainerCount(Class<TT> clase) {
-        QueryContainer<Long, TT> qc = new QueryContainer<Long, TT>(Long.class, clase);
+    public final <TT> QueryContainer<Long, TT> newQueryContainerCount(Class<TT> clase) {
+        QueryContainer<Long, TT> qc = new QueryContainer<Long, TT>(getEntityManager(), Long.class, 
+                clase);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         return qc;
     }
@@ -183,8 +185,8 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *              {@code Root}.
      * @return new instance
      */
-    protected <R> QueryContainer<R, R> newQueryContainer(Class<R> clase) {
-        return new QueryContainer<R, R>(clase, clase);
+    public final <R> QueryContainer<R, R> newQueryContainer(Class<R> clase) {
+        return new QueryContainer<R, R>(getEntityManager(), clase, clase);
     }
 
     /**
@@ -192,18 +194,24 @@ public abstract class DAOImpl<T extends AbstractModel, S extends Serializable> i
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
-    protected class QueryContainer<R, F> {
+    public static class QueryContainer<R, F> {
 
+        private final EntityManager entityManager;
         private final CriteriaBuilder criteriaBuilder;
         private final CriteriaQuery<R> criteriaQuery;
         private final Root<F> root;        
                         
-        public QueryContainer(Class<R> result, Class<F> from) {
-            this.criteriaBuilder = getEntityManager().getCriteriaBuilder();
-            this.criteriaQuery = criteriaBuilder.createQuery(result);
-            this.root = criteriaQuery.from(from);
+        public QueryContainer(EntityManager entityManager, Class<R> result, Class<F> from) {
+            this.entityManager = checkNotNull(entityManager);
+            this.criteriaBuilder = checkNotNull(getEntityManager().getCriteriaBuilder());
+            this.criteriaQuery = checkNotNull(criteriaBuilder.createQuery(result));
+            this.root = checkNotNull(criteriaQuery.from(from));
         }
 
+        public EntityManager getEntityManager() {
+            return entityManager;
+        }
+                
         public CriteriaBuilder getCriteriaBuilder() {
             return criteriaBuilder;
         }

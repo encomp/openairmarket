@@ -47,8 +47,7 @@ public class MeasureUnitDAOImpl extends CatalogDAOImpl<MeasureUnit, Long, Intege
     }
 
     private long countRetailProductWithMeasureUnit(MeasureUnit measureUnit) {
-        QueryContainer<Long, RetailProduct> qc =
-                new QueryContainer<Long, RetailProduct>(Long.class, RetailProduct.class);
+        QueryContainer<Long, RetailProduct> qc = newQueryContainerCount(RetailProduct.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(RetailProduct_.measureUnit, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(

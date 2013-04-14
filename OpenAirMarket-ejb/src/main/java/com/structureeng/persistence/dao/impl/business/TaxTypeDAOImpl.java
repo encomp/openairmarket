@@ -48,8 +48,7 @@ public class TaxTypeDAOImpl extends CatalogDAOImpl<TaxType, Long, Integer> imple
     }
 
     private long countProductWithTaxType(TaxType taxType) {
-        QueryContainer<Long, Product> qc =
-                new QueryContainer<Long, Product>(Long.class, Product.class);
+        QueryContainer<Long, Product> qc = newQueryContainerCount(Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.taxType, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(

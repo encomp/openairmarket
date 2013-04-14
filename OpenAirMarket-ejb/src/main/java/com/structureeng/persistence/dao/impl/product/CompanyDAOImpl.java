@@ -44,8 +44,8 @@ public class CompanyDAOImpl extends CatalogDAOImpl<Company, Long, Integer> imple
     }
 
     private long countProductDefinitionWithCompany(final Company company) {
-        QueryContainer<Long, ProductDefinition> qc =
-                new QueryContainer<Long, ProductDefinition>(Long.class, ProductDefinition.class);
+        QueryContainer<Long, ProductDefinition> qc = 
+                newQueryContainerCount(ProductDefinition.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(ProductDefinition_.company, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(

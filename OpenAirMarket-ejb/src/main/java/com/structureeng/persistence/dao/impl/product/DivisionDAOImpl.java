@@ -46,8 +46,8 @@ public class DivisionDAOImpl extends CatalogDAOImpl<Division, Long, Integer>
     }
 
     private long countProductDefinitionWithDivision(Division division) {
-        QueryContainer<Long, ProductDefinition> qc =
-                new QueryContainer<Long, ProductDefinition>(Long.class, ProductDefinition.class);
+        QueryContainer<Long, ProductDefinition> qc = 
+                newQueryContainerCount(ProductDefinition.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(ProductDefinition_.division, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
