@@ -6,7 +6,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +37,7 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
     @Override
     public int hashCode() {
         if (getId() != null) {
-            return Objects.hashCode(getId());
+            return getId().hashCode();
         } else {
             return super.hashCode();
         }
@@ -56,7 +55,7 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
             return false;
         }
         AbstractModel other = (AbstractModel) obj;
-        return Objects.equals(getId(), other.getId());
+        return getId().equals(other.getId());
     }
     
     /**
