@@ -63,7 +63,7 @@ public abstract class ActiveDAOImpl<T extends AbstractActiveModel, S extends Ser
     }
 
     @Override
-    public final T find(S id) {
+    public T find(S id) {
         T entity = super.find(id);
         if (entity.getActive()) {
             return entity;

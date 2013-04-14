@@ -28,10 +28,11 @@ import javax.persistence.criteria.JoinType;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> implements
+public final class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> implements
         ProductDAO {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -41,7 +42,7 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     }
     
     @Override
-    protected DAOException validateUniqueKeysForPersistEvent(final Product entity) {        
+    protected final DAOException validateUniqueKeysForPersistEvent(final Product entity) {        
         long count = countProductstWithSameDefinitionAndType(entity);
         if (count > 0) {
             return DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
@@ -50,7 +51,7 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     }
     
     @Override
-    protected DAOException validateUniqueKeysForMergeEvent(final Product entity) {
+    protected final DAOException validateUniqueKeysForMergeEvent(final Product entity) {
         long count = countProductstWithSameDefinitionAndTypeButDiffId(entity);
         if (count > 0) {
             return DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
@@ -59,7 +60,7 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     }
 
     @Override
-    protected void validateForeignKeys(final Product entity) throws DAOException {
+    protected final void validateForeignKeys(final Product entity) throws DAOException {
         if (entity.getActive()) {
             DAOException daoException = null;
             if (countRetailProductsWithProduct(entity) > 0) {
@@ -120,12 +121,12 @@ public class ProductDAOImpl extends CatalogDAOImpl<Product, Long, BigInteger> im
     }
 
     @Override
-    protected EntityManager getEntityManager() {
+    protected final EntityManager getEntityManager() {
         return entityManager;
     }
 
     @Override
-    public Logger getLogger() {
+    public final Logger getLogger() {
         return logger;
     }
 }
