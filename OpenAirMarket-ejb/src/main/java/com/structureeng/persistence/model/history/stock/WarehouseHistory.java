@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.model.history.stock;
 
+import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.stock.Warehouse;
 
@@ -10,6 +11,7 @@ import com.google.common.base.Preconditions;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,6 +39,10 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idWarehouse", referencedColumnName = "idWarehouse", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Warehouse warehouse;
+    
+    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private Store store;
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
@@ -62,12 +68,20 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
         this.warehouse = Preconditions.checkNotNull(warehouse);
     }
 
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = Preconditions.checkNotNull(store);
+    }
+
     public Integer getReferenceId() {
         return referenceId;
     }
 
     public void setReferenceId(Integer referenceId) {
-        this.referenceId = Preconditions.checkNotNull(referenceId);
+        this.referenceId = checkPositive(referenceId);
     }
 
     public String getName() {
@@ -75,6 +89,6 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name);
+        this.name = checkNotEmpty(name);
     }
 }
