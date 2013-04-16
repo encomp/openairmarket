@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.model.history.stock;
 
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.stock.Warehouse;
@@ -27,7 +28,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "warehouseHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "warehouseHistoryUK", 
+        @UniqueConstraint(name = "warehouseHistoryUK",
             columnNames = {"idWarehouse", "idAudit"})})
 public class WarehouseHistory extends AbstractHistoryTenantModel {
 
@@ -39,7 +40,7 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idWarehouse", referencedColumnName = "idWarehouse", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Warehouse warehouse;
-    
+
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
@@ -90,5 +91,31 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
 
     public void setName(String name) {
         this.name = checkNotEmpty(name);
+    }
+
+    /**
+     * Factory class for the {@code WarehouseHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<Warehouse, WarehouseHistory> {
+
+        /**
+         * Create an instance of {@code WarehouseHistory}.
+         *
+         * @param warehouse the instance that will be used to create a new {@code Warehouse}.
+         * @return a new instance
+         */
+        @Override
+        public WarehouseHistory build(Warehouse warehouse) {
+            WarehouseHistory warehouseHistory = new WarehouseHistory();
+            warehouseHistory.setWarehouse(warehouse);
+            warehouseHistory.setReferenceId(warehouse.getReferenceId());
+            warehouseHistory.setName(warehouse.getName());
+            warehouseHistory.setStore(warehouse.getStore());
+            warehouseHistory.setActive(warehouse.getActive());
+            warehouseHistory.setVersion(warehouse.getVersion());
+            return warehouseHistory;
+        }
     }
 }

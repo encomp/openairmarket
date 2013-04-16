@@ -11,6 +11,7 @@ import com.structureeng.persistence.dao.ProductTypeDAO;
 import com.structureeng.persistence.dao.StoreDAO;
 import com.structureeng.persistence.dao.TaxTypeDAO;
 import com.structureeng.persistence.dao.TenantDAO;
+import com.structureeng.persistence.dao.WarehouseDAO;
 import com.structureeng.persistence.dao.impl.business.ProductTypeDAOImpl;
 import com.structureeng.persistence.dao.impl.business.StoreDAOImpl;
 import com.structureeng.persistence.dao.impl.business.TaxTypeDAOImpl;
@@ -19,6 +20,7 @@ import com.structureeng.persistence.dao.impl.product.DivisionDAOImpl;
 import com.structureeng.persistence.dao.impl.product.MeasureUnitDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDefinitionDAOImpl;
+import com.structureeng.persistence.dao.impl.stock.WarehouseDAOImpl;
 import com.structureeng.persistence.dao.impl.tenant.TenantDAOImpl;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -91,5 +93,11 @@ public class DAOModule {
     @Named("tenantDAO")
     public TenantDAO providesTenantDAO() {
         return new TenantDAOImpl();
+    }
+    
+    @Bean
+    @Named("warehouseDAO")
+    public WarehouseDAO providesWarehouseDAO() {
+        return new WarehouseDAOImpl();
     }
 }
