@@ -2,12 +2,15 @@
 
 package com.structureeng.persistence.model.history.stock;
 
+import static com.structureeng.persistence.model.AbstractModel.checkPositive;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Warehouse;
-
-import com.google.common.base.Preconditions;
 
 import java.math.BigDecimal;
 
@@ -69,7 +72,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Stock getStock() {
@@ -77,7 +80,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setStock(Stock stock) {
-        this.stock = Preconditions.checkNotNull(stock);
+        this.stock = checkNotNull(stock);
     }
 
     public Product getProduct() {
@@ -85,7 +88,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setProduct(Product product) {
-        this.product = Preconditions.checkNotNull(product);
+        this.product = checkNotNull(product);
     }
 
     public Warehouse getWarehouse() {
@@ -93,7 +96,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = Preconditions.checkNotNull(warehouse);
+        this.warehouse = checkNotNull(warehouse);
     }
 
     public BigDecimal getStockAmount() {
@@ -101,7 +104,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setStockAmount(BigDecimal stockAmount) {
-        this.stockAmount = Preconditions.checkNotNull(stockAmount);
+        this.stockAmount = checkNotNull(stockAmount);
     }
     
     public BigDecimal getMaximumStock() {
@@ -109,7 +112,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setMaximumStock(BigDecimal maximumStock) {
-        this.maximumStock = Preconditions.checkNotNull(maximumStock);
+        this.maximumStock = checkPositive(maximumStock);
     }
 
     public BigDecimal getMinimumStock() {
@@ -117,7 +120,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setMinimumStock(BigDecimal minimumStock) {
-        this.minimumStock = Preconditions.checkNotNull(minimumStock);
+        this.minimumStock = checkPositive(minimumStock);
     }
 
     public BigDecimal getWaste() {
@@ -125,6 +128,35 @@ public class StockHistory extends AbstractHistoryTenantModel {
     }
 
     public void setWaste(BigDecimal waste) {
-        this.waste = Preconditions.checkNotNull(waste);
+        this.waste = checkPositive(waste);
+    }
+    
+    /**
+     * Factory class for the {@code StockHistory} entities.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class Builder extends HistoryEntityBuilder<Stock, StockHistory> {
+
+        /**
+         * Create an instance of {@code StockHistory}.
+         *
+         * @param stock the instance that will be used to create a new {@code Stock}.
+         * @return a new instance
+         */
+        @Override
+        public StockHistory build(Stock stock) {
+            StockHistory stockHistory = new StockHistory();
+            stockHistory.setStock(stock);
+            stockHistory.setProduct(stock.getProduct());
+            stockHistory.setWarehouse(stock.getWarehouse());
+            stockHistory.setStockAmount(stock.getStockAmount());
+            stockHistory.setMaximumStock(stock.getMaximumStock());
+            stockHistory.setMinimumStock(stock.getMinimumStock());
+            stockHistory.setWaste(stock.getWaste());
+            stockHistory.setActive(stock.getActive());
+            stockHistory.setVersion(stock.getVersion());
+            return stockHistory;
+        }
     }
 }
