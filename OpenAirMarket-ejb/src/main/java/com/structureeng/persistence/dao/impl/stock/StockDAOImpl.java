@@ -2,7 +2,6 @@
 
 package com.structureeng.persistence.dao.impl.stock;
 
-import com.structureeng.persistence.dao.DAOErrorCode;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.dao.DAOException;
@@ -10,7 +9,6 @@ import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.impl.ActiveDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductErrorCode;
-import com.structureeng.persistence.model.ActiveModel;
 import com.structureeng.persistence.model.business.Store_;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.Product_;
@@ -48,15 +46,13 @@ public class StockDAOImpl implements StockDAO {
 
     @Override
     public void persist(Stock entity) throws DAOException {
-        isSameStore(entity);
-        isSameStatus(entity);
+        isSameStore(entity);        
         activeDAO.persist(entity);
     }
 
     @Override
     public Stock merge(Stock entity) throws DAOException {
         isSameStore(entity);
-        isSameStatus(entity);
         return activeDAO.merge(entity);
     }
 
@@ -154,34 +150,6 @@ public class StockDAOImpl implements StockDAO {
     @Override
     public boolean hasVersionChanged(Stock entity) throws DAOException {
         return activeDAO.hasVersionChanged(entity);
-    }
-    
-    /**
-     * Validates that the {@code Product}, {@code Warehouse} and {@code Store} have the same status 
-     * as the {@code Stock}. This method assumes that {@code Product} and {@code Warehouse} belongs 
-     * to the same {@code Store}.
-     * 
-     * @param stock the instance that will be validated.
-     * @throws DAOException
-     */
-    private void isSameStatus(final Stock stock) throws DAOException {
-        if (!(isSameStatus(stock, stock.getProduct()) && isSameStatus(stock, stock.getWarehouse()) 
-              && isSameStatus(stock, stock.getProduct().getStore()))) {
-            throw DAOException.Builder.build(DAOErrorCode.ACTIVE_STATUS_MISMATCH);
-        }        
-    }
-    
-    /**
-     * Compares if two {@code ActiveModel} instances has the same status. If the first instance is 
-     * active then the second one should be active as well. As a result, it will return true 
-     * otherwise it will return false.
-     * 
-     * @param one the first instance.
-     * @param two the second instance that will be compare against the first one.
-     * @return true if both instances has the same status.
-     */
-    private boolean isSameStatus(ActiveModel one, ActiveModel two) {
-        return one.getActive().equals(two.getActive());
     }
     
     /**

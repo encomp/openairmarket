@@ -46,7 +46,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
     }
     
      @Override
-    public void persist(T entity) throws DAOException {
+    public void persist(T entity) throws DAOException {         
         dao.persist(entity);
     }
 
