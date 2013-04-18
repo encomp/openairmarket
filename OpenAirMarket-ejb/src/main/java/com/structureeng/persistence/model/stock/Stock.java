@@ -2,8 +2,6 @@
 
 package com.structureeng.persistence.model.stock;
 
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.history.HistoryListener;

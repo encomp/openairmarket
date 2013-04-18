@@ -30,6 +30,11 @@ public enum DAOErrorCode implements ErrorPropertyProvider {
      */
     UNEXPECTED("dao.unexpected"),
     /**
+     * Property that specifies the error in case the unique has been violated for the name field 
+     * for an entity that is a catalog.
+     */
+    ACTIVE_STATUS_MISMATCH("dao.active.mismatch"),
+    /**
      * Property that specifies the error in case the unique has been violated for the reference id
      * field for an entity that is a catalog.
      */

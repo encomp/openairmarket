@@ -44,7 +44,7 @@ import javax.persistence.UniqueConstraint;
                 columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "productNameUK", columnNames = {"idTenant", "name"}),
         @UniqueConstraint(name = "productUK",
-                columnNames = {"idTenant", "idProductDefinition", "idProductType"})})
+                columnNames = {"idTenant", "idProductDefinition", "idProductType", "idStore"})})
 public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @Id

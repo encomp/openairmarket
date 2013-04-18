@@ -141,6 +141,8 @@ public final class ProductDAOImpl implements ProductDAO {
                 getEntityManager(), Product.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
+                    .equal(qc.getRoot().get(Product_.store), product.getStore()),
+                qc.getCriteriaBuilder()
                     .equal(qc.getRoot().get(Product_.productDefinition),
                         product.getProductDefinition()),
                 qc.getCriteriaBuilder()
@@ -152,6 +154,8 @@ public final class ProductDAOImpl implements ProductDAO {
         QueryContainer<Long, Product> qc = QueryContainer.newQueryContainerCount(
                 getEntityManager(), Product.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
+                qc.getCriteriaBuilder()
+                    .equal(qc.getRoot().get(Product_.store), product.getStore()),
                 qc.getCriteriaBuilder()
                     .equal(qc.getRoot().get(Product_.productType), product.getProductType()),
                 qc.getCriteriaBuilder()

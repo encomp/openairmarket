@@ -62,7 +62,7 @@ public class ProductDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInte
     @Override
     public Product build(BigInteger referenceId, String name) {
         Store store = new Store();
-        store.setId(1L);
+        store.setId(2L);
         ProductType productType = new ProductType();
         productType.setId(productTypes.get(referenceId));
         TaxType taxType = new TaxType();

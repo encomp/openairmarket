@@ -23,4 +23,6 @@ public interface ActiveDAO<T extends AbstractActiveModel, S extends Serializable
      * @return the number of inactive entities.
      */
     long countInactive();
+    //TODO (edgarrico) the active DAO should validate that associations among objects should have 
+    //the same status meaning if an instance is Active all its associated objects has to be active
 }

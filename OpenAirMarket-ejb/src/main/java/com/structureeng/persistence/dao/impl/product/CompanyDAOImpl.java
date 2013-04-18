@@ -118,7 +118,6 @@ public final class CompanyDAOImpl implements CompanyDAO {
     private long countProductDefinitionWithCompany(final Company company) {
         QueryContainer<Long, ProductDefinition> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
-        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(ProductDefinition_.company, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
