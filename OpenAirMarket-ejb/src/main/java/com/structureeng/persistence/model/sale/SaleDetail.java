@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "saleDetail", uniqueConstraints = {
         @UniqueConstraint(name = "saleDetailTenantPK",
-                columnNames = {"idTenant", "idSale", "idRetailProduct"})})
+                columnNames = {"idTenant", "idSale", "idProductPrice"})})
 public class SaleDetail extends AbstractTenantModel<Long> {
 
     @Id
@@ -37,7 +37,7 @@ public class SaleDetail extends AbstractTenantModel<Long> {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Sale sale;
 
-    @JoinColumn(name = "idRetailProduct", referencedColumnName = "idRetailProduct",
+    @JoinColumn(name = "idProductPrice", referencedColumnName = "idProductPrice",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductPrice retailProduct;
