@@ -44,29 +44,14 @@ import javax.persistence.UniqueConstraint;
                 columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "productNameUK", columnNames = {"idTenant", "name"}),
         @UniqueConstraint(name = "productUK",
-                columnNames = {"idTenant", "idProductDefinition", "idProductType", "idStore"})})
+                columnNames = {"idTenant", "idStore", "idProductDefinition", "idProductType"})})
 public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProduct")
     private Long id;
-        
-    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
-    private BigDecimal quantity;
-
-    @Column(name = "cost", nullable = false, precision = 13, scale = 4)
-    private BigDecimal cost;
-
-    @Column(name = "lastCost", nullable = false, precision = 13, scale = 4)
-    private BigDecimal lastCost;
     
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
-    
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
-
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
@@ -83,6 +68,19 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private TaxType taxType;
+    
+    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private MeasureUnit measureUnit;
+        
+    @Column(name = "autoStock", nullable = false)
+    private Boolean autoStock;
+    
+    @Column(name = "wastable", nullable = false)
+    private Boolean wastable;
+    
+    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
+    private BigDecimal quantity;
     
     @Override
     public Long getId() {
@@ -108,30 +106,6 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     public void setWastable(Boolean wastable) {
         this.wastable = Preconditions.checkNotNull(wastable);
-    }
-    
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = checkPositive(quantity);
-    }
-
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = checkPositive(cost);
-    }
-
-    public BigDecimal getLastCost() {
-        return lastCost;
-    }
-
-    public void setLastCost(BigDecimal lastCost) {
-        this.lastCost = checkPositive(lastCost);
     }
 
     public Store getStore() {
@@ -165,6 +139,22 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     public void setTaxType(TaxType taxType) {
         this.taxType = Preconditions.checkNotNull(taxType);
     }
+
+    public MeasureUnit getMeasureUnit() {
+        return measureUnit;
+    }
+
+    public void setMeasureUnit(MeasureUnit measureUnit) {
+        this.measureUnit = measureUnit;
+    }
+    
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = checkPositive(quantity);
+    }
     
     /**
      * Creates a new {@code Product.Builder} instance.
@@ -184,15 +174,14 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
         private BigInteger referenceId;
         private String name;
-        private BigDecimal quantity;
-        private BigDecimal cost;
-        private BigDecimal lastCost;
-        private Boolean autoStock = Boolean.FALSE;
-        private Boolean wastable = Boolean.FALSE;
-        private Store store;
         private ProductDefinition productDefinition;
+        private Store store;
         private ProductType productType;
         private TaxType taxType;
+        private MeasureUnit measureUnit;
+        private BigDecimal quantity;
+        private Boolean autoStock = Boolean.FALSE;
+        private Boolean wastable = Boolean.FALSE;
         
         public Product.Buider setReferenceId(BigInteger referenceId) {
             this.referenceId = checkPositive(referenceId);
@@ -201,31 +190,6 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
         public Product.Buider setName(String name) {
             this.name = checkNotEmpty(name);
-            return this;
-        }
-        
-        public Product.Buider setQuantity(BigDecimal quantity) {
-            this.quantity = checkPositive(quantity);
-            return this;
-        }
-
-        public Product.Buider setCost(BigDecimal cost) {
-            this.cost = checkPositive(cost);
-            return this;
-        }
-
-        public Product.Buider setLastCost(BigDecimal lastCost) {
-            this.lastCost = checkPositive(lastCost);
-            return this;
-        }
-
-        public Product.Buider setAutoStock(Boolean autoStock) {
-            this.autoStock = Preconditions.checkNotNull(autoStock);
-            return this;
-        }
-
-        public Product.Buider setWastable(Boolean wastable) {
-            this.wastable = Preconditions.checkNotNull(wastable);
             return this;
         }
         
@@ -249,6 +213,26 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             return this;
         }
         
+        public Product.Buider setMeasureUnit(MeasureUnit measureUnit) {
+            this.measureUnit = Preconditions.checkNotNull(measureUnit);
+            return this;
+        }
+        
+        public Product.Buider setQuantity(BigDecimal quantity) {
+            this.quantity = checkPositive(quantity);
+            return this;
+        }
+        
+        public Product.Buider setAutoStock(Boolean autoStock) {
+            this.autoStock = Preconditions.checkNotNull(autoStock);
+            return this;
+        }
+
+        public Product.Buider setWastable(Boolean wastable) {
+            this.wastable = Preconditions.checkNotNull(wastable);
+            return this;
+        }
+        
         /**
          * Creates a new instance of {@code Product}.
          *
@@ -259,14 +243,13 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             product.setReferenceId(referenceId);
             product.setName(name);
             product.setWastable(wastable);
-            product.setAutoStock(autoStock);
+            product.setAutoStock(autoStock);            
             product.setQuantity(quantity);
-            product.setCost(cost);
-            product.setLastCost(lastCost);
             product.setStore(store);
             product.setProductDefinition(productDefinition);
             product.setProductType(productType);
             product.setTaxType(taxType);
+            product.setMeasureUnit(measureUnit);
             return product;
         }
     }

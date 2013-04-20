@@ -11,8 +11,8 @@ import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.Product_;
 import com.structureeng.persistence.model.product.ProductDefinition_;
-import com.structureeng.persistence.model.product.RetailProduct;
-import com.structureeng.persistence.model.product.RetailProduct_;
+import com.structureeng.persistence.model.product.ProductPrice;
+import com.structureeng.persistence.model.product.ProductPrice_;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Stock_;
 
@@ -165,12 +165,12 @@ public final class ProductDAOImpl implements ProductDAO {
     }
 
     private long countRetailProductsWithProduct(final Product product) {
-        QueryContainer<Long, RetailProduct> qc = QueryContainer.newQueryContainerCount(
-                getEntityManager(), RetailProduct.class);
-        qc.getRoot().join(RetailProduct_.product, JoinType.INNER);
+        QueryContainer<Long, ProductPrice> qc = QueryContainer.newQueryContainerCount(
+                getEntityManager(), ProductPrice.class);
+        qc.getRoot().join(ProductPrice_.product, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(RetailProduct_.product), product),
+                .equal(qc.getRoot().get(ProductPrice_.product), product),
                 qc.getCriteriaBuilder()
                 .equal(qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
         return qc.getSingleResult();

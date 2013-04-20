@@ -10,6 +10,7 @@ import com.structureeng.persistence.model.business.ProductType;
 import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
+import com.structureeng.persistence.model.product.MeasureUnit;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.ProductDefinition;
 
@@ -50,27 +51,6 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
     
-    @Column(name = "idReference", nullable = false)
-    private BigInteger referenceId;
-    
-    @Column(name = "name", nullable = false)
-    private String name;
-       
-    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
-    private BigDecimal quantity;
-
-    @Column(name = "cost", nullable = false, precision = 13, scale = 4)
-    private BigDecimal cost;
-
-    @Column(name = "lastCost", nullable = false, precision = 13, scale = 4)
-    private BigDecimal lastCost;
-   
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
-    
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
-    
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
@@ -79,7 +59,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductDefinition productDefinition;
-
+    
     @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductType productType;
@@ -87,7 +67,26 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private TaxType taxType;
-
+    
+    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private MeasureUnit measureUnit;
+    
+    @Column(name = "idReference", nullable = false)
+    private BigInteger referenceId;
+    
+    @Column(name = "name", nullable = false)
+    private String name;
+       
+    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
+    private BigDecimal quantity;
+   
+    @Column(name = "autoStock", nullable = false)
+    private Boolean autoStock;
+    
+    @Column(name = "wastable", nullable = false)
+    private Boolean wastable;
+    
     @Override
     public Long getId() {
         return id;
@@ -145,22 +144,6 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setQuantity(BigDecimal quantity) {
         this.quantity = Preconditions.checkNotNull(quantity);
     }
-
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = Preconditions.checkNotNull(cost);
-    }
-
-    public BigDecimal getLastCost() {
-        return lastCost;
-    }
-
-    public void setLastCost(BigDecimal lastCost) {
-        this.lastCost = Preconditions.checkNotNull(lastCost);
-    }
     
     public Store getStore() {
         return store;
@@ -193,6 +176,14 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setTaxType(TaxType taxType) {
         this.taxType = Preconditions.checkNotNull(taxType);
     }
+
+    public MeasureUnit getMeasureUnit() {
+        return measureUnit;
+    }
+
+    public void setMeasureUnit(MeasureUnit measureUnit) {
+        this.measureUnit = measureUnit;
+    }
     
     /**
      * Factory class for the {@code ProductHistory} entities.
@@ -216,13 +207,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
             productHistory.setActive(product.getActive());
             productHistory.setAutoStock(product.getAutoStock());
             productHistory.setWastable(product.getWastable());
-            productHistory.setCost(product.getCost());
-            productHistory.setLastCost(product.getLastCost());
             productHistory.setQuantity(product.getQuantity());
             productHistory.setStore(product.getStore());
             productHistory.setProductDefinition(product.getProductDefinition());
             productHistory.setProductType(product.getProductType());
             productHistory.setTaxType(product.getTaxType());
+            productHistory.setMeasureUnit(product.getMeasureUnit());
             productHistory.setVersion(product.getVersion());
             return productHistory;
         }

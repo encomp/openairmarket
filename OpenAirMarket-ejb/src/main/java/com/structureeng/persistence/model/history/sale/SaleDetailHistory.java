@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.sale;
 
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.RetailProduct;
+import com.structureeng.persistence.model.product.ProductPrice;
 import com.structureeng.persistence.model.sale.Sale;
 import com.structureeng.persistence.model.sale.SaleDetail;
 
@@ -49,7 +49,7 @@ public class SaleDetailHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idRetailProduct", referencedColumnName = "idRetailProduct",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private RetailProduct retailProduct;
+    private ProductPrice retailProduct;
 
     @Column(name = "lineOrder", nullable = false)
     private int lineOrder;
@@ -92,11 +92,11 @@ public class SaleDetailHistory extends AbstractHistoryTenantModel {
         this.sale = Preconditions.checkNotNull(sale);
     }
 
-    public RetailProduct getRetailProduct() {
+    public ProductPrice getRetailProduct() {
         return retailProduct;
     }
 
-    public void setRetailProduct(RetailProduct retailProduct) {
+    public void setRetailProduct(ProductPrice retailProduct) {
         this.retailProduct = Preconditions.checkNotNull(retailProduct);
     }
 

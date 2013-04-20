@@ -9,9 +9,9 @@ import com.structureeng.persistence.dao.MeasureUnitDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.MeasureUnit;
+import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.ProductDefinition_;
-import com.structureeng.persistence.model.product.RetailProduct;
-import com.structureeng.persistence.model.product.RetailProduct_;
+import com.structureeng.persistence.model.product.Product_;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,13 +118,13 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     }
 
     private long countRetailProductWithMeasureUnit(MeasureUnit measureUnit) {
-        QueryContainer<Long, RetailProduct> qc = 
-                QueryContainer.newQueryContainerCount(getEntityManager(), RetailProduct.class);
+        QueryContainer<Long, Product> qc = 
+                QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        qc.getRoot().join(RetailProduct_.measureUnit, JoinType.INNER);
+        qc.getRoot().join(Product_.measureUnit, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(RetailProduct_.measureUnit), measureUnit),
+                    qc.getRoot().get(Product_.measureUnit), measureUnit),
                 qc.getCriteriaBuilder().equal(
                     qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
         return qc.getSingleResult();

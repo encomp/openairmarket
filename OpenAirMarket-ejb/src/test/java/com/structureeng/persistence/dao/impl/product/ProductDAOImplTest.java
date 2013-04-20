@@ -11,6 +11,7 @@ import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.product.ProductHistory;
 import com.structureeng.persistence.model.history.product.ProductHistory_;
+import com.structureeng.persistence.model.product.MeasureUnit;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.ProductDefinition;
 
@@ -67,13 +68,15 @@ public class ProductDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInte
         productType.setId(productTypes.get(referenceId));
         TaxType taxType = new TaxType();
         taxType.setId(5L);
+        MeasureUnit measureUnit = new MeasureUnit();
+        measureUnit.setId(1L);
         ProductDefinition productDefinition = new ProductDefinition();
         productDefinition.setId(1L);
         Product.Buider buider = Product.newBuilder();
         buider.setReferenceId(referenceId).setName(name).setAutoStock(Boolean.TRUE)
-              .setWastable(Boolean.TRUE).setQuantity(BigDecimal.ONE).setCost(BigDecimal.TEN)
-              .setLastCost(BigDecimal.TEN).setProductDefinition(productDefinition)
-              .setStore(store).setProductType(productType).setTaxType(taxType);
+              .setWastable(Boolean.TRUE).setQuantity(BigDecimal.ONE)
+              .setProductDefinition(productDefinition).setStore(store)
+              .setProductType(productType).setTaxType(taxType).setMeasureUnit(measureUnit);
         return buider.build();
     }
 

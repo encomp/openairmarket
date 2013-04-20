@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.sale;
 
 import com.structureeng.persistence.model.AbstractTenantModel;
-import com.structureeng.persistence.model.product.RetailProduct;
+import com.structureeng.persistence.model.product.ProductPrice;
 
 import com.google.common.base.Preconditions;
 
@@ -40,7 +40,7 @@ public class SaleDetail extends AbstractTenantModel<Long> {
     @JoinColumn(name = "idRetailProduct", referencedColumnName = "idRetailProduct",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private RetailProduct retailProduct;
+    private ProductPrice retailProduct;
 
     @Column(name = "lineOrder", nullable = false)
     private int lineOrder;
@@ -75,11 +75,11 @@ public class SaleDetail extends AbstractTenantModel<Long> {
         this.sale = Preconditions.checkNotNull(sale);
     }
 
-    public RetailProduct getRetailProduct() {
+    public ProductPrice getRetailProduct() {
         return retailProduct;
     }
 
-    public void setRetailProduct(RetailProduct retailProduct) {
+    public void setRetailProduct(ProductPrice retailProduct) {
         this.retailProduct = Preconditions.checkNotNull(retailProduct);
     }
 

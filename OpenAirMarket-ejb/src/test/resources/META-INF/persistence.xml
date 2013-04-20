@@ -20,7 +20,9 @@
         <class>com.structureeng.persistence.model.history.product.MeasureUnitHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductDefinitionHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductHistory</class>
-        <class>com.structureeng.persistence.model.history.product.RetailProductHistory</class>
+        <class>com.structureeng.persistence.model.history.product.ProductPriceHistory</class>
+        <class>com.structureeng.persistence.model.history.product.PurchasePriceHistory</class>
+        <class>com.structureeng.persistence.model.history.product.SalePriceHistory</class>
         <class>com.structureeng.persistence.model.history.sale.SaleDetailHistory</class>
         <class>com.structureeng.persistence.model.history.sale.SaleHistory</class>
         <class>com.structureeng.persistence.model.history.sale.SalePaymentHistory</class>
@@ -33,7 +35,9 @@
         <class>com.structureeng.persistence.model.product.MeasureUnit</class>
         <class>com.structureeng.persistence.model.product.Product</class>
         <class>com.structureeng.persistence.model.product.ProductDefinition</class>
-        <class>com.structureeng.persistence.model.product.RetailProduct</class>
+        <class>com.structureeng.persistence.model.product.ProductPrice</class>
+        <class>com.structureeng.persistence.model.product.PurchasePrice</class>
+        <class>com.structureeng.persistence.model.product.SalePrice</class>
         <class>com.structureeng.persistence.model.sale.Sale</class>
         <class>com.structureeng.persistence.model.sale.SaleDetail</class>
         <class>com.structureeng.persistence.model.sale.SalePayment</class>
