@@ -32,7 +32,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "productPrice", uniqueConstraints = {
         @UniqueConstraint(name = "retailProductTenantPK",
                 columnNames = {"idTenant", "idReference"}),
-        @UniqueConstraint(name = "retailProductPK", 
+        @UniqueConstraint(name = "retailProductPK",
                 columnNames = {"idTenant", "idProduct", "priceType", "quantity"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "priceType", discriminatorType = DiscriminatorType.STRING, length = 50)
@@ -46,10 +46,10 @@ public abstract class ProductPrice extends AbstractActiveModel<Long> {
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
-    
+
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
-    
+
     @Column(name = "price", nullable = false, precision = 13, scale = 4)
     private BigDecimal price;
 

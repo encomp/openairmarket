@@ -27,13 +27,13 @@ import javax.persistence.EntityManagerFactory;
  */
 @Singleton
 public class EntityManagerTenantAwareProvider implements Provider<EntityManager> {
-    
+
     private static final String MULTITENANT = "eclipselink.tenant-id";
-    private final Logger logger = LoggerFactory.getLogger(Provider.class);    
+    private final Logger logger = LoggerFactory.getLogger(Provider.class);
     private final EntityManagerFactory entityManagerFactory;
     private final Map<String, Object> jpaPropertyMap;
-    
-    public EntityManagerTenantAwareProvider(EntityManagerFactory entityManagerFactory, 
+
+    public EntityManagerTenantAwareProvider(EntityManagerFactory entityManagerFactory,
             Map<String, Object> jpaPropertyMap) {
         this.entityManagerFactory = Preconditions.checkNotNull(entityManagerFactory);
         this.jpaPropertyMap = jpaPropertyMap;
@@ -61,11 +61,11 @@ public class EntityManagerTenantAwareProvider implements Provider<EntityManager>
         return (!CollectionUtils.isEmpty(properties)
                 ? emf.createEntityManager(properties) : emf.createEntityManager());
     }
-    
+
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
-    
+
     public Map<String, Object> getJpaPropertyMap() {
         return jpaPropertyMap;
     }

@@ -25,14 +25,14 @@ import javax.persistence.PersistenceContext;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public final class StoreDAOImpl implements StoreDAO {
-    
+
     private EntityManager entityManager;
     private final CatalogDAOImpl<Store, Long, Integer> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     public StoreDAOImpl() {
-        catalogDAO = 
+        catalogDAO =
                 new CatalogDAOImpl<Store, Long, Integer>(Store.class, Long.class, Integer.class);
     }
 
@@ -70,7 +70,7 @@ public final class StoreDAOImpl implements StoreDAO {
     public Store find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public Store findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -90,7 +90,7 @@ public final class StoreDAOImpl implements StoreDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -105,7 +105,7 @@ public final class StoreDAOImpl implements StoreDAO {
     public boolean hasVersionChanged(Store entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
-      
+
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = checkNotNull(entityManager);
@@ -128,5 +128,5 @@ public final class StoreDAOImpl implements StoreDAO {
      */
     public Logger getLogger() {
         return logger;
-    }    
+    }
 }

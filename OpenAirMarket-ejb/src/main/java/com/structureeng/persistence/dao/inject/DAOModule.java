@@ -39,27 +39,27 @@ import javax.inject.Named;
  */
 @Configuration
 public class DAOModule {
-    
+
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("companyDAO")
     public CompanyDAO providesCompanyDAO() {
         return new CompanyDAOImpl();
     }
-    
+
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("divisionDAO")
     public DivisionDAO providesDivisionDAO() {
         return new DivisionDAOImpl();
     }
-    
+
     @Bean
     @Named("packageDAO")
     public MeasureUnitDAO providesPackageDAO() {
         return new MeasureUnitDAOImpl();
     }
-    
+
     @Bean
     @Named("productDefinitionDAO")
     public ProductDefinitionDAO providesProductDefinitionDAO() {
@@ -71,19 +71,19 @@ public class DAOModule {
     public ProductDAO providesProductDAO() {
         return new ProductDAOImpl();
     }
-    
+
     @Bean
     @Named("productTypeDAO")
     public ProductTypeDAO providesProductTypeDAO() {
         return new ProductTypeDAOImpl();
     }
-    
+
     @Bean
     @Named("storeDAO")
     public StoreDAO providesStoreDAO() {
         return new StoreDAOImpl();
     }
-    
+
     @Bean
     @Named("stockDAO")
     public StockDAO providesStockDAO() {
@@ -95,14 +95,14 @@ public class DAOModule {
     public TaxTypeDAO providesTaxTypeDAO() {
         return new TaxTypeDAOImpl();
     }
-    
+
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("tenantDAO")
     public TenantDAO providesTenantDAO() {
         return new TenantDAOImpl();
     }
-    
+
     @Bean
     @Named("warehouseDAO")
     public WarehouseDAO providesWarehouseDAO() {

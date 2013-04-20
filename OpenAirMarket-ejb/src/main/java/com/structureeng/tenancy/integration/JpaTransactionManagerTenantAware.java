@@ -18,13 +18,13 @@ public class JpaTransactionManagerTenantAware extends JpaTransactionManager {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Provider<EntityManager> entityManagerProvider;
-    
+
     public JpaTransactionManagerTenantAware(Provider<EntityManager> entityManagerProvider) {
         this.entityManagerProvider = entityManagerProvider;
     }
 
     @Override
-    protected EntityManager createEntityManagerForTransaction() {        
+    protected EntityManager createEntityManagerForTransaction() {
         return entityManagerProvider.get();
     }
 }

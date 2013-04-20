@@ -68,7 +68,7 @@ public class RuleDetail extends AbstractCatalogTenantModel<Long, String> {
     public void setRuleDetail(RuleDetail ruleDetail) {
         this.ruleDetail = ruleDetail;
     }
-    
+
     public BigDecimal getBigDecimalValue() {
         return new BigDecimal(getName());
     }

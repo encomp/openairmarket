@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "rule", uniqueConstraints = {
-        @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType", 
+        @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType",
             "idReference"}),
         @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "name"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -42,7 +42,7 @@ public abstract class Rule extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Column(name = "description", nullable = false)
     private String description;
-    
+
     @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Rule parentRule;

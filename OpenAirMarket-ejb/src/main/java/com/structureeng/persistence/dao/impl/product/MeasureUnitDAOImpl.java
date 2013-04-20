@@ -37,10 +37,10 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
 
     @Inject
     public MeasureUnitDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<MeasureUnit, Long, Integer>(MeasureUnit.class, Long.class, 
+        catalogDAO = new CatalogDAOImpl<MeasureUnit, Long, Integer>(MeasureUnit.class, Long.class,
                 Integer.class);
     }
-    
+
     @Override
     public void persist(MeasureUnit entity) throws DAOException {
         catalogDAO.persist(entity);
@@ -81,7 +81,7 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     public MeasureUnit find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public MeasureUnit findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -101,7 +101,7 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -118,7 +118,7 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     }
 
     private long countRetailProductWithMeasureUnit(MeasureUnit measureUnit) {
-        QueryContainer<Long, Product> qc = 
+        QueryContainer<Long, Product> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.measureUnit, JoinType.INNER);

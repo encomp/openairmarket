@@ -41,12 +41,12 @@ public final class ProductDAOImpl implements ProductDAO {
 
     @Inject
     public ProductDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<Product, Long, BigInteger>(Product.class, Long.class, 
+        catalogDAO = new CatalogDAOImpl<Product, Long, BigInteger>(Product.class, Long.class,
                 BigInteger.class);
     }
 
     @Override
-    public void persist(Product entity) throws DAOException {        
+    public void persist(Product entity) throws DAOException {
         long count = countProductstWithSameDefinitionAndType(entity);
         if (count > 0) {
             throw DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
@@ -100,7 +100,7 @@ public final class ProductDAOImpl implements ProductDAO {
     public Product find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public Product findByReferenceId(BigInteger referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -120,7 +120,7 @@ public final class ProductDAOImpl implements ProductDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -135,7 +135,7 @@ public final class ProductDAOImpl implements ProductDAO {
     public boolean hasVersionChanged(Product entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
-    
+
     private long countProductstWithSameDefinitionAndType(Product product) {
         QueryContainer<Long, Product> qc = QueryContainer.newQueryContainerCount(
                 getEntityManager(), Product.class);

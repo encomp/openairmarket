@@ -46,7 +46,7 @@ public class StockDAOImpl implements StockDAO {
 
     @Override
     public void persist(Stock entity) throws DAOException {
-        isSameStore(entity);        
+        isSameStore(entity);
         activeDAO.persist(entity);
     }
 
@@ -90,7 +90,7 @@ public class StockDAOImpl implements StockDAO {
     public Stock find(Product product, Warehouse warehouse) {
         return find(Boolean.TRUE, product, warehouse);
     }
-    
+
     @Override
     public Stock findInactive(Product product, Warehouse warehouse) {
         return find(Boolean.FALSE, product, warehouse);
@@ -151,12 +151,12 @@ public class StockDAOImpl implements StockDAO {
     public boolean hasVersionChanged(Stock entity) throws DAOException {
         return activeDAO.hasVersionChanged(entity);
     }
-    
+
     /**
      * Validates that the {@code Product} and {@code Warehosue} belongs to the same {@code Store}.
-     * 
+     *
      * @param stock         the instance that will be validated.
-     * @throws DAOException in case the {@code Store} of the {@code Product} and the 
+     * @throws DAOException in case the {@code Store} of the {@code Product} and the
      *                      {@code Warehouse} are different.
      */
     private void isSameStore(Stock stock) throws DAOException {

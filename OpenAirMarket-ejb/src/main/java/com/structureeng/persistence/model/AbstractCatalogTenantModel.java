@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}.
- * @param <RID> specifies the {@link Class} of the referenceId for the 
+ * @param <RID> specifies the {@link Class} of the referenceId for the
  *        {@link javax.persistence.Entity}.
  */
 @Multitenant(MultitenantType.SINGLE_TABLE)

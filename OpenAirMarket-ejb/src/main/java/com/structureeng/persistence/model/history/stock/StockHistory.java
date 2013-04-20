@@ -55,13 +55,13 @@ public class StockHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "stock", nullable = false, precision = 13, scale = 4)
     private BigDecimal stockAmount;
-    
+
     @Column(name = "maximumStock", nullable = false, precision = 13, scale = 4)
     private BigDecimal maximumStock;
 
     @Column(name = "minimumStock", nullable = false, precision = 13, scale = 4)
     private BigDecimal minimumStock;
-    
+
     @Column(name = "waste", nullable = false, precision = 13, scale = 4)
     private BigDecimal waste;
 
@@ -106,7 +106,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     public void setStockAmount(BigDecimal stockAmount) {
         this.stockAmount = checkNotNull(stockAmount);
     }
-    
+
     public BigDecimal getMaximumStock() {
         return maximumStock;
     }
@@ -130,7 +130,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
     public void setWaste(BigDecimal waste) {
         this.waste = checkPositive(waste);
     }
-    
+
     /**
      * Factory class for the {@code StockHistory} entities.
      *

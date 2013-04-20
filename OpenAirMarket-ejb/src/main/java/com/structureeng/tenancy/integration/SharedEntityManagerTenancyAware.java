@@ -13,13 +13,13 @@ import javax.persistence.EntityManager;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class SharedEntityManagerTenancyAware extends SharedEntityManagerBean {
-        
+
     private final Provider<EntityManager> entityManagerProvider;
-    
+
     public SharedEntityManagerTenancyAware(Provider<EntityManager> entityManagerProvider) {
-        this.entityManagerProvider = entityManagerProvider;        
+        this.entityManagerProvider = entityManagerProvider;
     }
-    
+
     @Override
     protected EntityManager createEntityManager() throws IllegalStateException {
         return entityManagerProvider.get();

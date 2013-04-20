@@ -41,7 +41,7 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "idParentDivision", referencedColumnName = "idDivision", nullable = true)
     private Division parentDivision;
-    
+
     @Override
     public Long getId() {
         return id;

@@ -39,7 +39,7 @@ public abstract class TenancyCallable<T> implements Callable<T>, TenantIdentific
 
     @Override
     public final T call() throws Exception {
-        final TenancyContext previousTenancyContext = 
+        final TenancyContext previousTenancyContext =
                 TenancyContextHolder.getCurrentTenancyContext();
         TenancyContextHolder.registerTenancyContext(new TenancyContext(tenant));
         try {

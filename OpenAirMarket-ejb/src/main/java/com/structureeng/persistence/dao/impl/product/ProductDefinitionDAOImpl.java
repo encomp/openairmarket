@@ -34,12 +34,12 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
 
     private EntityManager entityManager;
     private final CatalogDAOImpl<ProductDefinition, Long, BigInteger> catalogDAO;
-    private final Logger logger = LoggerFactory.getLogger(getClass());    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     public ProductDefinitionDAOImpl() {
-        catalogDAO = 
-                new CatalogDAOImpl<ProductDefinition, Long, BigInteger>(ProductDefinition.class, 
+        catalogDAO =
+                new CatalogDAOImpl<ProductDefinition, Long, BigInteger>(ProductDefinition.class,
                     Long.class, BigInteger.class);
     }
 
@@ -91,7 +91,7 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
     public ProductDefinition find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public ProductDefinition findByReferenceId(BigInteger referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -111,7 +111,7 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -128,7 +128,7 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
     }
 
     private long countEntitiesWithKey(ProductDefinition productDefinition) {
-        QueryContainer<Long, ProductDefinition> qc = 
+        QueryContainer<Long, ProductDefinition> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
                         qc.getRoot().get(ProductDefinition_.key), productDefinition.getKey()));
@@ -136,18 +136,18 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
     }
 
     private long countEntitiesWithSameKeyButDiffReferenceId(ProductDefinition entity) {
-        QueryContainer<Long, ProductDefinition> qc = 
+        QueryContainer<Long, ProductDefinition> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
-                qc.getCriteriaBuilder().equal(qc.getRoot().get(ProductDefinition_.key), 
+                qc.getCriteriaBuilder().equal(qc.getRoot().get(ProductDefinition_.key),
                     entity.getName()),
-                qc.getCriteriaBuilder().notEqual(qc.getRoot().get(ProductDefinition_.referenceId), 
+                qc.getCriteriaBuilder().notEqual(qc.getRoot().get(ProductDefinition_.referenceId),
                     entity.getReferenceId())));
         return qc.getSingleResult();
     }
 
     private long countProductWithProductDefinition(final ProductDefinition entity) {
-        QueryContainer<Long, Product> qc = 
+        QueryContainer<Long, Product> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.productDefinition, JoinType.INNER);
@@ -158,7 +158,7 @@ public final class ProductDefinitionDAOImpl implements ProductDefinitionDAO {
                     .equal(qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
         return qc.getSingleResult();
     }
-    
+
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = checkNotNull(entityManager);

@@ -65,7 +65,7 @@ public class ErrorCode {
         ErrorCode other = (ErrorCode) obj;
         return Objects.equals(getCode(), other.getCode());
     }
-    
+
     public static ErrorCode.Builder newBuilder() {
         return new ErrorCode.Builder();
     }
@@ -80,10 +80,10 @@ public class ErrorCode {
         private int code;
         private String name;
         private String description;
-        
+
         /**
          * Creates a new instance of {@code ErrorCode}.
-         * 
+         *
          * @param errorCodeProperty the properties that will be used to create the error.
          * @param resourceBundle the resource in which the properties are being stored.
          * @return a new instance.

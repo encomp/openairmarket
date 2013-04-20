@@ -51,37 +51,37 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProduct")
     private Long id;
-    
+
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
-    
+
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private ProductDefinition productDefinition;
-    
+
     @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private ProductType productType;
-    
+
     @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private TaxType taxType;
-    
+
     @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private MeasureUnit measureUnit;
-        
+
     @Column(name = "autoStock", nullable = false)
     private Boolean autoStock;
-    
+
     @Column(name = "wastable", nullable = false)
     private Boolean wastable;
-    
+
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
-    
+
     @Override
     public Long getId() {
         return id;
@@ -91,7 +91,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     public void setId(Long id) {
         this.id = Preconditions.checkNotNull(id);
     }
-    
+
     public Boolean getAutoStock() {
         return autoStock;
     }
@@ -147,7 +147,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     public void setMeasureUnit(MeasureUnit measureUnit) {
         this.measureUnit = measureUnit;
     }
-    
+
     public BigDecimal getQuantity() {
         return quantity;
     }
@@ -155,7 +155,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     public void setQuantity(BigDecimal quantity) {
         this.quantity = checkPositive(quantity);
     }
-    
+
     /**
      * Creates a new {@code Product.Builder} instance.
      *
@@ -182,7 +182,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         private BigDecimal quantity;
         private Boolean autoStock = Boolean.FALSE;
         private Boolean wastable = Boolean.FALSE;
-        
+
         public Product.Buider setReferenceId(BigInteger referenceId) {
             this.referenceId = checkPositive(referenceId);
             return this;
@@ -192,7 +192,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             this.name = checkNotEmpty(name);
             return this;
         }
-        
+
         public Product.Buider setStore(Store store) {
             this.store = Preconditions.checkNotNull(store);
             return this;
@@ -212,17 +212,17 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             this.taxType = Preconditions.checkNotNull(taxType);
             return this;
         }
-        
+
         public Product.Buider setMeasureUnit(MeasureUnit measureUnit) {
             this.measureUnit = Preconditions.checkNotNull(measureUnit);
             return this;
         }
-        
+
         public Product.Buider setQuantity(BigDecimal quantity) {
             this.quantity = checkPositive(quantity);
             return this;
         }
-        
+
         public Product.Buider setAutoStock(Boolean autoStock) {
             this.autoStock = Preconditions.checkNotNull(autoStock);
             return this;
@@ -232,7 +232,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             this.wastable = Preconditions.checkNotNull(wastable);
             return this;
         }
-        
+
         /**
          * Creates a new instance of {@code Product}.
          *
@@ -243,7 +243,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             product.setReferenceId(referenceId);
             product.setName(name);
             product.setWastable(wastable);
-            product.setAutoStock(autoStock);            
+            product.setAutoStock(autoStock);
             product.setQuantity(quantity);
             product.setStore(store);
             product.setProductDefinition(productDefinition);

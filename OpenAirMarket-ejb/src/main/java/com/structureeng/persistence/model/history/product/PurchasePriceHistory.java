@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("PURCHASE_PRICE")
 public class PurchasePriceHistory extends ProductPriceHistory {
-    
+
     /**
      * Factory class for the {@code PurchasePriceHistory} entities.
      *
@@ -26,7 +26,7 @@ public class PurchasePriceHistory extends ProductPriceHistory {
         /**
          * Create an instance of {@code PurchasePriceHistory}.
          *
-         * @param purchasePrice the instance that will be used to create a new 
+         * @param purchasePrice the instance that will be used to create a new
          *                      {@code PurchasePrice}.
          * @return a new instance
          */

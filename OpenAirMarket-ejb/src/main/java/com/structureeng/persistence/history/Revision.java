@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the builder class of a 
+ * Specifies the builder class of a
  * {@code com.structureeng.persistence.history.HistoryEntity}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)

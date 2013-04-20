@@ -13,14 +13,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 /**
- * Transaction synchronization call backs that persist the revision entities once a 
+ * Transaction synchronization call backs that persist the revision entities once a
  * transaction has been committed.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class HistoryTransactionSynchronization implements TransactionSynchronization {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());        
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Provider<EntityManager> entityManagerProvider;
     private boolean visited;
 

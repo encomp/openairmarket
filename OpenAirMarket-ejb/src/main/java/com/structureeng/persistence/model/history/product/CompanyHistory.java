@@ -34,14 +34,14 @@ public class CompanyHistory extends AbstractHistoryTenantModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCompanyHistory")
     private Long id;
-    
+
     @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
-    
+
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
-    
+
     @Column(name = "name", nullable = false)
     private String name;
 

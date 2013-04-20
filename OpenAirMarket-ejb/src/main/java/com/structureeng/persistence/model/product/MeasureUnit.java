@@ -36,13 +36,13 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idMeasureUnit")
     private Long id;
-            
+
     @Column(name = "countable", nullable = false)
     private Boolean countable;
-    
+
     @Column(name = "expire", nullable = false)
     private Boolean expire;
-        
+
     @Override
     public Long getId() {
         return id;
@@ -52,7 +52,7 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
     public void setId(Long id) {
         this.id = checkPositive(id);
     }
-    
+
     public Boolean getCountable() {
         return countable;
     }
@@ -68,7 +68,7 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
     public void setExpire(Boolean expire) {
         this.expire = Preconditions.checkNotNull(expire);
     }
-            
+
     /**
      * Creates a new {@code Builder} instance.
      *
@@ -99,7 +99,7 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
             this.name = checkNotEmpty(name);
             return this;
         }
-        
+
         public MeasureUnit.Buider setCountable(Boolean countable) {
             this.countable = Preconditions.checkNotNull(countable);
             return this;

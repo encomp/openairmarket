@@ -38,7 +38,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(name = "stockTenantPK",
                 columnNames = {"idTenant", "idWareHouse", "idProduct"})})
 public class Stock extends AbstractTenantModel<Long> {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idStock")
@@ -54,16 +54,16 @@ public class Stock extends AbstractTenantModel<Long> {
 
     @Column(name = "stock", nullable = false, precision = 13, scale = 4)
     private BigDecimal stockAmount;
-            
+
     @Column(name = "maximumStock", nullable = false, precision = 13, scale = 4)
     private BigDecimal maximumStock;
 
     @Column(name = "minimumStock", nullable = false, precision = 13, scale = 4)
     private BigDecimal minimumStock;
-    
+
     @Column(name = "waste", nullable = false, precision = 13, scale = 4)
     private BigDecimal waste;
-                    
+
     @Override
     public Long getId() {
         return id;
@@ -97,7 +97,7 @@ public class Stock extends AbstractTenantModel<Long> {
     public void setStockAmount(BigDecimal stockAmount) {
         this.stockAmount = checkNotNull(stockAmount);
     }
-    
+
     public BigDecimal getMaximumStock() {
         return maximumStock;
     }
@@ -121,7 +121,7 @@ public class Stock extends AbstractTenantModel<Long> {
     public void setWaste(BigDecimal waste) {
         this.waste = checkPositive(waste);
     }
-    
+
     /**
      * Creates a new {@code Builder} instance.
      *
@@ -130,16 +130,16 @@ public class Stock extends AbstractTenantModel<Long> {
     public static Stock.Buider newBuilder() {
         return new Stock.Buider();
     }
-    
+
     /**
      * Builder class that creates instances of {@code Stock}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
     public static class Buider {
-        
+
         private Product product;
-        private Warehouse warehouse;        
+        private Warehouse warehouse;
         private BigDecimal stockAmount;
         private BigDecimal maximumStock;
         private BigDecimal minimumStock;
@@ -154,22 +154,22 @@ public class Stock extends AbstractTenantModel<Long> {
             this.warehouse = checkNotNull(warehouse);
             return this;
         }
-        
+
         public Stock.Buider setStockAmount(BigDecimal stockAmount) {
             this.stockAmount = checkNotNull(stockAmount);
             return this;
         }
-        
+
         public Stock.Buider setMaximumStock(BigDecimal maximumStock) {
             this.maximumStock = checkPositive(maximumStock);
             return this;
         }
-        
+
         public Stock.Buider setMinimumStock(BigDecimal minimumStock) {
             this.minimumStock = checkPositive(minimumStock);
             return this;
         }
-        
+
         public Stock.Buider setWaste(BigDecimal waste) {
             this.waste = checkPositive(waste);
             return this;

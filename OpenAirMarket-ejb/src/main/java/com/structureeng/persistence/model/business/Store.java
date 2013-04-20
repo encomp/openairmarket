@@ -36,7 +36,7 @@ public class Store extends AbstractCatalogTenantModel<Long, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idStore")
     private Long id;
-        
+
     @Override
     public Long getId() {
         return id;
@@ -46,7 +46,7 @@ public class Store extends AbstractCatalogTenantModel<Long, Integer> {
     public void setId(Long id) {
         this.id = checkPositive(id);
     }
-    
+
     /**
      * Creates a new {@code Builder} instance.
      *

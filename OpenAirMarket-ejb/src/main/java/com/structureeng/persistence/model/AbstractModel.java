@@ -29,7 +29,7 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
     public Long getVersion() {
         return version;
     }
-    
+
     public void setVersion(Long version) {
         this.version = version;
     }
@@ -57,29 +57,29 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
         AbstractModel other = (AbstractModel) obj;
         return getId().equals(other.getId());
     }
-    
+
     /**
-     * Ensures that an object reference passed as a parameter to the calling method is 
+     * Ensures that an object reference passed as a parameter to the calling method is
      * not null, as well as is not negative.
-     * 
+     *
      * @param <E> a Number
      * @param value an object reference
-     * @return the reference that was validated 
+     * @return the reference that was validated
      */
     public static <E extends Number> E checkPositive(E value) {
-        Preconditions.checkNotNull(value);        
+        Preconditions.checkNotNull(value);
         Preconditions.checkState(value.doubleValue() > 0.0);
         return value;
     }
-    
+
     /**
-     * Ensures that an object reference passed as a parameter to the calling method is 
+     * Ensures that an object reference passed as a parameter to the calling method is
      * not null, as well as is not empty.
-     * 
+     *
      * @param value an object reference
-     * @return the reference that was validated 
+     * @return the reference that was validated
      */
-    public static String checkNotEmpty(String value) {        
+    public static String checkNotEmpty(String value) {
         Preconditions.checkState(!Strings.isNullOrEmpty(value));
         return value.trim().toUpperCase();
     }

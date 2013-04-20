@@ -12,5 +12,5 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("PURCHASE_PRICE")
-public class PurchasePrice extends ProductPrice {    
+public class PurchasePrice extends ProductPrice {
 }

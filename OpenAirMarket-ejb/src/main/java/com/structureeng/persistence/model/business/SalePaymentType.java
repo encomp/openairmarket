@@ -47,7 +47,7 @@ public class SalePaymentType extends Rule {
                 {PaymentAttributes.MAXIMUM_AMOUNT, PaymentAttributes.MINIMUM_AMOUNT};
         private final Map<PaymentAttributes, BigDecimal> paymentAttributes =
                 new HashMap<PaymentAttributes, BigDecimal>();
-        private Integer referenceId;        
+        private Integer referenceId;
         private String name;
         private String description;
 
@@ -68,7 +68,7 @@ public class SalePaymentType extends Rule {
             this.name = Preconditions.checkNotNull(name);
             return this;
         }
-        
+
         public String getDescription() {
             return description;
         }
@@ -105,7 +105,7 @@ public class SalePaymentType extends Rule {
         public SalePaymentType build() {
             Preconditions.checkNotNull(referenceId);
             Preconditions.checkNotNull(name);
-            Preconditions.checkNotNull(description);            
+            Preconditions.checkNotNull(description);
             Preconditions.checkState(paymentAttributes.size() == 2);
             SalePaymentType salePaymentType = new SalePaymentType();
             salePaymentType.setReferenceId(referenceId);

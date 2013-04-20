@@ -38,7 +38,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "productHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "productHistoryUK", 
+        @UniqueConstraint(name = "productHistoryUK",
             columnNames = {"idProduct", "idAudit"})})
 public class ProductHistory extends AbstractHistoryTenantModel {
 
@@ -50,43 +50,43 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
-    
+
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
-    
+
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductDefinition productDefinition;
-    
+
     @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductType productType;
-    
+
     @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private TaxType taxType;
-    
+
     @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private MeasureUnit measureUnit;
-    
+
     @Column(name = "idReference", nullable = false)
     private BigInteger referenceId;
-    
+
     @Column(name = "name", nullable = false)
     private String name;
-       
+
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
-   
+
     @Column(name = "autoStock", nullable = false)
     private Boolean autoStock;
-    
+
     @Column(name = "wastable", nullable = false)
     private Boolean wastable;
-    
+
     @Override
     public Long getId() {
         return id;
@@ -104,7 +104,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setProduct(Product product) {
         this.product = Preconditions.checkNotNull(product);
     }
-    
+
     public BigInteger getReferenceId() {
         return referenceId;
     }
@@ -136,7 +136,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setWastable(Boolean wastable) {
         this.wastable = Preconditions.checkNotNull(wastable);
     }
-    
+
     public BigDecimal getQuantity() {
         return quantity;
     }
@@ -144,7 +144,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setQuantity(BigDecimal quantity) {
         this.quantity = Preconditions.checkNotNull(quantity);
     }
-    
+
     public Store getStore() {
         return store;
     }
@@ -152,7 +152,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setStore(Store store) {
         this.store = Preconditions.checkNotNull(store);
     }
-    
+
     public ProductDefinition getProductDefinition() {
         return productDefinition;
     }
@@ -168,7 +168,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setProductType(ProductType productType) {
         this.productType = Preconditions.checkNotNull(productType);
     }
-    
+
     public TaxType getTaxType() {
         return taxType;
     }
@@ -184,14 +184,14 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     public void setMeasureUnit(MeasureUnit measureUnit) {
         this.measureUnit = measureUnit;
     }
-    
+
     /**
      * Factory class for the {@code ProductHistory} entities.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
     public static class Builder extends HistoryEntityBuilder<Product, ProductHistory> {
-        
+
         /**
          * Create an instance of {@code ProductHistory}.
          *

@@ -35,14 +35,14 @@ public class Tenant extends AbstractCatalogModel<Integer, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTenant")
-    private Integer id;   
+    private Integer id;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)
     private Set<TenantHistory> tenantHistories;
 
-    public Tenant() {        
+    public Tenant() {
     }
-    
+
     @Override
     public Integer getId() {
         return id;
@@ -60,28 +60,28 @@ public class Tenant extends AbstractCatalogModel<Integer, Integer> {
     public void setTenantHistories(Set<TenantHistory> tenantHistories) {
         this.tenantHistories = tenantHistories;
     }
-    
+
     @Override
     public String toString() {
         return "Tenant {" + "id=" + id + '}';
     }
-    
+
     /**
      * Creates a new {@code Builder} instance.
-     * 
+     *
      * @return - new instance
      */
     public static Buider newBuilder () {
         return new Buider();
     }
-    
+
     /**
      * Builder class that creates instances of {@code Tenant}.
-     * 
+     *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
     public static class Buider {
-        
+
         private Integer referenceId;
         private String name;
 
@@ -94,10 +94,10 @@ public class Tenant extends AbstractCatalogModel<Integer, Integer> {
             this.name = checkNotEmpty(name);
             return this;
         }
-        
+
         /**
          * Creates a new instance of {@code Tenant}.
-         * 
+         *
          * @return - new instance
          */
         public Tenant build() {
@@ -105,6 +105,6 @@ public class Tenant extends AbstractCatalogModel<Integer, Integer> {
             tenant.setReferenceId(referenceId);
             tenant.setName(name);
             return tenant;
-        }      
+        }
     }
 }

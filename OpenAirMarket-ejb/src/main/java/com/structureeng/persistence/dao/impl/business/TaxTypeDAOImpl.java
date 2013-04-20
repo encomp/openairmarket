@@ -38,7 +38,7 @@ public final class TaxTypeDAOImpl implements TaxTypeDAO {
 
     @Inject
     public TaxTypeDAOImpl() {
-        catalogDAO = new 
+        catalogDAO = new
                 CatalogDAOImpl<TaxType, Long, Integer>(TaxType.class, Long.class, Integer.class);
     }
 

@@ -16,7 +16,7 @@ import javax.persistence.MappedSuperclass;
  * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}
  */
 @MappedSuperclass
-public abstract class AbstractActiveModel <T extends Serializable> extends AbstractModel<T> 
+public abstract class AbstractActiveModel <T extends Serializable> extends AbstractModel<T>
     implements ActiveModel<T> {
 
     @Column(name = "active", nullable = false)

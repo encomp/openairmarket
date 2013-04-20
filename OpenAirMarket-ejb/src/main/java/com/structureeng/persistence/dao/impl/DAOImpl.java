@@ -31,13 +31,13 @@ import javax.persistence.PersistenceContext;
  */
 public final class DAOImpl<T extends AbstractModel, S extends Serializable> implements DAO<T, S> {
 
-    private EntityManager entityManager;    
+    private EntityManager entityManager;
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public DAOImpl(Class<T> entityClass, Class<S> entityIdClass) {    
+    public DAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
         this.entityClass = checkNotNull(entityClass);
         this.entityIdClass = checkNotNull(entityIdClass);
     }
@@ -103,14 +103,14 @@ public final class DAOImpl<T extends AbstractModel, S extends Serializable> impl
 
     @Override
     public List<T> findRange(int start, int end) {
-        QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(), 
+        QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(),
                 getEntityClass());
         return qc.getResultList(start, end - start);
     }
 
     @Override
     public long count() {
-        QueryContainer<Long, T> qc = QueryContainer.newQueryContainerCount(getEntityManager(), 
+        QueryContainer<Long, T> qc = QueryContainer.newQueryContainerCount(getEntityManager(),
                 getEntityClass());
         return qc.getSingleResult();
     }
@@ -148,7 +148,7 @@ public final class DAOImpl<T extends AbstractModel, S extends Serializable> impl
     public Class<S> getEntityIdClass() {
         return entityIdClass;
     }
-    
+
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = checkNotNull(entityManager);

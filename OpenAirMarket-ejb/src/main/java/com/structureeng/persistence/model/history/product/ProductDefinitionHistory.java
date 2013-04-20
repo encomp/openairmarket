@@ -56,7 +56,7 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "image", length = 500)
     private String image;
-    
+
     @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Company company;
@@ -130,19 +130,19 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
     public void setDivision(Division division) {
         this.division = Preconditions.checkNotNull(division);
     }
-    
+
     /**
      * Factory class for the {@code ProductDefinitionHistory} entities.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
-    public static class Builder extends HistoryEntityBuilder<ProductDefinition, 
+    public static class Builder extends HistoryEntityBuilder<ProductDefinition,
             ProductDefinitionHistory> {
 
         /**
          * Create an instance of {@code ProductDefinitionHistory}.
          *
-         * @param productDefinition the instance that will be used to create a new 
+         * @param productDefinition the instance that will be used to create a new
          *        {@code ProductDefinition}.
          * @return a new instance
          */
@@ -153,7 +153,7 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
             productDefinitionHistory.setReferenceId(productDefinition.getReferenceId());
             productDefinitionHistory.setName(productDefinition.getName());
             productDefinitionHistory.setKey(productDefinition.getKey());
-            productDefinitionHistory.setImage(productDefinition.getImage());            
+            productDefinitionHistory.setImage(productDefinition.getImage());
             productDefinitionHistory.setCompany(productDefinition.getCompany());
             productDefinitionHistory.setDivision(productDefinition.getDivision());
             productDefinitionHistory.setActive(productDefinition.getActive());

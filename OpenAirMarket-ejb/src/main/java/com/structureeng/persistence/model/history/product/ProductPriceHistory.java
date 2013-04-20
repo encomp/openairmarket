@@ -46,7 +46,7 @@ public abstract class ProductPriceHistory extends AbstractHistoryTenantModel {
             nullable = true)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductPrice productPrice;
-    
+
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;

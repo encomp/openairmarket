@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "tenantHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "tenantHistoryUK", 
+        @UniqueConstraint(name = "tenantHistoryUK",
             columnNames = {"idTenant", "idAudit"})})
 public class TenantHistory extends AbstractHistoryModel {
 
@@ -93,8 +93,8 @@ public class TenantHistory extends AbstractHistoryModel {
          * @return a new instance
          */
         @Override
-        public TenantHistory build(Tenant tenant) {            
-            TenantHistory tenantHistory = new TenantHistory();            
+        public TenantHistory build(Tenant tenant) {
+            TenantHistory tenantHistory = new TenantHistory();
             tenantHistory.setTenant(tenant);
             tenantHistory.setReferenceId(tenant.getReferenceId());
             tenantHistory.setName(tenant.getName());

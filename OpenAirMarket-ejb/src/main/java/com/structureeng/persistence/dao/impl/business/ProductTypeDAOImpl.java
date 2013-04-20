@@ -38,10 +38,10 @@ public final class ProductTypeDAOImpl implements ProductTypeDAO {
 
     @Inject
     public ProductTypeDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<ProductType, Long, Integer>(ProductType.class, Long.class, 
+        catalogDAO = new CatalogDAOImpl<ProductType, Long, Integer>(ProductType.class, Long.class,
                 Integer.class);
     }
-    
+
     @Override
     public void persist(ProductType entity) throws DAOException {
         catalogDAO.persist(entity);
@@ -82,7 +82,7 @@ public final class ProductTypeDAOImpl implements ProductTypeDAO {
     public ProductType find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public ProductType findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -102,7 +102,7 @@ public final class ProductTypeDAOImpl implements ProductTypeDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -119,7 +119,7 @@ public final class ProductTypeDAOImpl implements ProductTypeDAO {
     }
 
     private long countProductWithProductType(ProductType productType) {
-        QueryContainer<Long, Product> qc = 
+        QueryContainer<Long, Product> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(Product_.productType, JoinType.INNER);

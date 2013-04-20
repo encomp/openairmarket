@@ -23,7 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Specifies the behavior of the history of the entities ({@code HistoryTenant}) that 
+ * Specifies the behavior of the history of the entities ({@code HistoryTenant}) that
  * are required to keep tenancy.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 public abstract class AbstractHistoryModel extends AbstractActiveModel<Long> implements
         HistoryEntity<Audit> {
 
-    @JoinColumn(name = "idAudit", referencedColumnName = "idAudit", 
+    @JoinColumn(name = "idAudit", referencedColumnName = "idAudit",
             nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Audit audit;
@@ -48,7 +48,7 @@ public abstract class AbstractHistoryModel extends AbstractActiveModel<Long> imp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "effectiveEnd")
     private Date effectiveEnd;
-    
+
     public Audit getAudit() {
         return audit;
     }
@@ -90,7 +90,7 @@ public abstract class AbstractHistoryModel extends AbstractActiveModel<Long> imp
             this.effectiveEnd = DateUtil.clone(effectiveEnd);
         }
     }
-    
+
     @Override
     public Audit getHistory() {
         return getAudit();

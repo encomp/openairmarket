@@ -21,9 +21,9 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("SALE_PRICE")
 public class SalePriceHistory extends ProductPriceHistory {
-    
+
     @Column(name = "profit", nullable = true, precision = 13, scale = 4)
-    private BigDecimal profit; 
+    private BigDecimal profit;
 
     public BigDecimal getProfit() {
         return profit;
@@ -32,7 +32,7 @@ public class SalePriceHistory extends ProductPriceHistory {
     public void setProfit(BigDecimal profit) {
         this.profit = checkPositive(profit);
     }
-    
+
     /**
      * Factory class for the {@code SalePriceHistory} entities.
      *

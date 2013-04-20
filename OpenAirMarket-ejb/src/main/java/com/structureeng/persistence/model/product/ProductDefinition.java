@@ -41,7 +41,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProductDefinition")
     private Long id;
-    
+
     @Column(name = "idKey", nullable = false, length = 50)
     private String key;
 
@@ -97,7 +97,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     public void setDivision(Division division) {
         this.division = Preconditions.checkNotNull(division);
     }
-    
+
     /**
      * Creates a new {@code Builder} instance.
      *
@@ -106,7 +106,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     public static ProductDefinition.Buider newBuilder() {
         return new ProductDefinition.Buider();
     }
-    
+
     /**
      * Builder class that creates instances of {@code ProductDefinition}.
      *
@@ -117,9 +117,9 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         private BigInteger referenceId;
         private String name;
         private String key;
-        private String image;        
+        private String image;
         private Company company;
-        private Division division;        
+        private Division division;
 
         public Buider setReferenceId(BigInteger referenceId) {
             this.referenceId = checkPositive(referenceId);
@@ -161,7 +161,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             productDefinition.setReferenceId(referenceId);
             productDefinition.setName(name);
             productDefinition.setKey(key);
-            productDefinition.setImage(image);            
+            productDefinition.setImage(image);
             productDefinition.setCompany(company);
             productDefinition.setDivision(division);
             return productDefinition;

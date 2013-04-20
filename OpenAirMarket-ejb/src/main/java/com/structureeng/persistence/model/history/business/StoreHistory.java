@@ -35,17 +35,17 @@ public class StoreHistory extends AbstractHistoryTenantModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idStoreHistory")
     private Long id;
-    
+
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
-    
+
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
-    
+
     @Column(name = "name", nullable = false)
     private String name;
-        
+
     @Override
     public Long getId() {
         return id;
@@ -63,7 +63,7 @@ public class StoreHistory extends AbstractHistoryTenantModel {
     public void setStore(Store store) {
         this.store = Preconditions.checkNotNull(store);
     }
-    
+
     public Integer getReferenceId() {
         return referenceId;
     }
@@ -79,7 +79,7 @@ public class StoreHistory extends AbstractHistoryTenantModel {
     public void setName(String name) {
         this.name = checkNotEmpty(name);
     }
-    
+
     /**
      * Factory class for the {@code StoreHistory} entities.
      *

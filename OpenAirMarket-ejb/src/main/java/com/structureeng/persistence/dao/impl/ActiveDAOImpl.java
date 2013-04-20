@@ -29,24 +29,24 @@ import javax.persistence.PersistenceException;
  * @param <T> specifies the {@code AbstractActiveModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  */
-public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serializable> implements 
+public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serializable> implements
         ActiveDAO<T, S> {
-        
-    private EntityManager entityManager;    
+
+    private EntityManager entityManager;
     private final Class<T> entityClass;
     private final Class<S> entityIdClass;
     private final DAOImpl<T, S> dao;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public ActiveDAOImpl(Class<T> entityClass, Class<S> entityIdClass) {        
+    public ActiveDAOImpl(Class<T> entityClass, Class<S> entityIdClass) {
         this.entityClass = checkNotNull(entityClass);
         this.entityIdClass = checkNotNull(entityIdClass);
         this.dao = new DAOImpl<T, S>(entityClass, entityIdClass);
     }
-    
+
      @Override
-    public void persist(T entity) throws DAOException {         
+    public void persist(T entity) throws DAOException {
         dao.persist(entity);
     }
 
@@ -54,7 +54,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
     public T merge(T entity) throws DAOException {
         return dao.merge(entity);
     }
-    
+
     @Override
     public final void remove(T entity) throws DAOException {
         try {
@@ -68,7 +68,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
             throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
         }
     }
-    
+
     @Override
     public void refresh(T entity) {
         dao.refresh(entity);
@@ -101,7 +101,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
         }
         return null;
     }
-    
+
     @Override
     public void flush() {
         dao.flush();
@@ -109,21 +109,21 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
 
     /**
      * Count the number of instances in the persistent storage that are active.
-     * 
+     *
      * @return the number of active entities.
      */
     @Override
     public long count() {
         return countEntities(Boolean.TRUE);
     }
-    
+
     @Override
     public long countInactive() {
         return countEntities(Boolean.FALSE);
     }
-    
+
     private long countEntities(Boolean value) {
-        QueryContainer<Long, T> qc = QueryContainer.newQueryContainerCount(getEntityManager(), 
+        QueryContainer<Long, T> qc = QueryContainer.newQueryContainerCount(getEntityManager(),
                 getEntityClass());
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
                 .equal(qc.getRoot().get(AbstractActiveModel_.active), value));
@@ -131,14 +131,14 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
     }
 
     @Override
-    public List<T> findRange(int start, int end) {        
-        QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(), 
+    public List<T> findRange(int start, int end) {
+        QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(),
                 getEntityClass());
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
-                        .equal(qc.getRoot().get(AbstractActiveModel_.active), Boolean.TRUE));        
+                        .equal(qc.getRoot().get(AbstractActiveModel_.active), Boolean.TRUE));
         return qc.getResultList(start, end - start);
     }
-    
+
     /**
      * Provides the class of this dao.
      *
@@ -162,7 +162,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
         this.entityManager = checkNotNull(entityManager);
         this.dao.setEntityManager(entityManager);
     }
-    
+
     /**
      * Provides the {@code EntityManager} that is being use by the dao.
      *

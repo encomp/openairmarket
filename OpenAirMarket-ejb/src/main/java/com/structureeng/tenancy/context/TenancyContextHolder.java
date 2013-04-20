@@ -10,13 +10,13 @@ package com.structureeng.tenancy.context;
  * to specify the strategy that should be used for a given JVM. This is a JVM-wide setting, since
  * everything in this class is <code>static</code> to facilitate ease of use in calling code.
  * </p>
- * 
+ *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class TenancyContextHolder {
-    
+
     private static TenancyContextHolderStrategy strategy;
-    
+
     /**
      * Explicitly clear the tenancy context.
      *
@@ -59,7 +59,7 @@ public class TenancyContextHolder {
      *
      * @param strategy
      *            the configured strategy for storing the tenancy context.
-     */      
+     */
     public static void setStrategy(TenancyContextHolderStrategy strategy) {
         if (strategy == null) {
             throw new IllegalArgumentException();

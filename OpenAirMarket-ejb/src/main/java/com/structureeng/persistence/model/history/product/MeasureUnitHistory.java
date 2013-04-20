@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "measureUnitHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "measureUnitHistoryUK", 
+        @UniqueConstraint(name = "measureUnitHistoryUK",
             columnNames = {"idMeasureUnit", "idAudit"})})
 public class MeasureUnitHistory extends AbstractHistoryTenantModel {
 
@@ -44,7 +44,7 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
 
     @Column(name = "name", nullable = false)
     private String name;
-    
+
     @Column(name = "countable", nullable = false)
     private Boolean countable;
 
@@ -84,7 +84,7 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
     public void setName(String name) {
         this.name = checkNotEmpty(name);
     }
-    
+
     public Boolean getCountable() {
         return countable;
     }
@@ -100,7 +100,7 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
     public void setExpire(Boolean expire) {
         this.expire = Preconditions.checkNotNull(expire);
     }
-    
+
     /**
      * Factory class for the {@code MeasureUnitHistory} entities.
      *
@@ -111,7 +111,7 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
         /**
          * Create an instance of {@code MeasureUnitHistory}.
          *
-         * @param measureUnit the instance that will be used to create a new 
+         * @param measureUnit the instance that will be used to create a new
          *                    {@code MeasureUnitHistory}.
          * @return a new instance
          */

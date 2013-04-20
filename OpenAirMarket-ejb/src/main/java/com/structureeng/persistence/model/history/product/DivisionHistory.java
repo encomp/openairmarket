@@ -27,7 +27,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "divisionHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "divsionHistoryUK", 
+        @UniqueConstraint(name = "divsionHistoryUK",
             columnNames = {"idDivision", "idAudit"})})
 public class DivisionHistory extends AbstractHistoryTenantModel {
     @Id

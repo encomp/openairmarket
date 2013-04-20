@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 /**
  * Stores and retrieves the properties for a specific error code.
- * 
+ *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class ErrorCodeProperty implements Serializable {
@@ -41,5 +41,5 @@ public class ErrorCodeProperty implements Serializable {
         bundle = Preconditions.checkNotNull(bundle);
         return bundle.getString(property);
     }
-        
+
 }

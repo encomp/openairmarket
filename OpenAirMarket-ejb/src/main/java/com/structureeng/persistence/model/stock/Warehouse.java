@@ -44,7 +44,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idWarehouse")
     private Long id;
-    
+
     @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Store store;
@@ -66,7 +66,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
     public void setStore(Store store) {
         this.store = Preconditions.checkNotNull(store);
     }
-    
+
     /**
      * Creates a new {@code Builder} instance.
      *
@@ -75,7 +75,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
     public static Warehouse.Buider newBuilder() {
         return new Warehouse.Buider();
     }
-    
+
      /**
      * Builder class that creates instances of {@code Warehouse}.
      *
@@ -96,7 +96,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
             this.name = checkNotEmpty(name);
             return this;
         }
-        
+
         public Warehouse.Buider setStore(Store store) {
             this.store = Preconditions.checkNotNull(store);
             return this;

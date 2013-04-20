@@ -35,10 +35,10 @@ public final class DivisionDAOImpl implements DivisionDAO {
 
     @Inject
     public DivisionDAOImpl() {
-        catalogDAO = new 
+        catalogDAO = new
                 CatalogDAOImpl<Division, Long, Integer>(Division.class, Long.class, Integer.class);
     }
-    
+
     @Override
     public void persist(Division entity) throws DAOException {
         catalogDAO.persist(entity);
@@ -79,7 +79,7 @@ public final class DivisionDAOImpl implements DivisionDAO {
     public Division find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public Division findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -99,7 +99,7 @@ public final class DivisionDAOImpl implements DivisionDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -116,7 +116,7 @@ public final class DivisionDAOImpl implements DivisionDAO {
     }
 
     private long countProductDefinitionWithDivision(Division division) {
-        QueryContainer<Long, ProductDefinition> qc = 
+        QueryContainer<Long, ProductDefinition> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
         qc.getRoot().join(ProductDefinition_.division, JoinType.INNER);

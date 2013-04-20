@@ -31,7 +31,7 @@ import javax.persistence.PersistenceContext;
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  * @param <RID> specifies the {@code Number} identifier of the {@code AbstractCatalogModel}
  */
-public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, 
+public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable,
         RID extends Number> implements CatalogDAO<T, S, RID> {
 
     private EntityManager entityManager;
@@ -42,7 +42,7 @@ public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Seri
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public CatalogDAOImpl(Class<T> entityClass, Class<S> entityIdClass,
-            Class<RID> referenceIdClass) {        
+            Class<RID> referenceIdClass) {
         this.entityClass = checkNotNull(entityClass);
         this.entityIdClass = checkNotNull(entityIdClass);
         this.referenceIdClass = checkNotNull(referenceIdClass);
@@ -209,10 +209,10 @@ public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Seri
     public Class<S> getEntityIdClass() {
         return entityIdClass;
     }
-    
+
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager; 
+        this.entityManager = entityManager;
         activeDAO.setEntityManager(entityManager);
     }
 

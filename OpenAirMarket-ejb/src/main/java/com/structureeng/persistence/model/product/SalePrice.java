@@ -16,9 +16,9 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("SALE_PRICE")
 public class SalePrice extends ProductPrice {
-    
+
     @Column(name = "profit", nullable = true, precision = 13, scale = 4)
-    private BigDecimal profit; 
+    private BigDecimal profit;
 
     public BigDecimal getProfit() {
         return profit;

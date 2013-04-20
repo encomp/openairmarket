@@ -14,9 +14,9 @@ import java.util.Objects;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public class TenancyContext {
-    
+
     private final Tenant tenant;
-    
+
     public TenancyContext (Tenant tenant) {
         this.tenant = Preconditions.checkNotNull(tenant);
     }

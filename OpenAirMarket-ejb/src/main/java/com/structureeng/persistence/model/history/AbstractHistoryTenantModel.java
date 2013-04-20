@@ -10,7 +10,7 @@ import javax.persistence.DiscriminatorType;
 import javax.persistence.MappedSuperclass;
 
 /**
- * Specifies the behavior of the history of the entities ({@code HistoryTenant}) that 
+ * Specifies the behavior of the history of the entities ({@code HistoryTenant}) that
  * are required to keep tenancy.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
@@ -19,5 +19,5 @@ import javax.persistence.MappedSuperclass;
 @TenantDiscriminatorColumn(name = "idTenant", discriminatorType = DiscriminatorType.INTEGER)
 @MappedSuperclass
 public abstract class AbstractHistoryTenantModel extends AbstractHistoryModel {
-    
+
 }

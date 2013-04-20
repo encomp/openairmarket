@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
 
 /**
  * Data Access Object for {@code Tenant}.
- * 
+ *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public final class TenantDAOImpl implements TenantDAO {
@@ -29,10 +29,10 @@ public final class TenantDAOImpl implements TenantDAO {
     private EntityManager entityManager;
     private final CatalogDAOImpl<Tenant, Integer, Integer> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Inject
     public TenantDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<Tenant, Integer, Integer>(Tenant.class, Integer.class, 
+        catalogDAO = new CatalogDAOImpl<Tenant, Integer, Integer>(Tenant.class, Integer.class,
                 Integer.class);
     }
 
@@ -71,7 +71,7 @@ public final class TenantDAOImpl implements TenantDAO {
     public Tenant find(Integer id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
-    
+
     @Override
     public Tenant findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
@@ -91,7 +91,7 @@ public final class TenantDAOImpl implements TenantDAO {
     public long count() {
         return catalogDAO.count();
     }
-    
+
     @Override
     public long countInactive() {
         return catalogDAO.countInactive();
@@ -106,7 +106,7 @@ public final class TenantDAOImpl implements TenantDAO {
     public boolean hasVersionChanged(Tenant entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
-        
+
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = checkNotNull(entityManager);
