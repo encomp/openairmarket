@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Specifies a persistent instance behavior.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
- * @param <T> specifies the {@link Class} of the id for the {@link Entity}
+ * @param <T> specifies the {@code Class} of the id for the {@code Entity}
  */
 public interface Model<T extends Serializable> extends Serializable {
 
