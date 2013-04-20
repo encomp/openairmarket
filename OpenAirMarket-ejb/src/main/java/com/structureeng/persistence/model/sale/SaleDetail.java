@@ -40,7 +40,7 @@ public class SaleDetail extends AbstractTenantModel<Long> {
     @JoinColumn(name = "idProductPrice", referencedColumnName = "idProductPrice",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private ProductPrice retailProduct;
+    private ProductPrice productPrice;
 
     @Column(name = "lineOrder", nullable = false)
     private int lineOrder;
@@ -75,12 +75,12 @@ public class SaleDetail extends AbstractTenantModel<Long> {
         this.sale = Preconditions.checkNotNull(sale);
     }
 
-    public ProductPrice getRetailProduct() {
-        return retailProduct;
+    public ProductPrice getProductPrice() {
+        return productPrice;
     }
 
-    public void setRetailProduct(ProductPrice retailProduct) {
-        this.retailProduct = Preconditions.checkNotNull(retailProduct);
+    public void setProductPrice(ProductPrice productPrice) {
+        this.productPrice = Preconditions.checkNotNull(productPrice);
     }
 
     public int getLineOrder() {
