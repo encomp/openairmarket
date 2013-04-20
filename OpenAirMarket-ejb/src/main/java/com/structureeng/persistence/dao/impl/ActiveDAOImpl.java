@@ -134,8 +134,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
     public List<T> findRange(int start, int end) {
         QueryContainer<T, T> qc = QueryContainer.newQueryContainer(getEntityManager(),
                 getEntityClass());
-        qc.getCriteriaQuery().where(qc.getCriteriaBuilder()
-                        .equal(qc.getRoot().get(AbstractActiveModel_.active), Boolean.TRUE));
+        qc.getCriteriaQuery().where(qc.activeEntities(qc.getRoot()));
         return qc.getResultList(start, end - start);
     }
 

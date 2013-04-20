@@ -125,8 +125,7 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
                     qc.getRoot().get(Product_.measureUnit), measureUnit),
-                qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
+                qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }
 

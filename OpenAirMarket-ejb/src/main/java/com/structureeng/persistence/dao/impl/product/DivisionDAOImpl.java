@@ -123,8 +123,7 @@ public final class DivisionDAOImpl implements DivisionDAO {
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
                     qc.getRoot().get(ProductDefinition_.division), division),
-                qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
+                qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }
 

@@ -125,8 +125,7 @@ public final class ProductTypeDAOImpl implements ProductTypeDAO {
         qc.getRoot().join(Product_.productType, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(qc.getRoot().get(Product_.productType), productType),
-                qc.getCriteriaBuilder().equal(
-                        qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
+                qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }
 

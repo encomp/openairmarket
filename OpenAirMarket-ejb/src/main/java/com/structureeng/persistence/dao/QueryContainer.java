@@ -2,12 +2,15 @@
 
 package com.structureeng.persistence.dao;
 
+import com.structureeng.persistence.model.AbstractActiveModel;
+import com.structureeng.persistence.model.AbstractActiveModel_;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -63,7 +66,18 @@ public class QueryContainer<R, F> {
         typedQuery.setMaxResults(maxResults);
         return typedQuery.getResultList();
     }
-
+    
+    /**
+     * Returns the predicate that contains active instances only.
+     * 
+     * @param <T> the type for the {@code Root}.
+     * @param root {@code Root}.
+     * @return the {@code Predicate} which include only active entities.
+     */
+    public <T extends AbstractActiveModel> Predicate activeEntities(Root<T> root) {        
+        return getCriteriaBuilder().equal(root.get(AbstractActiveModel_.active), Boolean.TRUE);
+    }
+    
     private TypedQuery<R> createTypedQuery() {
         return getEntityManager().createQuery(criteriaQuery);
     }

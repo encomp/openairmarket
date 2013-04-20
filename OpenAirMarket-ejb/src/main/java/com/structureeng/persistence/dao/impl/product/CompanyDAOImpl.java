@@ -122,8 +122,7 @@ public final class CompanyDAOImpl implements CompanyDAO {
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
                     .equal(qc.getRoot().get(ProductDefinition_.company), company),
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(ProductDefinition_.active), Boolean.TRUE)));
+                qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }
 
