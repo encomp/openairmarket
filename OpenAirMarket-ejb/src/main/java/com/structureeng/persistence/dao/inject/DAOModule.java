@@ -8,6 +8,7 @@ import com.structureeng.persistence.dao.MeasureUnitDAO;
 import com.structureeng.persistence.dao.ProductDAO;
 import com.structureeng.persistence.dao.ProductDefinitionDAO;
 import com.structureeng.persistence.dao.ProductTypeDAO;
+import com.structureeng.persistence.dao.PurchasePriceDAO;
 import com.structureeng.persistence.dao.SalePriceDAO;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.StoreDAO;
@@ -22,6 +23,7 @@ import com.structureeng.persistence.dao.impl.product.DivisionDAOImpl;
 import com.structureeng.persistence.dao.impl.product.MeasureUnitDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDefinitionDAOImpl;
+import com.structureeng.persistence.dao.impl.product.PurchasePriceDAOImpl;
 import com.structureeng.persistence.dao.impl.product.SalePriceDAOImpl;
 import com.structureeng.persistence.dao.impl.stock.StockDAOImpl;
 import com.structureeng.persistence.dao.impl.stock.WarehouseDAOImpl;
@@ -83,7 +85,14 @@ public class DAOModule {
     public ProductTypeDAO providesProductTypeDAO() {
         return new ProductTypeDAOImpl();
     }
-    
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    @Named("purchasePriceDAO")
+    public PurchasePriceDAO providesPurchasePriceDAO() {
+        return new PurchasePriceDAOImpl();
+    }
+
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("salePriceDAO")

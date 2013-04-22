@@ -68,6 +68,12 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
 
     /**
      * Property that specifies the error in case the unique key for the key attribute has been
+     * violated for a {@code PurchasePrice} entity.
+     */
+    PRODUCT_PURCHASE_PRICE_KEY_UK("dao.purchasePrice.uniqueKey"),
+
+    /**
+     * Property that specifies the error in case the unique key for the key attribute has been
      * violated for a {@code SalePrice} entity.
      */
     PRODUCT_SALE_PRICE_KEY_UK("dao.salePrice.uniqueKey"),

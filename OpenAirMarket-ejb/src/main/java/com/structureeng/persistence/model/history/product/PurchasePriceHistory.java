@@ -4,6 +4,7 @@ package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.product.PurchasePrice;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -34,6 +35,7 @@ public class PurchasePriceHistory extends ProductPriceHistory {
         public PurchasePriceHistory build(PurchasePrice purchasePrice) {
             PurchasePriceHistory purchasePriceHistory = new PurchasePriceHistory();
             purchasePriceHistory.setProductPrice(purchasePrice);
+            purchasePriceHistory.setProduct(purchasePrice.getProduct());
             purchasePriceHistory.setPrice(purchasePrice.getPrice());
             purchasePriceHistory.setQuantity(purchasePrice.getQuantity());
             purchasePriceHistory.setActive(purchasePrice.getActive());
