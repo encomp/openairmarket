@@ -1,5 +1,4 @@
 // Copyright 2013 Structure Eng Inc.
-
 package com.structureeng.persistence.dao.impl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,8 +30,8 @@ import javax.persistence.PersistenceContext;
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  * @param <RID> specifies the {@code Number} identifier of the {@code AbstractCatalogModel}
  */
-public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable,
-        RID extends Number> implements CatalogDAO<T, S, RID> {
+public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, RID extends Number>
+        implements CatalogDAO<T, S, RID> {
 
     private EntityManager entityManager;
     private final Class<T> entityClass;
@@ -81,28 +80,16 @@ public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Seri
 
     @Override
     public void persist(T entity) throws DAOException {
-        long uniqueId = countEntitiesWithReferenceId(
-                referenceIdClass.cast(entity.getReferenceId()));
-        long uniqueName = countEntitiesWithName(entity.getName());
-        if (uniqueId > 0 || uniqueName > 0) {
-            DAOException daoException = null;
-            if (uniqueId > 0) {
-                daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
-            }
-            if (uniqueName > 0) {
-                daoException = DAOException.Builder.build(getErrorCodeUniqueName(),
-                        daoException);
-            }
-            throw daoException;
-        }
+        validatePersist(entity);
         activeDAO.persist(entity);
     }
 
     @Override
     public T merge(T entity) throws DAOException {
-        long count = countEntitiesWithSameNameButDiffReferenceId(entity);
-        if (count > 0) {
-            throw DAOException.Builder.build(getErrorCodeUniqueName());
+        if (entity.getId() == null) {
+            validatePersist(entity);
+        } else {
+            validateMerge(entity);
         }
         return activeDAO.merge(entity);
     }
@@ -155,6 +142,30 @@ public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Seri
     @Override
     public boolean hasVersionChanged(T entity) throws DAOException {
         return activeDAO.hasVersionChanged(entity);
+    }
+
+    private void validatePersist(T entity) throws DAOException {
+        long uniqueId = countEntitiesWithReferenceId(
+                referenceIdClass.cast(entity.getReferenceId()));
+        long uniqueName = countEntitiesWithName(entity.getName());
+        if (uniqueId > 0 || uniqueName > 0) {
+            DAOException daoException = null;
+            if (uniqueId > 0) {
+                daoException = DAOException.Builder.build(getErrorCodeUniqueReferenceId());
+            }
+            if (uniqueName > 0) {
+                daoException = DAOException.Builder.build(getErrorCodeUniqueName(),
+                        daoException);
+            }
+            throw daoException;
+        }
+    }
+
+    private void validateMerge(T entity) throws DAOException {
+        long count = countEntitiesWithSameNameButDiffReferenceId(entity);
+        if (count > 0) {
+            throw DAOException.Builder.build(getErrorCodeUniqueName());
+        }
     }
 
     private Long countEntitiesWithReferenceId(RID referenceId) {

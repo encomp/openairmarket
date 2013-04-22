@@ -22,7 +22,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
@@ -39,14 +38,14 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     private StockDAO stockDAO;
     private static Stock stock;
-       
+
     @Test
     public void testPersistA() throws DAOException {
         Store store = createStore(1L);
         Product product = createProduct(1L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stock = build(product, warehouse);
-        getStockDAO().persist(stock);
+        getStockDAO().merge(stock);
     }
 
     @Test
@@ -63,17 +62,17 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
         Long count = getStockDAO().count();
         Assert.assertTrue(count >= 2);
     }
-    
+
     @Test(expected = DAOException.class)
     public void testPersistMerge() throws DAOException {
-        Store store = createStore(1L);        
+        Store store = createStore(1L);
         stock.setProduct(createProduct(2L, store));
         stock.setWarehouse(createWarehouse(2L, createStore(2L)));
         try {
             getStockDAO().merge(stock);
             getStockDAO().flush();
             Assert.fail("Should have thrown a DAOException.");
-        } catch (DAOException daoException) {            
+        } catch (DAOException daoException) {
             deleteHistory(stock);
             throw daoException;
         }
@@ -96,8 +95,8 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
             throw daoException;
         }
     }
-    
-    @Test(expected = PersistenceException.class)
+
+    @Test(expected = DAOException.class)
     public void testPersistUK() throws DAOException {
         Store store = createStore(1L);
         Product product = createProduct(1L, store);
@@ -107,7 +106,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
             getStockDAO().persist(stock);
             getStockDAO().flush();
             Assert.fail("Should have thrown a DAOException.");
-        } catch (PersistenceException daoException) {
+        } catch (DAOException daoException) {
             commit = false;
             throw daoException;
         }
@@ -186,7 +185,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
         Stock stock = getStockDAO().findInactive(product, warehouse);
         deleteHistory(stock);
     }
-    
+
     public void deleteHistory(Stock stock) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<StockHistory> cq = cb.createQuery(StockHistory.class);
@@ -197,7 +196,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
         List<StockHistory> histories = getEntityManager().createQuery(cq).getResultList();
         deleteTenantHistories(stock, histories);
     }
-    
+
     public Stock build(Product product, Warehouse warehouse) {
         Stock.Buider buider = Stock.newBuilder();
         buider.setStockAmount(BigDecimal.TEN);
@@ -208,27 +207,27 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
         buider.setWarehouse(warehouse);
         return buider.build();
     }
-    
+
     public Warehouse createWarehouse(Long id, Store store) {
         Warehouse warehouse = new Warehouse();
         warehouse.setId(id);
         warehouse.setStore(store);
         return warehouse;
     }
-    
+
     public Product createProduct(Long id, Store store) {
         Product product = new Product();
         product.setId(id);
         product.setStore(store);
         return product;
     }
-    
+
     public Store createStore(Long id) {
         Store store = new Store();
         store.setId(id);
         return store;
     }
-    
+
     public StockDAO getStockDAO() {
         if (stockDAO == null) {
             stockDAO = getApplicationContext().getBean(StockDAO.class);

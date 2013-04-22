@@ -1,5 +1,4 @@
 // Copyright 2013 Structure Eng Inc.
-
 package com.structureeng.persistence.dao.impl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,14 +48,19 @@ public final class DAOImpl<T extends AbstractModel, S extends Serializable> impl
 
     @Override
     public T merge(T entity) throws DAOException {
-        if (!hasVersionChanged(entity)) {
-            if (!getEntityManager().contains(entity)) {
-                return getEntityManager().merge(entity);
-            } else {
-                return entity;
-            }
+        if (entity.getId() == null) {
+            persist(entity);
+            return entity;
         } else {
-            throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
+            if (!hasVersionChanged(entity)) {
+                if (!getEntityManager().contains(entity)) {
+                    return getEntityManager().merge(entity);
+                } else {
+                    return entity;
+                }
+            } else {
+                throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
+            }
         }
     }
 

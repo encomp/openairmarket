@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.product;
 
-import com.structureeng.persistence.model.AbstractActiveModel;
+import com.structureeng.persistence.model.AbstractTenantModel;
 
 import com.google.common.base.Preconditions;
 
@@ -36,7 +36,7 @@ import javax.persistence.UniqueConstraint;
                 columnNames = {"idTenant", "idProduct", "priceType", "quantity"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "priceType", discriminatorType = DiscriminatorType.STRING, length = 50)
-public abstract class ProductPrice extends AbstractActiveModel<Long> {
+public abstract class ProductPrice extends AbstractTenantModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

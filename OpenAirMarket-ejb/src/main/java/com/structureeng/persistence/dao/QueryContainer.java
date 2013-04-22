@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -74,8 +75,23 @@ public class QueryContainer<R, F> {
      * @param root {@code Root}.
      * @return the {@code Predicate} which include only active entities.
      */
-    public <T extends AbstractActiveModel> Predicate activeEntities(Root<T> root) {        
-        return getCriteriaBuilder().equal(root.get(AbstractActiveModel_.active), Boolean.TRUE);
+    public <T extends AbstractActiveModel> Predicate activeEntities(Path<T> root) {        
+        return activePredicate(root, Boolean.TRUE);
+    }
+    
+    /**
+     * Returns the predicate that contains inactive instances only.
+     * 
+     * @param <T> the type for the {@code Root}.
+     * @param root {@code Root}.
+     * @return the {@code Predicate} which include only active entities.
+     */
+    public <T extends AbstractActiveModel> Predicate inactiveEntities(Path<T> root) {        
+        return activePredicate(root, Boolean.FALSE);
+    }
+    
+    private <T extends AbstractActiveModel> Predicate activePredicate(Path<T> root, Boolean value) {        
+        return getCriteriaBuilder().equal(root.get(AbstractActiveModel_.active), value);
     }
     
     private TypedQuery<R> createTypedQuery() {

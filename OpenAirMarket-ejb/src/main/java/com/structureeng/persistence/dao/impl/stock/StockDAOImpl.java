@@ -9,13 +9,14 @@ import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.impl.ActiveDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductErrorCode;
-import com.structureeng.persistence.model.business.Store_;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.Product_;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Stock_;
 import com.structureeng.persistence.model.stock.Warehouse;
 import com.structureeng.persistence.model.stock.Warehouse_;
+
+import com.google.common.collect.ImmutableList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 
 /**
  * Data Access Object for {@code Stock}.
@@ -46,13 +48,13 @@ public class StockDAOImpl implements StockDAO {
 
     @Override
     public void persist(Stock entity) throws DAOException {
-        isSameStore(entity);
+        validateUK(entity);
         activeDAO.persist(entity);
     }
 
     @Override
     public Stock merge(Stock entity) throws DAOException {
-        isSameStore(entity);
+        validateUK(entity);
         return activeDAO.merge(entity);
     }
 
@@ -98,31 +100,24 @@ public class StockDAOImpl implements StockDAO {
 
     private Stock find(Boolean stockActive, Product product, Warehouse warehouse) {
         try {
-            Boolean active = Boolean.TRUE;
             QueryContainer<Stock, Stock> query =
                     QueryContainer.newQueryContainer(getEntityManager(), Stock.class);
             query.getRoot().fetch(Stock_.product, JoinType.INNER)
                     .fetch(Product_.store, JoinType.INNER);
             query.getRoot().fetch(Stock_.warehouse, JoinType.INNER)
                     .fetch(Warehouse_.store, JoinType.INNER);
-            query.getCriteriaQuery().where(query.getCriteriaBuilder().and(
-                    query.getCriteriaBuilder().equal(query.getRoot().get(Stock_.product), product),
-                    query.getCriteriaBuilder()
-                            .equal(query.getRoot().get(Stock_.warehouse), warehouse),
-                    query.getCriteriaBuilder().equal(query.getRoot().get(Stock_.product)
-                            .get(Product_.active), active),
-                    query.getCriteriaBuilder().equal(query.getRoot().get(Stock_.product)
-                            .get(Product_.store).get(Store_.active), active),
-                    query.getCriteriaBuilder().equal(query.getRoot().get(Stock_.warehouse)
-                            .get(Warehouse_.active), active),
-                    query.getCriteriaBuilder().equal(query.getRoot().get(Stock_.warehouse)
-                            .get(Warehouse_.store).get(Store_.active), active),
-                    query.getCriteriaBuilder()
-                            .equal(query.getRoot().get(Stock_.active), stockActive),
-                    query.getCriteriaBuilder().equal(
-                            query.getRoot().get(Stock_.product).get(Product_.store),
-                            query.getRoot().get(Stock_.warehouse).get(Warehouse_.store))
-            ));
+            ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
+            builder.add(query.getCriteriaBuilder()
+                            .equal(query.getRoot().get(Stock_.product), product));
+            builder.add(query.getCriteriaBuilder()
+                            .equal(query.getRoot().get(Stock_.warehouse), warehouse));
+            builder.add(query.getCriteriaBuilder()
+                            .equal(
+                                query.getRoot().get(Stock_.product).get(Product_.store),
+                                query.getRoot().get(Stock_.warehouse).get(Warehouse_.store)));
+            builder.addAll(getActivePredicates(query, stockActive));
+            query.getCriteriaQuery().where(
+                    query.getCriteriaBuilder().and(builder.build().toArray(new Predicate[]{})));
             return query.getSingleResult();
         } catch (NoResultException exc) {
             logger.warn(String.format(
@@ -130,6 +125,21 @@ public class StockDAOImpl implements StockDAO {
                     stockActive ? "ACTIVE" : "INACTIVE", product.getId(), warehouse.getId()));
         }
         return null;
+    }
+
+    private List<Predicate> getActivePredicates(QueryContainer<Stock, Stock> qc, boolean active) {
+        ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
+        if (active) {
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product).get(Product_.store)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)
+                    .get(Warehouse_.store)));
+            builder.add(qc.activeEntities(qc.getRoot()));
+        } else {
+            builder.add(qc.inactiveEntities(qc.getRoot()));
+        }
+        return builder.build();
     }
 
     @Override
@@ -152,6 +162,18 @@ public class StockDAOImpl implements StockDAO {
         return activeDAO.hasVersionChanged(entity);
     }
 
+    private void validateUK(Stock entity) throws DAOException {
+        DAOException daoException = null;
+        long count = countStocks(entity);
+        if (count > 0) {
+            daoException = DAOException.Builder.build(ProductErrorCode.STOCK_UK);
+        }
+        daoException = isSameStore(entity, daoException);
+        if (daoException != null) {
+            throw daoException;
+        }
+    }
+
     /**
      * Validates that the {@code Product} and {@code Warehosue} belongs to the same {@code Store}.
      *
@@ -159,10 +181,30 @@ public class StockDAOImpl implements StockDAO {
      * @throws DAOException in case the {@code Store} of the {@code Product} and the
      *                      {@code Warehouse} are different.
      */
-    private void isSameStore(Stock stock) throws DAOException {
+    private DAOException isSameStore(Stock stock, DAOException exc) {
         if (!stock.getProduct().getStore().equals(stock.getWarehouse().getStore())) {
-            throw DAOException.Builder.build(ProductErrorCode.STOCK_STORES);
+            return DAOException.Builder.build(ProductErrorCode.STOCK_CONSTRAINT_STORES, exc);
         }
+        return exc;
+    }
+
+    private Long countStocks(Stock stock) {
+        QueryContainer<Long, Stock> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), Stock.class);
+        qc.getRoot().join(Stock_.product, JoinType.INNER);
+        qc.getRoot().join(Stock_.warehouse, JoinType.INNER);
+        ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
+        builder.add(qc.getCriteriaBuilder()
+                .equal(qc.getRoot().get(Stock_.product), stock.getProduct()));
+        builder.add(qc.getCriteriaBuilder()
+                .equal(qc.getRoot().get(Stock_.warehouse), stock.getWarehouse()));
+        if (stock.getId() != null) {
+            builder.add(qc.getCriteriaBuilder()
+                    .notEqual(qc.getRoot().get(Stock_.id), stock.getId()));
+        }
+        qc.getCriteriaQuery().where(
+                qc.getCriteriaBuilder().and(builder.build().toArray(new Predicate[]{})));
+        return qc.getSingleResult();
     }
 
     @PersistenceContext

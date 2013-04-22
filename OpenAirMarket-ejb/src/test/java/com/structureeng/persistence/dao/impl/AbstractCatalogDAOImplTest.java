@@ -42,7 +42,7 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
     @Test
     public void testPersistA() throws DAOException {
         T catalogModel = build(toReferenceId("50"), "test 50");
-        getCatalogDAO().persist(clase.cast(catalogModel));
+        getCatalogDAO().merge(clase.cast(catalogModel));
     }
 
     @Test
