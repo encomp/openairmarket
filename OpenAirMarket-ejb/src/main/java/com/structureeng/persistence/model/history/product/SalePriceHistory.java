@@ -50,6 +50,7 @@ public class SalePriceHistory extends ProductPriceHistory {
         public SalePriceHistory build(SalePrice salePrice) {
             SalePriceHistory salePriceHistory = new SalePriceHistory();
             salePriceHistory.setProductPrice(salePrice);
+            salePriceHistory.setProduct(salePrice.getProduct());
             salePriceHistory.setPrice(salePrice.getPrice());
             salePriceHistory.setQuantity(salePrice.getQuantity());
             salePriceHistory.setProfit(salePrice.getProfit());
