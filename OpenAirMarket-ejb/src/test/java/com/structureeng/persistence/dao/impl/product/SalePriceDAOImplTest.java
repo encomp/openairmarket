@@ -177,13 +177,13 @@ public class SalePriceDAOImplTest extends
     }
 
     public SalePrice build(Product product, BigDecimal quantity) {
-        SalePrice.Buider buider = SalePrice.newBuilder();
-        buider.setProduct(product);
-        buider.setQuantity(quantity);
-        buider.setPrice(BigDecimal.ONE);
-        buider.setProfit(BigDecimal.TEN);
-        buider.setProduct(product);
-        return buider.build();
+        SalePrice.Builder builder = SalePrice.newBuilder();
+        builder.setProduct(product);
+        builder.setQuantity(quantity);
+        builder.setPrice(BigDecimal.ONE);
+        builder.setProfit(BigDecimal.TEN);
+        builder.setProduct(product);
+        return builder.build();
     }
 
     public Product createProduct(Long id, Store store) {

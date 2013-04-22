@@ -2,7 +2,6 @@
 
 package com.structureeng.persistence.model.product;
 
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.history.HistoryListener;
@@ -43,8 +42,8 @@ public class SalePrice extends ProductPrice {
      *
      * @return - new instance
      */
-    public static SalePrice.Buider newBuilder() {
-        return new SalePrice.Buider();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
@@ -52,29 +51,29 @@ public class SalePrice extends ProductPrice {
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
-    public static class Buider {
+    public static class Builder {
 
         private Product product;
         private BigDecimal quantity;
         private BigDecimal price;
         private BigDecimal profit;
 
-        public SalePrice.Buider setProduct(Product product) {
+        public Builder setProduct(Product product) {
             this.product = checkNotNull(product);
             return this;
         }
 
-        public SalePrice.Buider setQuantity(BigDecimal quantity) {
+        public Builder setQuantity(BigDecimal quantity) {
             this.quantity = checkPositive(quantity);
             return this;
         }
 
-        public SalePrice.Buider setPrice(BigDecimal price) {
+        public Builder setPrice(BigDecimal price) {
             this.price = checkPositive(price);
             return this;
         }
 
-        public SalePrice.Buider setProfit(BigDecimal profit) {
+        public Builder setProfit(BigDecimal profit) {
             this.profit = checkPositive(profit);
             return this;
         }
