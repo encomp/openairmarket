@@ -71,8 +71,8 @@ public class QueryContainer<R, F> {
     /**
      * Returns the predicate that contains active instances only.
      * 
-     * @param <T> the type for the {@code Root}.
-     * @param root {@code Root}.
+     * @param <T> the type for the {@code Path}.
+     * @param root {@code Path}.
      * @return the {@code Predicate} which include only active entities.
      */
     public <T extends AbstractActiveModel> Predicate activeEntities(Path<T> root) {        
@@ -82,8 +82,8 @@ public class QueryContainer<R, F> {
     /**
      * Returns the predicate that contains inactive instances only.
      * 
-     * @param <T> the type for the {@code Root}.
-     * @param root {@code Root}.
+     * @param <T> the type for the {@code Path}.
+     * @param root {@code Path}.
      * @return the {@code Predicate} which include only active entities.
      */
     public <T extends AbstractActiveModel> Predicate inactiveEntities(Path<T> root) {        
