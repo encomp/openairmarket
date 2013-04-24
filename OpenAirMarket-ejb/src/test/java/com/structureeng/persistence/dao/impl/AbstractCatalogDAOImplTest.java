@@ -19,6 +19,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 
 /**
@@ -137,6 +138,13 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
         Assert.assertNotNull(catalogModels);
         Assert.assertTrue(catalogModels.size() >= 1);
     }
+    
+    @Test
+    public void testRefresh() {
+        T catalogModel = getCatalogDAO().findByReferenceId(toReferenceId("50"));
+        getCatalogDAO().refresh(catalogModel);
+        getCatalogDAO().refresh(catalogModel, LockModeType.READ);
+    }
 
     @Test
     public void testUpdate() throws DAOException {
@@ -185,6 +193,17 @@ public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID ext
     public void testUpdateRemove() throws DAOException {
         T catalogModel = getCatalogDAO().findByReferenceId(toReferenceId("52"));
         getCatalogDAO().remove(catalogModel);
+    }
+    
+    @Test(expected = DAOException.class)
+    public void testUpdateRemoveVersion() throws DAOException {       
+        try {
+            getCatalogDAO().remove(clase.cast(versionCatalogModel));
+            Assert.fail("Should have thrown a DAOException.");
+        } catch (DAOException exc) {
+            Assert.assertNotNull(exc.getErrorCode());
+            throw exc;
+        }
     }
 
     @Test
