@@ -2,6 +2,7 @@
 
 package com.structureeng.persistence.history;
 
+import com.structureeng.persistence.model.AbstractActiveModel;
 import com.structureeng.persistence.model.AbstractModel;
 
 import com.google.common.base.Preconditions;
@@ -20,9 +21,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 
 /**
  * Creates a revision for an entity as a result of events that occurs inside the
@@ -35,14 +36,14 @@ public class HistoryListener {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final ThreadLocal<RevisionInfo> revisionHolder = new ThreadLocal<RevisionInfo>();
     private static ApplicationContext applicationContext;
-
+    
     /**
      * Creates a revision entity with the {@code HistoryType.CREATE}.
      *
      * @param entity - the instance that will be used to create the revision.
      */
-    @PostPersist
-    public void postPersist(AbstractModel entity) {
+    @PrePersist
+    public void prePersist(AbstractActiveModel entity) {
         createHistoryEntity(entity, HistoryType.CREATE);
     }
 
@@ -51,9 +52,13 @@ public class HistoryListener {
      *
      * @param entity - the instance that will be used to create the revision.
      */
-    @PostUpdate
-    public void postUpdate(AbstractModel entity) {
-        createHistoryEntity(entity, HistoryType.UPDATE);
+    @PreUpdate
+    public void preUpdate(AbstractActiveModel entity) {        
+        HistoryType historyType = HistoryType.UPDATE;
+        if (!entity.getActive()) {
+            historyType =  historyType.DELETE;
+        }
+        createHistoryEntity(entity, historyType);
     }
 
     /**
@@ -61,8 +66,8 @@ public class HistoryListener {
      *
      * @param entity - the instance that will be used to create the revision.
      */
-    @PostRemove
-    public void postRemove(AbstractModel entity) {
+    @PreRemove
+    public void preRemove(AbstractActiveModel entity) {
         createHistoryEntity(entity, HistoryType.DELETE);
     }
 
@@ -189,7 +194,7 @@ public class HistoryListener {
     public static void setApplicationContext(ApplicationContext applicationContext) {
         HistoryListener.applicationContext = Preconditions.checkNotNull(applicationContext);
     }
-
+    
     /**
      * Stores the revision's entities for a given transaction.
      *

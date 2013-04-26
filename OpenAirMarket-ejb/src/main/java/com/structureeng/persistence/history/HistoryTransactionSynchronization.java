@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
 /**
  * Transaction synchronization call backs that persist the revision entities once a
@@ -24,11 +25,14 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Provider<EntityManager> entityManagerProvider;
-
+    
+    @PersistenceContext
+    private EntityManager entityManager;
+    
     public HistoryTransactionSynchronization(Provider<EntityManager> entityManagerProvider) {
         this.entityManagerProvider = entityManagerProvider;
     }
-
+       
     @Override
     public void suspend() {
         logger.debug("suspend is not implemented.");
@@ -45,8 +49,9 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
     }
 
     @Override
-    public void beforeCommit(boolean bln) {
+    public void beforeCommit(boolean readOnly) {
         logger.debug("before commit is not implemented.");
+        createRevisionsInSameTx();
     }
 
     @Override
@@ -57,6 +62,7 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
     @Override
     public void afterCommit() {
         logger.debug("after commit completion is not implemented.");
+        createRevisionsInNewTx();
     }
 
     @Override
@@ -70,37 +76,63 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
                 return;
             case TransactionSynchronization.STATUS_UNKNOWN:
             default:
-                txCompleted();
+                completed();
         }
     }
 
-    private void committed() {
-        logger.debug("About to store the revision entities.");
-        RevisionInfo revisionInfo = HistoryListener.removeCurrentRevisionInfo();
-        if (revisionInfo == null) {
-            logger.warn("Revision Info was not found.");
-        } else {
-            EntityManager entityManager = entityManagerProvider.get();
-            EntityTransaction tx = entityManager.getTransaction();
-            tx.begin();
-            List<HistoryEntity> historyEntities = revisionInfo.getHistoryEntity();
+    private void createRevisionsInSameTx() {
+        final RevisionInfo revisionInfo = HistoryListener.removeCurrentRevisionInfo();
+        if (revisionInfo != null) {            
+            createRevisions(entityManager, revisionInfo.getHistoryEntity());
+        }
+    }
+    
+    private void createRevisionsInNewTx() {        
+        final RevisionInfo revisionInfo = HistoryListener.removeCurrentRevisionInfo();
+        if (revisionInfo != null) {
+            final List<HistoryEntity> historyEntities = revisionInfo.getHistoryEntity();
+            if (!historyEntities.isEmpty()) {
+                EntityManager entityManager = entityManagerProvider.get();
+                EntityTransaction tx = entityManager.getTransaction();
+                tx.begin();
+                createRevisions(entityManager, historyEntities);
+                entityManager.flush();
+                tx.commit();                
+            }
+        }
+    }
+   
+    private void createRevisions(final EntityManager entityManager, 
+            final List<HistoryEntity> historyEntities) {
+        if (!historyEntities.isEmpty()) {
+            logger.debug("About to store the revision entities.");
             for (HistoryEntity he : historyEntities) {
                 entityManager.persist(he);
-            }
-            tx.commit();
+            }            
             logger.debug("The revision entities has been persisted.");
-        }
+        } else {
+            logger.warn("The revision entities were empty.");
+        }        
+    }
+    
+    private void committed() {
+        logger.debug("The revision entities has been persisted and committed succesfully.");
+        removeRevisions();
     }
 
     private void rolledback() {
         logger.debug("The revision entities will not be persisted because the transaction was "
                 + "rolledback.");
-        HistoryListener.removeCurrentRevisionInfo();
+        removeRevisions();
     }
 
-    private void txCompleted() {
+    private void completed() {
         logger.warn("The revision entities will not be persisted because the transaction "
                 + "demarcation was not found.");
+        removeRevisions();
+    }
+    
+    private void removeRevisions() {
         HistoryListener.removeCurrentRevisionInfo();
     }
 }
