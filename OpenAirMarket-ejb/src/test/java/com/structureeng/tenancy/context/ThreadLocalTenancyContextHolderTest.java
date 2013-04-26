@@ -5,15 +5,10 @@ package com.structureeng.tenancy.context;
 import com.structureeng.persistence.model.tenant.Tenant;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Test for class {@code ThreadLocalTenancyContextHolder}.
@@ -28,20 +23,7 @@ public class ThreadLocalTenancyContextHolderTest {
     @Before
     public void setUp() {
         contextHolder = new ThreadLocalTenancyContextHolder();
-        TenancyContextHolder.setStrategy(contextHolder);
-        createCache(1000L, new RemovalListener<Long, TenancyContext>() {
-            @Override
-            public void onRemoval(RemovalNotification<Long, TenancyContext> notification) {                
-            }
-        });
-        ThreadLocalTenancyContextHolder.setContextHolder(cache);
-    }
-    
-    @Test
-    public void testSetTenancyContext() {
-        Cache<Long, TenancyContext> temp = ThreadLocalTenancyContextHolder.getContextHolder();
-        Assert.assertEquals(cache, temp);
-        Assert.assertNotNull(contextHolder.toString());
+        TenancyContextHolder.setStrategy(contextHolder);                
     }
     
     @Test
@@ -63,11 +45,5 @@ public class ThreadLocalTenancyContextHolderTest {
         Tenant tenant = new Tenant();
         tenant.setId(tenantId);        
         return new TenancyContext(tenant);
-    }
-
-    private void createCache(long duration, RemovalListener<Long, TenancyContext> removalListener) {
-        cache = CacheBuilder.newBuilder()
-            .expireAfterAccess(duration, TimeUnit.MILLISECONDS)
-            .initialCapacity(10).removalListener(removalListener).build();
     }
 }

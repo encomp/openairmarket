@@ -5,7 +5,9 @@ package com.structureeng.persistence.history;
 import com.structureeng.persistence.model.AbstractModel;
 
 import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
@@ -29,7 +33,7 @@ import javax.persistence.PostUpdate;
 public class HistoryListener {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static Cache<Long, RevisionInfo> revisionHolder;
+    private static final ThreadLocal<RevisionInfo> revisionHolder = new ThreadLocal<RevisionInfo>();
     private static ApplicationContext applicationContext;
 
     /**
@@ -91,7 +95,7 @@ public class HistoryListener {
             HistoryTransactionSynchronization transactionSynchronization = applicationContext
                     .getBean(HistoryTransactionSynchronization.class);
             TransactionSynchronizationManager.registerSynchronization(transactionSynchronization);
-            revisionHolder.put(Thread.currentThread().getId(), revisionInfo);
+            revisionHolder.set(revisionInfo);
         }
         return revisionInfo;
     }
@@ -146,31 +150,12 @@ public class HistoryListener {
     }
 
     /**
-     * Returns the {@code Cache} that is being used to keep track of the revisions.
-     *
-     * @return the cache that is being used.
-     */
-    public static Cache<Long, RevisionInfo> getRevisionHolder() {
-        return revisionHolder;
-    }
-
-    /**
-     * Specifies the {@code Cache} that will be used to keep track of the revisions.
-     *
-     * @param revisionCache the cache that will be used.
-     */
-    public static void setRevisionHolder(Cache<Long, RevisionInfo> revisionCache) {
-        HistoryListener.revisionHolder = Preconditions.checkNotNull(revisionCache);
-    }
-
-    /**
      * Provides the current {@code RevisionInfo} of a particular thread.
      *
      * @return the associate instance of a {@code Thread}
      */
-    public static RevisionInfo getCurrentRevisionInfo() {
-        Thread thread = Thread.currentThread();
-        return revisionHolder.asMap().get(thread.getId());
+    public static RevisionInfo getCurrentRevisionInfo() {        
+        return revisionHolder.get();
     }
 
     /**
@@ -179,8 +164,9 @@ public class HistoryListener {
      * @return the associate instance of a {@code Thread}
      */
     public static RevisionInfo removeCurrentRevisionInfo() {
-        Thread thread = Thread.currentThread();
-        return revisionHolder.asMap().remove(thread.getId());
+        RevisionInfo revisionInfo = getCurrentRevisionInfo();
+        revisionHolder.set(null);
+        return revisionInfo;
     }
 
     /**
@@ -202,5 +188,48 @@ public class HistoryListener {
      */
     public static void setApplicationContext(ApplicationContext applicationContext) {
         HistoryListener.applicationContext = Preconditions.checkNotNull(applicationContext);
+    }
+
+    /**
+     * Stores the revision's entities for a given transaction.
+     *
+     * @author Edgar Rico (edgar.martinez.rico@gmail.com)
+     */
+    public static class RevisionInfo {
+
+        private final List<HistoryEntity> historyEntities;
+        private final Map<Class, Map<HistoryType, History>> historys;
+
+        public RevisionInfo() {
+            this.historys = Maps.newConcurrentMap();
+            this.historyEntities = Lists.newLinkedList();
+        }
+
+        public void add(HistoryEntity historyEntity) {
+            historyEntities.add(Preconditions.checkNotNull(historyEntity));
+        }
+
+        public List<HistoryEntity> getHistoryEntity() {
+            ImmutableList.Builder<HistoryEntity> builder = ImmutableList.builder();
+            builder.addAll(historyEntities);
+            return builder.build();
+        }
+
+        public History getHistory(Class clase, HistoryType historyType) {
+            Map<HistoryType, History> map = historys.get(clase);
+            if (map != null && map.size() > 0) {
+                return map.get(historyType);
+            }
+            return null;
+        }
+
+        public void setHistory(Class clase, HistoryType historyType, History history) {
+            Map<HistoryType, History> map = historys.get(clase);
+            if (map == null) {
+                map = Maps.newConcurrentMap();
+                historys.put(clase, map);
+            }
+            map.put(historyType, history);
+        }
     }
 }

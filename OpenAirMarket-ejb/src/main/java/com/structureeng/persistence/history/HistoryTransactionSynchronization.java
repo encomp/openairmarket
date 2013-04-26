@@ -2,6 +2,8 @@
 
 package com.structureeng.persistence.history;
 
+import static com.structureeng.persistence.history.HistoryListener.RevisionInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.support.TransactionSynchronization;

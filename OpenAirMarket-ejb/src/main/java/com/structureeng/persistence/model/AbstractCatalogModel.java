@@ -35,6 +35,7 @@ public abstract class AbstractCatalogModel <T extends Serializable, RID extends 
         return referenceId;
     }
    
+    @SuppressWarnings("unchecked")
     @Override
     public void setReferenceId(RID referenceId) {
         if (referenceId instanceof Number) {

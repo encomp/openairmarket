@@ -4,19 +4,13 @@ package com.structureeng.persistence.inject;
 
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.inject.DAOModule;
-import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.HistoryTransactionSynchronization;
-import com.structureeng.persistence.history.RevisionInfo;
-import com.structureeng.tenancy.context.TenancyContext;
 import com.structureeng.tenancy.context.TenancyContextHolder;
 import com.structureeng.tenancy.context.ThreadLocalTenancyContextHolder;
 import com.structureeng.tenancy.integration.EntityManagerTenantAwareProvider;
 import com.structureeng.tenancy.integration.JpaTransactionManagerTenantAware;
 import com.structureeng.tenancy.integration.SharedEntityManagerTenancyAware;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +34,6 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -59,23 +52,7 @@ import javax.sql.DataSource;
 @Import(value = {Database.class, DAOModule.class})
 public class PersistenceTestModule implements TransactionManagementConfigurer {
 
-    static {
-        ThreadLocalTenancyContextHolder.setContextHolder(CacheBuilder.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
-                .removalListener(
-                new RemovalListener<Long, TenancyContext>() {
-                    @Override
-                    public void onRemoval(RemovalNotification<Long, TenancyContext> notification) {
-                    }
-                }).build());
-        HistoryListener.setRevisionHolder(CacheBuilder.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
-                .removalListener(
-                new RemovalListener<Long, RevisionInfo>() {
-                    @Override
-                    public void onRemoval(RemovalNotification<Long, RevisionInfo> notification) {
-                    }
-                }).build());
+    static {       
         TenancyContextHolder.setStrategy(new ThreadLocalTenancyContextHolder());
         DAOException.Builder.setResourceBundle(
                 ResourceBundle.getBundle("com.structureeng.persistence.dao.DAOResourceBundle"));
