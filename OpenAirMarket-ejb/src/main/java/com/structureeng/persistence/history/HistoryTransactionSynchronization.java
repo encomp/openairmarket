@@ -24,7 +24,6 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Provider<EntityManager> entityManagerProvider;
-    private boolean visited;
 
     public HistoryTransactionSynchronization(Provider<EntityManager> entityManagerProvider) {
         this.entityManagerProvider = entityManagerProvider;
@@ -57,7 +56,7 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
 
     @Override
     public void afterCommit() {
-        committed();
+        logger.debug("after commit completion is not implemented.");
     }
 
     @Override
@@ -76,23 +75,20 @@ public class HistoryTransactionSynchronization implements TransactionSynchroniza
     }
 
     private void committed() {
-        if (!visited) {
-            visited = true;
-            logger.debug("About to store the revision entities.");
-            RevisionInfo revisionInfo = HistoryListener.removeCurrentRevisionInfo();
-            if (revisionInfo == null) {
-                logger.warn("Revision Info was not found.");
-            } else {
-                EntityManager entityManager = entityManagerProvider.get();
-                EntityTransaction tx = entityManager.getTransaction();
-                tx.begin();
-                List<HistoryEntity> historyEntities = revisionInfo.getHistoryEntity();
-                for (HistoryEntity he : historyEntities) {
-                    entityManager.persist(he);
-                }
-                tx.commit();
-                logger.debug("The revision entities has been persisted.");
+        logger.debug("About to store the revision entities.");
+        RevisionInfo revisionInfo = HistoryListener.removeCurrentRevisionInfo();
+        if (revisionInfo == null) {
+            logger.warn("Revision Info was not found.");
+        } else {
+            EntityManager entityManager = entityManagerProvider.get();
+            EntityTransaction tx = entityManager.getTransaction();
+            tx.begin();
+            List<HistoryEntity> historyEntities = revisionInfo.getHistoryEntity();
+            for (HistoryEntity he : historyEntities) {
+                entityManager.persist(he);
             }
+            tx.commit();
+            logger.debug("The revision entities has been persisted.");
         }
     }
 
