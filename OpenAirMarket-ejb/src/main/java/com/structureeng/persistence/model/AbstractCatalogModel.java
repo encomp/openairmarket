@@ -22,7 +22,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class AbstractCatalogModel <T extends Serializable, RID extends Serializable>
-    extends AbstractActiveModel<T> {
+    extends AbstractActiveModel<T> implements CatalogModel<T, RID> {
 
     @Column(name = "idReference", nullable = false)
     private RID referenceId;
@@ -30,11 +30,12 @@ public abstract class AbstractCatalogModel <T extends Serializable, RID extends 
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Override
     public RID getReferenceId() {
         return referenceId;
     }
-
-    @SuppressWarnings("unchecked")
+   
+    @Override
     public void setReferenceId(RID referenceId) {
         if (referenceId instanceof Number) {
             checkPositive(Number.class.cast(referenceId));
@@ -46,10 +47,12 @@ public abstract class AbstractCatalogModel <T extends Serializable, RID extends 
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = checkNotEmpty(name);
     }

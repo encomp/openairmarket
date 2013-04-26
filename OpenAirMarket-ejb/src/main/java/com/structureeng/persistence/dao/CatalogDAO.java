@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.persistence.model.AbstractCatalogModel;
+import com.structureeng.persistence.model.CatalogModel;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @param <T> specifies the {@code AbstractCatalogModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractCatalogModel}
  */
-public interface CatalogDAO<T extends AbstractCatalogModel, S extends Serializable, 
+public interface CatalogDAO<T extends CatalogModel, S extends Serializable, 
         RID extends Number> extends ActiveDAO<T, S> {
 
     /**

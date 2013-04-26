@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.persistence.model.AbstractActiveModel;
+import com.structureeng.persistence.model.ActiveModel;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @param <T> specifies the {@code AbstractActiveModel} of the data access object
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  */
-public interface ActiveDAO<T extends AbstractActiveModel, S extends Serializable> extends 
+public interface ActiveDAO<T extends ActiveModel, S extends Serializable> extends 
         DAO<T, S> {
     
     /**
