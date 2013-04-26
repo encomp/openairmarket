@@ -1,11 +1,9 @@
 // Copyright 2013 Structure Eng Inc.
-
 package com.structureeng.persistence.dao.impl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.dao.ActiveDAO;
-import com.structureeng.persistence.dao.DAOErrorCode;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.model.AbstractActiveModel;
@@ -20,7 +18,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 
 /**
  * Provides the implementation for {@code ActiveDAO} interface.
@@ -45,7 +42,7 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
         this.dao = new DAOImpl<T, S>(entityClass, entityIdClass);
     }
 
-     @Override
+    @Override
     public void persist(T entity) throws DAOException {
         dao.persist(entity);
     }
@@ -57,16 +54,8 @@ public final class ActiveDAOImpl<T extends AbstractActiveModel, S extends Serial
 
     @Override
     public final void remove(T entity) throws DAOException {
-        try {
-            if (!hasVersionChanged(entity)) {
-                entity.setActive(Boolean.FALSE);
-                merge(entity);
-            } else {
-                throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
-            }
-        } catch (PersistenceException persistenceException) {
-            throw DAOException.Builder.build(DAOErrorCode.PERSISTENCE, persistenceException);
-        }
+        entity.setActive(Boolean.FALSE);
+        dao.merge(entity);
     }
 
     @Override
