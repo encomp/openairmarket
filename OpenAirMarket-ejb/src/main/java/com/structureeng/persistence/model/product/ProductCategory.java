@@ -5,7 +5,7 @@ package com.structureeng.persistence.model.product;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.history.product.DivisionHistory;
+import com.structureeng.persistence.model.history.product.ProductCategoryHistory;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,21 +26,22 @@ import javax.persistence.UniqueConstraint;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @EntityListeners(value = {HistoryListener.class})
-@Revision(builder = DivisionHistory.Builder.class)
+@Revision(builder = ProductCategoryHistory.Builder.class)
 @Entity
-@Table(name = "division", uniqueConstraints = {
-        @UniqueConstraint(name = "divisionTenantPK", columnNames = {"idTenant", "idReference"}),
-        @UniqueConstraint(name = "divisionUK", columnNames = {"idTenant", "name"})})
-public class Division extends AbstractCatalogTenantModel<Long, Integer> {
+@Table(name = "productCategory", uniqueConstraints = {
+        @UniqueConstraint(name = "productCategoryPK", columnNames = {"idTenant", "idReference"}),
+        @UniqueConstraint(name = "productCategoryUK", columnNames = {"idTenant", "name"})})
+public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idDivision")
+    @Column(name = "idProductCategory")
     private Long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "idParentDivision", referencedColumnName = "idDivision", nullable = true)
-    private Division parentDivision;
+    @JoinColumn(name = "idParentProductCategory", referencedColumnName = "idProductCategory",
+            nullable = true)
+    private ProductCategory parentProductCategory;
 
     @Override
     public Long getId() {
@@ -52,12 +53,12 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
         this.id = checkPositive(id);
     }
 
-    public Division getParentDivision() {
-        return parentDivision;
+    public ProductCategory getParentProductCategory() {
+        return parentProductCategory;
     }
 
-    public void setParentDivision(Division parentDivision) {
-        this.parentDivision = parentDivision;
+    public void setParentProductCategory(ProductCategory parentProductCategory) {
+        this.parentProductCategory = parentProductCategory;
     }
 
     /**
@@ -65,12 +66,12 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
      *
      * @return - new instance
      */
-    public static Division.Buider newBuilder() {
-        return new Division.Buider();
+    public static ProductCategory.Buider newBuilder() {
+        return new ProductCategory.Buider();
     }
 
     /**
-     * Builder class that creates instances of {@code Division}.
+     * Builder class that creates instances of {@code ProductCategory}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
@@ -94,8 +95,8 @@ public class Division extends AbstractCatalogTenantModel<Long, Integer> {
          *
          * @return - new instance
          */
-        public Division build() {
-            Division division = new Division();
+        public ProductCategory build() {
+            ProductCategory division = new ProductCategory();
             division.setReferenceId(referenceId);
             division.setName(name);
             return division;

@@ -5,7 +5,7 @@ package com.structureeng.persistence.model.history.product;
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.ProductManufacturer;
-import com.structureeng.persistence.model.product.Division;
+import com.structureeng.persistence.model.product.ProductCategory;
 import com.structureeng.persistence.model.product.ProductDefinition;
 
 import com.google.common.base.Preconditions;
@@ -62,9 +62,10 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductManufacturer productManufacturer;
 
-    @JoinColumn(name = "idDivision", referencedColumnName = "idDivision", nullable = false)
+    @JoinColumn(name = "idProductCategory", referencedColumnName = "idProductCategory", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Division division;
+    private ProductCategory productCategory;
 
     @Override
     public Long getId() {
@@ -124,12 +125,12 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
         this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
     }
 
-    public Division getDivision() {
-        return division;
+    public ProductCategory getProductCategory() {
+        return productCategory;
     }
 
-    public void setDivision(Division division) {
-        this.division = Preconditions.checkNotNull(division);
+    public void setProductCategory(ProductCategory productCategory) {
+        this.productCategory = Preconditions.checkNotNull(productCategory);
     }
 
     /**
@@ -155,8 +156,9 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
             productDefinitionHistory.setName(productDefinition.getName());
             productDefinitionHistory.setKey(productDefinition.getKey());
             productDefinitionHistory.setImage(productDefinition.getImage());
-            productDefinitionHistory.setProductManufacturer(productDefinition.getProductManufacturer());
-            productDefinitionHistory.setDivision(productDefinition.getDivision());
+            productDefinitionHistory
+                    .setProductManufacturer(productDefinition.getProductManufacturer());
+            productDefinitionHistory.setProductCategory(productDefinition.getProductCategory());
             productDefinitionHistory.setActive(productDefinition.getActive());
             productDefinitionHistory.setVersion(productDefinition.getVersion());
             return productDefinitionHistory;

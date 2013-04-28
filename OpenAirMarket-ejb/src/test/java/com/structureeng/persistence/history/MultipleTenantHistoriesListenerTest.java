@@ -5,11 +5,11 @@ package com.structureeng.persistence.history;
 import com.structureeng.persistence.model.AbstractPersistenceTest;
 import com.structureeng.persistence.model.history.Audit;
 import com.structureeng.persistence.model.history.product.ProductManufacturerHistory;
-import com.structureeng.persistence.model.history.product.DivisionHistory;
-import com.structureeng.persistence.model.history.product.DivisionHistory_;
+import com.structureeng.persistence.model.history.product.ProductCategoryHistory;
+import com.structureeng.persistence.model.history.product.ProductCategoryHistory_;
 import com.structureeng.persistence.model.history.product.ProductManufacturerHistory_;
 import com.structureeng.persistence.model.product.ProductManufacturer;
-import com.structureeng.persistence.model.product.Division;
+import com.structureeng.persistence.model.product.ProductCategory;
 import com.structureeng.persistence.model.tenant.Tenant;
 import com.structureeng.tenancy.context.TenancyContext;
 import com.structureeng.tenancy.context.TenancyContextHolder;
@@ -58,7 +58,7 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         tx = applicationContext.getBean(PlatformTransactionManager.class);
         TransactionStatus transactionStatus = tx.getTransaction(null);
         ProductManufacturer company = createProductManufacturer(99, "testCompany 99");
-        Division division = createDivision(99, "testDivision 99");
+        ProductCategory division = createProductCategory(99, "testDivision 99");
         entityManager.persist(company);
         entityManager.persist(division);
         tx.commit(transactionStatus);
@@ -69,35 +69,34 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
     public void testPostPersistValidation() {
         ProductManufacturerHistory companyHistory = 
                 retrieveProductManufacturerHistory(99, JoinType.INNER);
-        DivisionHistory divisionHistory = retrieveDivisionHistory(99, JoinType.INNER);
+        ProductCategoryHistory divisionHistory = retrieveProductCategoryHistory(99, JoinType.INNER);
         ProductManufacturer company = companyHistory.getProductManufacturer();
-        Division division = divisionHistory.getDivision();
+        ProductCategory division = divisionHistory.getProductCategory();
         Audit historyTenant = companyHistory.getHistory();
-        assertCompanyHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
-        assertDivisionHistory(HistoryType.CREATE, divisionHistory, historyTenant, division);
-        deleteCompanyHistory(company, companyHistory.getId());
-        deleteDivisionHistory(division, divisionHistory.getId());
+        assertProductManufacturerHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
+        assertProductCategoryHistory(HistoryType.CREATE, divisionHistory, historyTenant, division);
+        deleteProductManufacturerHistory(company, companyHistory.getId());
+        deleteProductCategoryHistory(division, divisionHistory.getId());
         deleteTenantHistory(historyTenant.getId());
     }
             
-    private void assertCompanyHistory(HistoryType historyType, 
-            ProductManufacturerHistory companyHistory, Audit historyTenant, 
-            ProductManufacturer company) {
-        Assert.assertEquals(historyType, companyHistory.getHistoryType());
-        Assert.assertEquals(company.getReferenceId(), companyHistory.getReferenceId());
-        Assert.assertEquals(company.getName(), companyHistory.getName());
-        Assert.assertEquals(company.getVersion(), companyHistory.getVersion());
+    private void assertProductManufacturerHistory(HistoryType historyType, 
+            ProductManufacturerHistory pmHistory, Audit historyTenant, ProductManufacturer pm) {
+        Assert.assertEquals(historyType, pmHistory.getHistoryType());
+        Assert.assertEquals(pm.getReferenceId(), pmHistory.getReferenceId());
+        Assert.assertEquals(pm.getName(), pmHistory.getName());
+        Assert.assertEquals(pm.getVersion(), pmHistory.getVersion());
         Assert.assertNotNull(historyTenant);
         Assert.assertNotNull(historyTenant.getId());
         Assert.assertNotNull(historyTenant.getCreatedDate());
     }
     
-    private void assertDivisionHistory(HistoryType historyType, DivisionHistory divisionHistory,
-            Audit historyTenant, Division division) {
-        Assert.assertEquals(historyType, divisionHistory.getHistoryType());
-        Assert.assertEquals(division.getReferenceId(), divisionHistory.getReferenceId());
-        Assert.assertEquals(division.getName(), divisionHistory.getName());
-        Assert.assertEquals(division.getVersion(), divisionHistory.getVersion());
+    private void assertProductCategoryHistory(HistoryType historyType, 
+            ProductCategoryHistory pcHistory, Audit historyTenant, ProductCategory pc) {
+        Assert.assertEquals(historyType, pcHistory.getHistoryType());
+        Assert.assertEquals(pc.getReferenceId(), pcHistory.getReferenceId());
+        Assert.assertEquals(pc.getName(), pcHistory.getName());
+        Assert.assertEquals(pc.getVersion(), pcHistory.getVersion());
         Assert.assertNotNull(historyTenant);
         Assert.assertNotNull(historyTenant.getId());
         Assert.assertNotNull(historyTenant.getCreatedDate());
@@ -115,30 +114,32 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         return entityManager.createQuery(cq).getSingleResult();
     }
     
-    private DivisionHistory retrieveDivisionHistory(Integer referenceId, JoinType tenatJoinType) {
+    private ProductCategoryHistory retrieveProductCategoryHistory(Integer referenceId, 
+            JoinType tenatJoinType) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<DivisionHistory> cq = entityManager.getCriteriaBuilder()
-                .createQuery(DivisionHistory.class);
-        Root<DivisionHistory> root = cq.from(DivisionHistory.class);
-        root.fetch(DivisionHistory_.audit, JoinType.INNER);
-        root.fetch(DivisionHistory_.division, tenatJoinType);
-        cq.where(cb.equal(root.get(DivisionHistory_.referenceId), referenceId));
+        CriteriaQuery<ProductCategoryHistory> cq = entityManager.getCriteriaBuilder()
+                .createQuery(ProductCategoryHistory.class);
+        Root<ProductCategoryHistory> root = cq.from(ProductCategoryHistory.class);
+        root.fetch(ProductCategoryHistory_.audit, JoinType.INNER);
+        root.fetch(ProductCategoryHistory_.productCategory, tenatJoinType);
+        cq.where(cb.equal(root.get(ProductCategoryHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();
     }
     
-    private void deleteDivisionHistory(Division division, Long... divisionHistory) {
+    private void deleteProductCategoryHistory(ProductCategory division, Long... divisionHistory) {
         Query q = null;
         for (Long id : divisionHistory) {
-            q = entityManager.createQuery("DELETE FROM DivisionHistory c WHERE c.id = ?1");
+            q = entityManager.createQuery("DELETE FROM ProductCategoryHistory c WHERE c.id = ?1");
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }        
-        q = entityManager.createQuery("DELETE FROM Division c WHERE c.id = ?1");
+        q = entityManager.createQuery("DELETE FROM ProductCategory c WHERE c.id = ?1");
         q.setParameter(1, division.getId());
         Assert.assertEquals(1, q.executeUpdate());
     }
     
-    private void deleteCompanyHistory(ProductManufacturer company, Long... companyHistory) {
+    private void deleteProductManufacturerHistory(ProductManufacturer company, 
+            Long... companyHistory) {
         Query q = null;
         for (Long id : companyHistory) {
             q = entityManager
@@ -159,8 +160,8 @@ public class MultipleTenantHistoriesListenerTest extends AbstractPersistenceTest
         }
     }
     
-    private Division createDivision(int referenceId, String name) {
-        return Division.newBuilder().setReferenceId(referenceId).setName(name).build();
+    private ProductCategory createProductCategory(int referenceId, String name) {
+        return ProductCategory.newBuilder().setReferenceId(referenceId).setName(name).build();
     }
     
     private ProductManufacturer createProductManufacturer(int referenceId, String name) {

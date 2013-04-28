@@ -9,7 +9,7 @@ import com.structureeng.persistence.model.Model;
 import com.structureeng.persistence.model.history.product.ProductDefinitionHistory;
 import com.structureeng.persistence.model.history.product.ProductDefinitionHistory_;
 import com.structureeng.persistence.model.product.ProductManufacturer;
-import com.structureeng.persistence.model.product.Division;
+import com.structureeng.persistence.model.product.ProductCategory;
 import com.structureeng.persistence.model.product.ProductDefinition;
 import java.math.BigInteger;
 import java.util.List;
@@ -24,11 +24,11 @@ import javax.persistence.criteria.Root;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInteger, 
+public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInteger,
         ProductDefinition, ProductDefinitionHistory> {
-    
+
     private ProductDefinitionDAO productDefinitionDAO;
-    
+
     public ProductDefinitionDAOImplTest() {
         super(ProductDefinition.class);
     }
@@ -37,7 +37,7 @@ public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Lon
     public void deleteHistory(Model model) {
         ProductDefinition productDefinition = ProductDefinition.class.cast(model);
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<ProductDefinitionHistory> cq = 
+        CriteriaQuery<ProductDefinitionHistory> cq =
                 cb.createQuery(ProductDefinitionHistory.class);
         Root<ProductDefinitionHistory> root = cq.from(ProductDefinitionHistory.class);
         root.fetch(ProductDefinitionHistory_.audit, JoinType.INNER);
@@ -51,13 +51,13 @@ public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Lon
 
     @Override
     public ProductDefinition build(BigInteger referenceId, String name) {
-        ProductManufacturer company = new ProductManufacturer();
-        Division division = new Division();
-        company.setId(1L);        
-        division.setId(1L);
+        ProductManufacturer productManufacturer = new ProductManufacturer();
+        ProductCategory productCategory = new ProductCategory();
+        productManufacturer.setId(1L);
+        productCategory.setId(1L);
         ProductDefinition.Buider builder = ProductDefinition.newBuilder();
-        builder.setReferenceId(referenceId).setName(name).setKey(name).setProductManufacturer(company)
-                .setDivision(division);
+        builder.setReferenceId(referenceId).setName(name).setKey(name)
+                .setProductManufacturer(productManufacturer).setProductCategory(productCategory);
         return builder.build();
     }
 

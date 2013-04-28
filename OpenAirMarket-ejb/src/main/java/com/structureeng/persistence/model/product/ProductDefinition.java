@@ -53,9 +53,10 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductManufacturer productManufacturer;
 
-    @JoinColumn(name = "idDivision", referencedColumnName = "idDivision", nullable = false)
+    @JoinColumn(name = "idProductCategory", referencedColumnName = "idProductCategory", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Division division;
+    private ProductCategory productCategory;
 
     @Override
     public Long getId() {
@@ -91,12 +92,12 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
     }
 
-    public Division getDivision() {
-        return division;
+    public ProductCategory getProductCategory() {
+        return productCategory;
     }
 
-    public void setDivision(Division division) {
-        this.division = Preconditions.checkNotNull(division);
+    public void setProductCategory(ProductCategory productCategory) {
+        this.productCategory = Preconditions.checkNotNull(productCategory);
     }
 
     /**
@@ -120,7 +121,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         private String key;
         private String image;
         private ProductManufacturer productManufacturer;
-        private Division division;
+        private ProductCategory productCategory;
 
         public Buider setReferenceId(BigInteger referenceId) {
             this.referenceId = checkPositive(referenceId);
@@ -147,8 +148,8 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             return this;
         }
 
-        public Buider setDivision(Division division) {
-            this.division = Preconditions.checkNotNull(division);
+        public Buider setProductCategory(ProductCategory productCategory) {
+            this.productCategory = Preconditions.checkNotNull(productCategory);
             return this;
         }
 
@@ -164,7 +165,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             productDefinition.setKey(key);
             productDefinition.setImage(image);
             productDefinition.setProductManufacturer(productManufacturer);
-            productDefinition.setDivision(division);
+            productDefinition.setProductCategory(productCategory);
             return productDefinition;
         }
     }
