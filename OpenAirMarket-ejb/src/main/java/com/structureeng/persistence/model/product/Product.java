@@ -69,9 +69,10 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private TaxType taxType;
 
-    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
+    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private MeasureUnit measureUnit;
+    private ProductMeasureUnit productMeasureUnit;
 
     @Column(name = "autoStock", nullable = false)
     private Boolean autoStock;
@@ -140,12 +141,12 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         this.taxType = Preconditions.checkNotNull(taxType);
     }
 
-    public MeasureUnit getMeasureUnit() {
-        return measureUnit;
+    public ProductMeasureUnit getProductMeasureUnit() {
+        return productMeasureUnit;
     }
 
-    public void setMeasureUnit(MeasureUnit measureUnit) {
-        this.measureUnit = measureUnit;
+    public void setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
+        this.productMeasureUnit = productMeasureUnit;
     }
 
     public BigDecimal getQuantity() {
@@ -178,7 +179,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         private Store store;
         private ProductType productType;
         private TaxType taxType;
-        private MeasureUnit measureUnit;
+        private ProductMeasureUnit productMeasureUnit;
         private BigDecimal quantity;
         private Boolean autoStock = Boolean.FALSE;
         private Boolean wastable = Boolean.FALSE;
@@ -213,8 +214,8 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             return this;
         }
 
-        public Product.Buider setMeasureUnit(MeasureUnit measureUnit) {
-            this.measureUnit = Preconditions.checkNotNull(measureUnit);
+        public Product.Buider setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
+            this.productMeasureUnit = Preconditions.checkNotNull(productMeasureUnit);
             return this;
         }
 
@@ -249,7 +250,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             product.setProductDefinition(productDefinition);
             product.setProductType(productType);
             product.setTaxType(taxType);
-            product.setMeasureUnit(measureUnit);
+            product.setProductMeasureUnit(productMeasureUnit);
             return product;
         }
     }

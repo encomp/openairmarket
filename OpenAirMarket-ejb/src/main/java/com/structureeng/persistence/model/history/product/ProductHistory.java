@@ -10,7 +10,7 @@ import com.structureeng.persistence.model.business.ProductType;
 import com.structureeng.persistence.model.business.Store;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.MeasureUnit;
+import com.structureeng.persistence.model.product.ProductMeasureUnit;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.ProductDefinition;
 
@@ -68,9 +68,10 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private TaxType taxType;
 
-    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
+    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private MeasureUnit measureUnit;
+    private ProductMeasureUnit productMeasureUnit;
 
     @Column(name = "idReference", nullable = false)
     private BigInteger referenceId;
@@ -177,12 +178,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
         this.taxType = Preconditions.checkNotNull(taxType);
     }
 
-    public MeasureUnit getMeasureUnit() {
-        return measureUnit;
+    public ProductMeasureUnit getProductMeasureUnit() {
+        return productMeasureUnit;
     }
 
-    public void setMeasureUnit(MeasureUnit measureUnit) {
-        this.measureUnit = measureUnit;
+    public void setProductMeasureUnit(ProductMeasureUnit measureUnit) {
+        this.productMeasureUnit = measureUnit;
     }
 
     /**
@@ -212,7 +213,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
             productHistory.setProductDefinition(product.getProductDefinition());
             productHistory.setProductType(product.getProductType());
             productHistory.setTaxType(product.getTaxType());
-            productHistory.setMeasureUnit(product.getMeasureUnit());
+            productHistory.setProductMeasureUnit(product.getProductMeasureUnit());
             productHistory.setVersion(product.getVersion());
             return productHistory;
         }

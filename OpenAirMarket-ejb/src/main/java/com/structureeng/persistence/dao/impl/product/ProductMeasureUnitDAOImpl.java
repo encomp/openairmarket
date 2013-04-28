@@ -5,12 +5,11 @@ package com.structureeng.persistence.dao.impl.product;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.dao.DAOException;
-import com.structureeng.persistence.dao.MeasureUnitDAO;
+import com.structureeng.persistence.dao.ProductMeasureUnitDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.product.MeasureUnit;
+import com.structureeng.persistence.model.product.ProductMeasureUnit;
 import com.structureeng.persistence.model.product.Product;
-import com.structureeng.persistence.model.product.ProductDefinition_;
 import com.structureeng.persistence.model.product.Product_;
 
 import org.slf4j.Logger;
@@ -25,34 +24,35 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
 
 /**
- * Data Access Object for {@code MeasureUnit}.
+ * Data Access Object for {@code ProductMeasureUnit}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
+public final class ProductMeasureUnitDAOImpl implements ProductMeasureUnitDAO {
 
     private EntityManager entityManager;
-    private final CatalogDAOImpl<MeasureUnit, Long, Integer> catalogDAO;
+    private final CatalogDAOImpl<ProductMeasureUnit, Long, Integer> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public MeasureUnitDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<MeasureUnit, Long, Integer>(MeasureUnit.class, Long.class,
-                Integer.class);
+    public ProductMeasureUnitDAOImpl() {
+        catalogDAO =
+                new CatalogDAOImpl<ProductMeasureUnit, Long, Integer>(ProductMeasureUnit.class,
+                    Long.class, Integer.class);
     }
 
     @Override
-    public void persist(MeasureUnit entity) throws DAOException {
+    public void persist(ProductMeasureUnit entity) throws DAOException {
         catalogDAO.persist(entity);
     }
 
     @Override
-    public MeasureUnit merge(MeasureUnit entity) throws DAOException {
+    public ProductMeasureUnit merge(ProductMeasureUnit entity) throws DAOException {
         return catalogDAO.merge(entity);
     }
 
     @Override
-    public void remove(MeasureUnit entity) throws DAOException {
+    public void remove(ProductMeasureUnit entity) throws DAOException {
         if (entity.getActive()) {
             long count = countRetailProductWithMeasureUnit(entity);
             if (count > 0) {
@@ -63,37 +63,37 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     }
 
     @Override
-    public void refresh(MeasureUnit entity) {
+    public void refresh(ProductMeasureUnit entity) {
         catalogDAO.refresh(entity);
     }
 
     @Override
-    public void refresh(MeasureUnit entity, LockModeType modeType) {
+    public void refresh(ProductMeasureUnit entity, LockModeType modeType) {
         catalogDAO.refresh(entity, modeType);
     }
 
     @Override
-    public MeasureUnit find(Long id) {
+    public ProductMeasureUnit find(Long id) {
         return catalogDAO.find(id);
     }
 
     @Override
-    public MeasureUnit find(Long id, long version) throws DAOException {
+    public ProductMeasureUnit find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
 
     @Override
-    public MeasureUnit findByReferenceId(Integer referenceId) {
+    public ProductMeasureUnit findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
     }
 
     @Override
-    public MeasureUnit findInactiveByReferenceId(Integer referenceId) {
+    public ProductMeasureUnit findInactiveByReferenceId(Integer referenceId) {
         return catalogDAO.findInactiveByReferenceId(referenceId);
     }
 
     @Override
-    public List<MeasureUnit> findRange(int start, int count) {
+    public List<ProductMeasureUnit> findRange(int start, int count) {
         return catalogDAO.findRange(start, count);
     }
 
@@ -113,18 +113,18 @@ public final class MeasureUnitDAOImpl implements MeasureUnitDAO {
     }
 
     @Override
-    public boolean hasVersionChanged(MeasureUnit entity) throws DAOException {
+    public boolean hasVersionChanged(ProductMeasureUnit entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countRetailProductWithMeasureUnit(MeasureUnit measureUnit) {
+    private long countRetailProductWithMeasureUnit(ProductMeasureUnit measureUnit) {
         QueryContainer<Long, Product> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        qc.getRoot().join(Product_.measureUnit, JoinType.INNER);
+        qc.getRoot().join(Product_.productMeasureUnit, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(Product_.measureUnit), measureUnit),
+                    qc.getRoot().get(Product_.productMeasureUnit), measureUnit),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

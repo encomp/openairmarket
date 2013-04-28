@@ -15,11 +15,11 @@
         <class>com.structureeng.persistence.model.history.business.SalePaymentTypeHistory</class>
         <class>com.structureeng.persistence.model.history.business.StoreHistory</class>
         <class>com.structureeng.persistence.model.history.business.TaxTypeHistory</class>        
-        <class>com.structureeng.persistence.model.history.product.MeasureUnitHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductCategoryHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductDefinitionHistory</class>        
         <class>com.structureeng.persistence.model.history.product.ProductHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductManufacturerHistory</class>
+        <class>com.structureeng.persistence.model.history.product.ProductMeasureUnitHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductPriceHistory</class>
         <class>com.structureeng.persistence.model.history.product.PurchasePriceHistory</class>
         <class>com.structureeng.persistence.model.history.product.SalePriceHistory</class>
@@ -30,11 +30,11 @@
         <class>com.structureeng.persistence.model.history.stock.StockHistory</class>
         <class>com.structureeng.persistence.model.history.stock.WarehouseHistory</class>
         <class>com.structureeng.persistence.model.history.tenant.TenantHistory</class>        
-        <class>com.structureeng.persistence.model.product.MeasureUnit</class>
         <class>com.structureeng.persistence.model.product.Product</class>
         <class>com.structureeng.persistence.model.product.ProductCategory</class>
         <class>com.structureeng.persistence.model.product.ProductDefinition</class>
         <class>com.structureeng.persistence.model.product.ProductManufacturer</class>
+        <class>com.structureeng.persistence.model.product.ProductMeasureUnit</class>
         <class>com.structureeng.persistence.model.product.ProductPrice</class>
         <class>com.structureeng.persistence.model.product.PurchasePrice</class>
         <class>com.structureeng.persistence.model.product.SalePrice</class>

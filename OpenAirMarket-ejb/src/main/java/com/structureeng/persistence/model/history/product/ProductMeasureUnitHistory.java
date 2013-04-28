@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.MeasureUnit;
+import com.structureeng.persistence.model.product.ProductMeasureUnit;
 
 import com.google.common.base.Preconditions;
 
@@ -20,24 +20,25 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Define the revision for the {@code Package} entities.
+ * Define the revision for the {@code ProductMeasureUnit} entities.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @Entity
-@Table(name = "measureUnitHistory", uniqueConstraints = {
-        @UniqueConstraint(name = "measureUnitHistoryUK",
-            columnNames = {"idMeasureUnit", "idAudit"})})
-public class MeasureUnitHistory extends AbstractHistoryTenantModel {
+@Table(name = "productMeasureUnitHistory", uniqueConstraints = {
+        @UniqueConstraint(name = "productMeasureUnitHistoryUK",
+            columnNames = {"idProductMeasureUnit", "idAudit"})})
+public class ProductMeasureUnitHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idMeasureUnitHistory")
+    @Column(name = "idProductMeasureUnitHistory")
     private Long id;
 
-    @JoinColumn(name = "idMeasureUnit", referencedColumnName = "idMeasureUnit", nullable = false)
+    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit",
+            nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private MeasureUnit measureUnit;
+    private ProductMeasureUnit productMeasureUnit;
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
@@ -61,12 +62,12 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
         this.id = checkPositive(id);
     }
 
-    public MeasureUnit getMeasureUnit() {
-        return measureUnit;
+    public ProductMeasureUnit getProductMeasureUnit() {
+        return productMeasureUnit;
     }
 
-    public void setMeasureUnit(MeasureUnit measureUnit) {
-        this.measureUnit = Preconditions.checkNotNull(measureUnit);
+    public void setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
+        this.productMeasureUnit = Preconditions.checkNotNull(productMeasureUnit);
     }
 
     public Integer getReferenceId() {
@@ -102,29 +103,30 @@ public class MeasureUnitHistory extends AbstractHistoryTenantModel {
     }
 
     /**
-     * Factory class for the {@code MeasureUnitHistory} entities.
+     * Factory class for the {@code ProductMeasureUnitHistory} entities.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
-    public static class Builder extends HistoryEntityBuilder<MeasureUnit, MeasureUnitHistory> {
+    public static class Builder extends HistoryEntityBuilder<ProductMeasureUnit,
+            ProductMeasureUnitHistory> {
 
         /**
-         * Create an instance of {@code MeasureUnitHistory}.
+         * Create an instance of {@code ProductMeasureUnitHistory}.
          *
-         * @param measureUnit the instance that will be used to create a new
-         *                    {@code MeasureUnitHistory}.
+         * @param productMeasureUnit the instance that will be used to create a new
+         *                           {@code ProductMeasureUnit}.
          * @return a new instance
          */
         @Override
-        public MeasureUnitHistory build(MeasureUnit measureUnit) {
-            MeasureUnitHistory measureUnitHistory = new MeasureUnitHistory();
-            measureUnitHistory.setMeasureUnit(measureUnit);
-            measureUnitHistory.setReferenceId(measureUnit.getReferenceId());
-            measureUnitHistory.setName(measureUnit.getName());
-            measureUnitHistory.setCountable(measureUnit.getCountable());
-            measureUnitHistory.setExpire(measureUnit.getExpire());
-            measureUnitHistory.setActive(measureUnit.getActive());
-            measureUnitHistory.setVersion(measureUnit.getVersion());
+        public ProductMeasureUnitHistory build(ProductMeasureUnit productMeasureUnit) {
+            ProductMeasureUnitHistory measureUnitHistory = new ProductMeasureUnitHistory();
+            measureUnitHistory.setProductMeasureUnit(productMeasureUnit);
+            measureUnitHistory.setReferenceId(productMeasureUnit.getReferenceId());
+            measureUnitHistory.setName(productMeasureUnit.getName());
+            measureUnitHistory.setCountable(productMeasureUnit.getCountable());
+            measureUnitHistory.setExpire(productMeasureUnit.getExpire());
+            measureUnitHistory.setActive(productMeasureUnit.getActive());
+            measureUnitHistory.setVersion(productMeasureUnit.getVersion());
             return measureUnitHistory;
         }
     }

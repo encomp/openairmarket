@@ -5,7 +5,7 @@ package com.structureeng.persistence.model.product;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.history.product.MeasureUnitHistory;
+import com.structureeng.persistence.model.history.product.ProductMeasureUnitHistory;
 
 import com.google.common.base.Preconditions;
 
@@ -19,22 +19,22 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Define the different packages of a
+ * Define the different measure units of a
  * {@code com.structureeng.persistence.model.product.ProductType}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @EntityListeners(value = {HistoryListener.class})
-@Revision(builder = MeasureUnitHistory.Builder.class)
+@Revision(builder = ProductMeasureUnitHistory.Builder.class)
 @Entity
-@Table(name = "measureUnit", uniqueConstraints = {
-        @UniqueConstraint(name = "measureUnitTenantPK", columnNames = {"idTenant", "idReference"}),
-        @UniqueConstraint(name = "measureUnitUK", columnNames = {"idTenant", "name"})})
-public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
+@Table(name = "productMeasureUnit", uniqueConstraints = {
+       @UniqueConstraint(name = "productMeasureUnitPK", columnNames = {"idTenant", "idReference"}),
+       @UniqueConstraint(name = "productMeasureUnitUK", columnNames = {"idTenant", "name"})})
+public class ProductMeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idMeasureUnit")
+    @Column(name = "idProductMeasureUnit")
     private Long id;
 
     @Column(name = "countable", nullable = false)
@@ -74,12 +74,12 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
      *
      * @return - new instance
      */
-    public static MeasureUnit.Buider newBuilder() {
-        return new MeasureUnit.Buider();
+    public static ProductMeasureUnit.Buider newBuilder() {
+        return new ProductMeasureUnit.Buider();
     }
 
     /**
-     * Builder class that creates instances of {@code MeasureUnit}.
+     * Builder class that creates instances of {@code ProductMeasureUnit}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
@@ -90,33 +90,33 @@ public class MeasureUnit extends AbstractCatalogTenantModel<Long, Integer> {
         private Boolean countable;
         private Boolean expire;
 
-        public MeasureUnit.Buider setReferenceId(Integer referenceId) {
+        public ProductMeasureUnit.Buider setReferenceId(Integer referenceId) {
             this.referenceId = checkPositive(referenceId);
             return this;
         }
 
-        public MeasureUnit.Buider setName(String name) {
+        public ProductMeasureUnit.Buider setName(String name) {
             this.name = checkNotEmpty(name);
             return this;
         }
 
-        public MeasureUnit.Buider setCountable(Boolean countable) {
+        public ProductMeasureUnit.Buider setCountable(Boolean countable) {
             this.countable = Preconditions.checkNotNull(countable);
             return this;
         }
 
-        public MeasureUnit.Buider setExpire(Boolean expire) {
+        public ProductMeasureUnit.Buider setExpire(Boolean expire) {
             this.expire = Preconditions.checkNotNull(expire);
             return this;
         }
 
         /**
-         * Creates a new instance of {@code MeasureUnit}.
+         * Creates a new instance of {@code ProductMeasureUnit}.
          *
          * @return - new instance
          */
-        public MeasureUnit build() {
-            MeasureUnit paquete = new MeasureUnit();
+        public ProductMeasureUnit build() {
+            ProductMeasureUnit paquete = new ProductMeasureUnit();
             paquete.setReferenceId(referenceId);
             paquete.setName(name);
             paquete.setCountable(countable);
