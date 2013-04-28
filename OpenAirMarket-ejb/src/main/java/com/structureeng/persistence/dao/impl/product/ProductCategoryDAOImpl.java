@@ -55,7 +55,7 @@ public final class ProductCategoryDAOImpl implements ProductCategoryDAO {
         if (entity.getActive()) {
             long count = countProductDefinitionWithCategory(entity);
             if (count > 0) {
-                throw DAOException.Builder.build(ProductErrorCode.DIVISION_FK);
+                throw DAOException.Builder.build(ProductErrorCode.PRODUCT_CATEGORY_FK);
             }
         }
         catalogDAO.remove(entity);

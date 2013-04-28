@@ -66,8 +66,8 @@ public final class ProductDAOImpl implements ProductDAO {
     public void remove(Product entity) throws DAOException {
         if (entity.getActive()) {
             DAOException daoException = null;
-            if (countRetailProductsWithProduct(entity) > 0) {
-                daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_FK_RETAIL);
+            if (countProductPricesForProduct(entity) > 0) {
+                daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_PRICES_FK);
             }
             if (countStocksWithProduct(entity) > 0) {
                 daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_FK_STOCK,
@@ -163,7 +163,7 @@ public final class ProductDAOImpl implements ProductDAO {
         return qc.getSingleResult();
     }
 
-    private long countRetailProductsWithProduct(final Product product) {
+    private long countProductPricesForProduct(final Product product) {
         QueryContainer<Long, ProductPrice> qc = QueryContainer.newQueryContainerCount(
                 getEntityManager(), ProductPrice.class);
         qc.getRoot().join(ProductPrice_.product, JoinType.INNER);

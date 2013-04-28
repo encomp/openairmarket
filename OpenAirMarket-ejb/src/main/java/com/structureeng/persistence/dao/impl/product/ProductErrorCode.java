@@ -14,21 +14,21 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
 
     /**
      * Property that specifies the error in case the foreign key has been violated for a
-     * {@code Company} entity.
+     * {@code ProductManufacturer} entity.
      */
-    COMPANY_FK("dao.company.foreignKey.productDefinition"),
+    PRODUCT_MANUFACTURER_FK("dao.productManufacturer.foreignKey.productDefinition"),
 
     /**
      * Property that specifies the error in case the foreign key has been violated for a
-     * {@code Division} entity.
+     * {@code ProductCategory} entity.
      */
-    DIVISION_FK("dao.division.foreignKey.productDefinition"),
+    PRODUCT_CATEGORY_FK("dao.productCategory.foreignKey.productDefinition"),
 
     /**
      * Property that specifies the error in case the foreign key has been violated for a
-     * {@code MeasureUnit} entity.
+     * {@code ProductMeasureUnit} entity.
      */
-    MEASURE_UNIT_FK("dao.measureUnit.foreignKey.retailProduct"),
+    PRODUCT_MEASURE_UNIT_FK("dao.productMeasureUnit.foreignKey.retailProduct"),
 
     /**
      * Property that specifies the error in case the foreign key has been violated for a
@@ -44,9 +44,9 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
 
     /**
      * Property that specifies the error in case the foreign key for retail products has been
-     * violated for a {@code Product} entity.
+     * violated for a {@code ProductPrice} entity.
      */
-    PRODUCT_FK_RETAIL("dao.product.foreignKey.retailProduct"),
+    PRODUCT_PRICES_FK("dao.product.foreignKey.productPrices"),
 
     /**
      * Property that specifies the error in case the unique key has been violated for a
@@ -89,13 +89,13 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
      * violated for a {@code Stocck} entity.
      */
     STOCK_UK("dao.stock.uniqueKey"),
-    
+
     /**
      * Property that specifies the error in case the constraint has been violated for a
      * {@code Organization} entity.
      */
-    STOCK_CONSTRAINT_ORGANIZATION("dao.stock.constraint.store"),
-    
+    STOCK_CONSTRAINT_ORGANIZATION("dao.stock.constraint.organization"),
+
     /**
      * Property that specifies the error in case the foreign key has been violated for a
      * {@code Store} entity.

@@ -35,8 +35,8 @@ public final class ProductManufacturerDAOImpl implements ProductManufacturerDAO 
 
     @Inject
     public ProductManufacturerDAOImpl() {
-        catalogDAO = 
-                new CatalogDAOImpl<ProductManufacturer, Long, Integer> (ProductManufacturer.class, 
+        catalogDAO =
+                new CatalogDAOImpl<ProductManufacturer, Long, Integer> (ProductManufacturer.class,
                 Long.class, Integer.class);
     }
 
@@ -55,7 +55,7 @@ public final class ProductManufacturerDAOImpl implements ProductManufacturerDAO 
         if (entity.getActive()) {
             long count = countProductDefinitionWithManufacturer(entity);
             if (count > 0) {
-                throw DAOException.Builder.build(ProductErrorCode.COMPANY_FK);
+                throw DAOException.Builder.build(ProductErrorCode.PRODUCT_MANUFACTURER_FK);
             }
         }
         catalogDAO.remove(entity);

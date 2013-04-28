@@ -56,7 +56,7 @@ public final class ProductMeasureUnitDAOImpl implements ProductMeasureUnitDAO {
         if (entity.getActive()) {
             long count = countRetailProductWithMeasureUnit(entity);
             if (count > 0) {
-                throw DAOException.Builder.build(ProductErrorCode.MEASURE_UNIT_FK);
+                throw DAOException.Builder.build(ProductErrorCode.PRODUCT_MEASURE_UNIT_FK);
             }
         }
         catalogDAO.remove(entity);
