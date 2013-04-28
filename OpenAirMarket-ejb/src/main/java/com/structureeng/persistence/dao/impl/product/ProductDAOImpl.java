@@ -10,7 +10,6 @@ import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.Product;
 import com.structureeng.persistence.model.product.Product_;
-import com.structureeng.persistence.model.product.ProductDefinition_;
 import com.structureeng.persistence.model.product.ProductPrice;
 import com.structureeng.persistence.model.product.ProductPrice_;
 import com.structureeng.persistence.model.stock.Stock;
@@ -141,7 +140,7 @@ public final class ProductDAOImpl implements ProductDAO {
                 getEntityManager(), Product.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.store), product.getStore()),
+                    .equal(qc.getRoot().get(Product_.organization), product.getOrganization()),
                 qc.getCriteriaBuilder()
                     .equal(qc.getRoot().get(Product_.productDefinition),
                         product.getProductDefinition()),
@@ -155,7 +154,7 @@ public final class ProductDAOImpl implements ProductDAO {
                 getEntityManager(), Product.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.store), product.getStore()),
+                    .equal(qc.getRoot().get(Product_.organization), product.getOrganization()),
                 qc.getCriteriaBuilder()
                     .equal(qc.getRoot().get(Product_.productType), product.getProductType()),
                 qc.getCriteriaBuilder()

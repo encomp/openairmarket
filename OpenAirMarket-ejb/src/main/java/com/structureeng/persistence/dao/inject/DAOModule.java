@@ -11,12 +11,12 @@ import com.structureeng.persistence.dao.ProductTypeDAO;
 import com.structureeng.persistence.dao.PurchasePriceDAO;
 import com.structureeng.persistence.dao.SalePriceDAO;
 import com.structureeng.persistence.dao.StockDAO;
-import com.structureeng.persistence.dao.StoreDAO;
+import com.structureeng.persistence.dao.OrganizationDAO;
 import com.structureeng.persistence.dao.TaxTypeDAO;
 import com.structureeng.persistence.dao.TenantDAO;
 import com.structureeng.persistence.dao.WarehouseDAO;
 import com.structureeng.persistence.dao.impl.business.ProductTypeDAOImpl;
-import com.structureeng.persistence.dao.impl.business.StoreDAOImpl;
+import com.structureeng.persistence.dao.impl.business.OrganizationDAOImpl;
 import com.structureeng.persistence.dao.impl.business.TaxTypeDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductManufacturerDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductCategoryDAOImpl;
@@ -102,9 +102,9 @@ public class DAOModule {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("storeDAO")
-    public StoreDAO providesStoreDAO() {
-        return new StoreDAOImpl();
+    @Named("organizationDAO")
+    public OrganizationDAO providesOrganizationDAO() {
+        return new OrganizationDAOImpl();
     }
 
     @Bean

@@ -5,7 +5,7 @@ package com.structureeng.persistence.model.business;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.history.business.StoreHistory;
+import com.structureeng.persistence.model.history.business.OrganizationHistory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,21 +20,21 @@ import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 
 /**
- * Define the revision for the {@code Store} entities.
+ * Define the organizations that a {@code com.structureeng.persistence.model.tenant.Tenant} owns.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @EntityListeners(value = {HistoryListener.class})
-@Revision(builder = StoreHistory.Builder.class)
+@Revision(builder = OrganizationHistory.Builder.class)
 @Entity
-@Table(name = "store", uniqueConstraints = {
-    @UniqueConstraint(name = "storeTenantPK", columnNames = {"idTenant", "idReference"}),
-    @UniqueConstraint(name = "storeUK", columnNames = {"idTenant", "name"})})
-public class Store extends AbstractCatalogTenantModel<Long, Integer> {
+@Table(name = "organization", uniqueConstraints = {
+    @UniqueConstraint(name = "organizationPK", columnNames = {"idTenant", "idReference"}),
+    @UniqueConstraint(name = "organizationUK", columnNames = {"idTenant", "name"})})
+public class Organization extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idStore")
+    @Column(name = "idOrganization")
     private Long id;
 
     @Override
@@ -52,12 +52,12 @@ public class Store extends AbstractCatalogTenantModel<Long, Integer> {
      *
      * @return - new instance
      */
-    public static Store.Buider newBuilder() {
-        return new Store.Buider();
+    public static Organization.Buider newBuilder() {
+        return new Organization.Buider();
     }
 
     /**
-     * Builder class that creates instances of {@code Store}.
+     * Builder class that creates instances of {@code Organization}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
@@ -66,23 +66,23 @@ public class Store extends AbstractCatalogTenantModel<Long, Integer> {
         private Integer referenceId;
         private String name;
 
-        public Store.Buider setReferenceId(Integer referenceId) {
+        public Organization.Buider setReferenceId(Integer referenceId) {
             this.referenceId = checkPositive(referenceId);
             return this;
         }
 
-        public Store.Buider setName(String name) {
+        public Organization.Buider setName(String name) {
             this.name = checkNotEmpty(name);
             return this;
         }
 
         /**
-         * Creates a new instance of {@code Store}.
+         * Creates a new instance of {@code Organization}.
          *
          * @return - new instance
          */
-        public Store build() {
-            Store store = new Store();
+        public Organization build() {
+            Organization store = new Organization();
             store.setReferenceId(referenceId);
             store.setName(name);
             return store;

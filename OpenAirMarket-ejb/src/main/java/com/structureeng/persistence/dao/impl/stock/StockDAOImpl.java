@@ -103,9 +103,9 @@ public class StockDAOImpl implements StockDAO {
             QueryContainer<Stock, Stock> query =
                     QueryContainer.newQueryContainer(getEntityManager(), Stock.class);
             query.getRoot().fetch(Stock_.product, JoinType.INNER)
-                    .fetch(Product_.store, JoinType.INNER);
+                    .fetch(Product_.organization, JoinType.INNER);
             query.getRoot().fetch(Stock_.warehouse, JoinType.INNER)
-                    .fetch(Warehouse_.store, JoinType.INNER);
+                    .fetch(Warehouse_.organization, JoinType.INNER);
             ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
             builder.add(query.getCriteriaBuilder()
                             .equal(query.getRoot().get(Stock_.product), product));
@@ -113,8 +113,8 @@ public class StockDAOImpl implements StockDAO {
                             .equal(query.getRoot().get(Stock_.warehouse), warehouse));
             builder.add(query.getCriteriaBuilder()
                             .equal(
-                                query.getRoot().get(Stock_.product).get(Product_.store),
-                                query.getRoot().get(Stock_.warehouse).get(Warehouse_.store)));
+                                query.getRoot().get(Stock_.product).get(Product_.organization),
+                                query.getRoot().get(Stock_.warehouse).get(Warehouse_.organization)));
             builder.addAll(getActivePredicates(query, stockActive));
             query.getCriteriaQuery().where(
                     query.getCriteriaBuilder().and(builder.build().toArray(new Predicate[]{})));
@@ -132,9 +132,10 @@ public class StockDAOImpl implements StockDAO {
         if (active) {
             builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product)));
             builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)));
-            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product).get(Product_.store)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product)
+                    .get(Product_.organization)));
             builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)
-                    .get(Warehouse_.store)));
+                    .get(Warehouse_.organization)));
             builder.add(qc.activeEntities(qc.getRoot()));
         } else {
             builder.add(qc.inactiveEntities(qc.getRoot()));
@@ -168,22 +169,23 @@ public class StockDAOImpl implements StockDAO {
         if (count > 0) {
             daoException = DAOException.Builder.build(ProductErrorCode.STOCK_UK);
         }
-        daoException = isSameStore(entity, daoException);
+        daoException = isSameOrganization(entity, daoException);
         if (daoException != null) {
             throw daoException;
         }
     }
 
     /**
-     * Validates that the {@code Product} and {@code Warehosue} belongs to the same {@code Store}.
+     * Validates that the {@code Product} and {@code Warehosue} belongs to the same 
+     * {@code Organization}.
      *
      * @param stock         the instance that will be validated.
      * @throws DAOException in case the {@code Store} of the {@code Product} and the
      *                      {@code Warehouse} are different.
      */
-    private DAOException isSameStore(Stock stock, DAOException exc) {
-        if (!stock.getProduct().getStore().equals(stock.getWarehouse().getStore())) {
-            return DAOException.Builder.build(ProductErrorCode.STOCK_CONSTRAINT_STORES, exc);
+    private DAOException isSameOrganization(Stock stock, DAOException exc) {
+        if (!stock.getProduct().getOrganization().equals(stock.getWarehouse().getOrganization())) {
+            return DAOException.Builder.build(ProductErrorCode.STOCK_CONSTRAINT_ORGANIZATION, exc);
         }
         return exc;
     }

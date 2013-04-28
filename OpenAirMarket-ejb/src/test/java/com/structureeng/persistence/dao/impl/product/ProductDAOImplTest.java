@@ -7,7 +7,7 @@ import com.structureeng.persistence.dao.ProductDAO;
 import com.structureeng.persistence.dao.impl.AbstractCatalogDAOImplTest;
 import com.structureeng.persistence.model.Model;
 import com.structureeng.persistence.model.business.ProductType;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.product.ProductHistory;
 import com.structureeng.persistence.model.history.product.ProductHistory_;
@@ -62,8 +62,8 @@ public class ProductDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInte
 
     @Override
     public Product build(BigInteger referenceId, String name) {
-        Store store = new Store();
-        store.setId(2L);
+        Organization organization = new Organization();
+        organization.setId(2L);
         ProductType productType = new ProductType();
         productType.setId(productTypes.get(referenceId));
         TaxType taxType = new TaxType();
@@ -75,7 +75,7 @@ public class ProductDAOImplTest extends AbstractCatalogDAOImplTest<Long, BigInte
         Product.Buider buider = Product.newBuilder();
         buider.setReferenceId(referenceId).setName(name).setAutoStock(Boolean.TRUE)
               .setWastable(Boolean.TRUE).setQuantity(BigDecimal.ONE)
-              .setProductDefinition(productDefinition).setStore(store)
+              .setProductDefinition(productDefinition).setOrganization(organization)
               .setProductType(productType).setTaxType(taxType).setProductMeasureUnit(measureUnit);
         return buider.build();
     }

@@ -7,7 +7,7 @@ import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.business.ProductType;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.ProductMeasureUnit;
@@ -51,9 +51,9 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Product product;
 
-    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Store store;
+    private Organization organization;
 
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
@@ -146,12 +146,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
         this.quantity = Preconditions.checkNotNull(quantity);
     }
 
-    public Store getStore() {
-        return store;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setStore(Store store) {
-        this.store = Preconditions.checkNotNull(store);
+    public void setOrganization(Organization organization) {
+        this.organization = Preconditions.checkNotNull(organization);
     }
 
     public ProductDefinition getProductDefinition() {
@@ -209,7 +209,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
             productHistory.setAutoStock(product.getAutoStock());
             productHistory.setWastable(product.getWastable());
             productHistory.setQuantity(product.getQuantity());
-            productHistory.setStore(product.getStore());
+            productHistory.setOrganization(product.getOrganization());
             productHistory.setProductDefinition(product.getProductDefinition());
             productHistory.setProductType(product.getProductType());
             productHistory.setTaxType(product.getTaxType());

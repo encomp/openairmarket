@@ -6,7 +6,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.impl.AbstractTenantModelDAOImplTest;
 import com.structureeng.persistence.model.Model;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.stock.StockHistory;
 import com.structureeng.persistence.model.history.stock.StockHistory_;
 import com.structureeng.persistence.model.product.Product;
@@ -41,7 +41,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testPersistA() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(1L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stock = build(product, warehouse);
@@ -50,7 +50,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testPersistB() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(2L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         stock = build(product, warehouse);
@@ -65,7 +65,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test(expected = DAOException.class)
     public void testPersistMerge() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         stock.setProduct(createProduct(2L, store));
         stock.setWarehouse(createWarehouse(2L, createStore(2L)));
         try {
@@ -80,7 +80,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test(expected = DAOException.class)
     public void testPersistMergeDirty() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(3L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stock = build(product, warehouse);
@@ -98,7 +98,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test(expected = DAOException.class)
     public void testPersistUK() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(1L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stock = build(product, warehouse);
@@ -121,7 +121,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testUpdate() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(1L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stockTemp = getStockDAO().find(product, warehouse);
@@ -131,7 +131,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testUpdateFind() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(3L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock catalogModel = getStockDAO().find(product, warehouse);
@@ -152,7 +152,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testUpdateRemove() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(3L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock catalogModel = getStockDAO().find(product, warehouse);
@@ -167,7 +167,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testUpdateRemoveFind() throws DAOException {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(3L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock catalogModel = getStockDAO().findInactive(product, warehouse);
@@ -179,7 +179,7 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
 
     @Test
     public void testValidateRemove() {
-        Store store = createStore(1L);
+        Organization store = createStore(1L);
         Product product = createProduct(3L, store);
         Warehouse warehouse = createWarehouse(1L, store);
         Stock stock = getStockDAO().findInactive(product, warehouse);
@@ -208,22 +208,22 @@ public class StockDAOImplTest extends AbstractTenantModelDAOImplTest<Stock, Stoc
         return buider.build();
     }
 
-    public Warehouse createWarehouse(Long id, Store store) {
+    public Warehouse createWarehouse(Long id, Organization store) {
         Warehouse warehouse = new Warehouse();
         warehouse.setId(id);
-        warehouse.setStore(store);
+        warehouse.setOrganization(store);
         return warehouse;
     }
 
-    public Product createProduct(Long id, Store store) {
+    public Product createProduct(Long id, Organization store) {
         Product product = new Product();
         product.setId(id);
-        product.setStore(store);
+        product.setOrganization(store);
         return product;
     }
 
-    public Store createStore(Long id) {
-        Store store = new Store();
+    public Organization createStore(Long id) {
+        Organization store = new Organization();
         store.setId(id);
         return store;
     }

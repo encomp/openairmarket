@@ -2,18 +2,18 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
     <persistence-unit name="OpenAirMarket_PU" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>com.structureeng.persistence.model.business.Organization</class>
         <class>com.structureeng.persistence.model.business.ProductType</class>
         <class>com.structureeng.persistence.model.business.Rule</class>
         <class>com.structureeng.persistence.model.business.RuleDetail</class>
-        <class>com.structureeng.persistence.model.business.SalePaymentType</class>
-        <class>com.structureeng.persistence.model.business.Store</class>
+        <class>com.structureeng.persistence.model.business.SalePaymentType</class>        
         <class>com.structureeng.persistence.model.business.TaxType</class>
         <class>com.structureeng.persistence.model.history.Audit</class>
+        <class>com.structureeng.persistence.model.history.business.OrganizationHistory</class>
         <class>com.structureeng.persistence.model.history.business.ProductTypeHistory</class>
         <class>com.structureeng.persistence.model.history.business.RuleDetailHistory</class>
         <class>com.structureeng.persistence.model.history.business.RuleHistory</class>
-        <class>com.structureeng.persistence.model.history.business.SalePaymentTypeHistory</class>
-        <class>com.structureeng.persistence.model.history.business.StoreHistory</class>
+        <class>com.structureeng.persistence.model.history.business.SalePaymentTypeHistory</class>        
         <class>com.structureeng.persistence.model.history.business.TaxTypeHistory</class>        
         <class>com.structureeng.persistence.model.history.product.ProductCategoryHistory</class>
         <class>com.structureeng.persistence.model.history.product.ProductDefinitionHistory</class>        

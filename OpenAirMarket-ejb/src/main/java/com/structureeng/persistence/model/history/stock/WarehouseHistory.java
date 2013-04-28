@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.stock;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.stock.Warehouse;
 
@@ -41,9 +41,9 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Warehouse warehouse;
 
-    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Store store;
+    private Organization organization;
 
     @Column(name = "idReference", nullable = false)
     private Integer referenceId;
@@ -69,12 +69,12 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
         this.warehouse = Preconditions.checkNotNull(warehouse);
     }
 
-    public Store getStore() {
-        return store;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setStore(Store store) {
-        this.store = Preconditions.checkNotNull(store);
+    public void setOrganization(Organization organization) {
+        this.organization = Preconditions.checkNotNull(organization);
     }
 
     public Integer getReferenceId() {
@@ -112,7 +112,7 @@ public class WarehouseHistory extends AbstractHistoryTenantModel {
             warehouseHistory.setWarehouse(warehouse);
             warehouseHistory.setReferenceId(warehouse.getReferenceId());
             warehouseHistory.setName(warehouse.getName());
-            warehouseHistory.setStore(warehouse.getStore());
+            warehouseHistory.setOrganization(warehouse.getOrganization());
             warehouseHistory.setActive(warehouse.getActive());
             warehouseHistory.setVersion(warehouse.getVersion());
             return warehouseHistory;

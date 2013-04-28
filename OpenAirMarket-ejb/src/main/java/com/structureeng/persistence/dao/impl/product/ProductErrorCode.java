@@ -92,9 +92,9 @@ public enum ProductErrorCode implements ErrorPropertyProvider {
     
     /**
      * Property that specifies the error in case the constraint has been violated for a
-     * {@code Stock} entity.
+     * {@code Organization} entity.
      */
-    STOCK_CONSTRAINT_STORES("dao.stock.constraint.store"),
+    STOCK_CONSTRAINT_ORGANIZATION("dao.stock.constraint.store"),
     
     /**
      * Property that specifies the error in case the foreign key has been violated for a

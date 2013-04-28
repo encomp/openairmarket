@@ -6,7 +6,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.SalePriceDAO;
 import com.structureeng.persistence.dao.impl.AbstractTenantModelDAOImplTest;
 import com.structureeng.persistence.model.Model;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.product.SalePriceHistory;
 import com.structureeng.persistence.model.history.product.SalePriceHistory_;
 import com.structureeng.persistence.model.product.Product;
@@ -42,14 +42,14 @@ public class SalePriceDAOImplTest extends
 
     @Test
     public void testPersistA() throws DAOException {
-        Product product = createProduct(1L, createStore(1L));
+        Product product = createProduct(1L, createOrganization(1L));
         SalePrice salePrice = build(product, BigDecimal.ONE);
         getSalePriceDAO().merge(salePrice);
     }
 
     @Test
     public void testPersistB() throws DAOException {
-        Product product = createProduct(2L, createStore(1L));
+        Product product = createProduct(2L, createOrganization(1L));
         salePrice = build(product, BigDecimal.TEN);
         getSalePriceDAO().persist(salePrice);
     }
@@ -62,7 +62,7 @@ public class SalePriceDAOImplTest extends
 
     @Test(expected = DAOException.class)
     public void testPersistMerge() throws DAOException {
-        salePrice.setProduct(createProduct(1L, createStore(1L)));
+        salePrice.setProduct(createProduct(1L, createOrganization(1L)));
         salePrice.setQuantity(BigDecimal.ONE);
         try {
             getSalePriceDAO().merge(salePrice);
@@ -76,11 +76,11 @@ public class SalePriceDAOImplTest extends
 
     @Test(expected = PersistenceException.class)
     public void testPersistMergeDirty() throws DAOException {
-        Product product = createProduct(3L, createStore(1L));
+        Product product = createProduct(3L, createOrganization(1L));
         SalePrice salePrice = build(product, BigDecimal.ONE);
         getSalePriceDAO().persist(salePrice);
         getSalePriceDAO().flush();
-        salePrice.setProduct(createProduct(1L, createStore(1L)));
+        salePrice.setProduct(createProduct(1L, createOrganization(1L)));
         try {
             getSalePriceDAO().merge(salePrice);
             Assert.fail("Should have thrown a DAOException.");
@@ -92,7 +92,7 @@ public class SalePriceDAOImplTest extends
 
     @Test(expected = DAOException.class)
     public void testPersistUK() throws DAOException {
-        Product product = createProduct(1L, createStore(1L));
+        Product product = createProduct(1L, createOrganization(1L));
         SalePrice salePrice = build(product, BigDecimal.ONE);
         try {
             getSalePriceDAO().persist(salePrice);
@@ -113,15 +113,15 @@ public class SalePriceDAOImplTest extends
 
     @Test
     public void testUpdate() throws DAOException {
-        Product product = createProduct(1L, createStore(1L));
+        Product product = createProduct(1L, createOrganization(1L));
         SalePrice salePriceTmp = getSalePriceDAO().find(product, BigDecimal.ONE);
-        salePriceTmp.setProduct(createProduct(3L, createStore(1L)));
+        salePriceTmp.setProduct(createProduct(3L, createOrganization(1L)));
         salePrice = getSalePriceDAO().merge(salePriceTmp);
     }
 
     @Test
     public void testUpdateFind() throws DAOException {
-        Product product = createProduct(3L, createStore(1L));
+        Product product = createProduct(3L, createOrganization(1L));
         SalePrice salePrice = getSalePriceDAO().find(product, BigDecimal.ONE);
         Model tmp = getSalePriceDAO().find(salePrice.getId());
         Assert.assertEquals(salePrice, tmp);
@@ -137,7 +137,7 @@ public class SalePriceDAOImplTest extends
 
     @Test
     public void testUpdateRemove() throws DAOException {
-        Product product = createProduct(3L, createStore(1L));
+        Product product = createProduct(3L, createOrganization(1L));
         SalePrice salePrice = getSalePriceDAO().find(product, BigDecimal.TEN);
         getSalePriceDAO().remove(salePrice);
     }
@@ -150,7 +150,7 @@ public class SalePriceDAOImplTest extends
 
     @Test
     public void testUpdateRemoveFind() throws DAOException {
-        Product product = createProduct(3L, createStore(1L));
+        Product product = createProduct(3L, createOrganization(1L));
         SalePrice catalogModel = getSalePriceDAO().findInactive(product, BigDecimal.TEN);
         SalePrice tmp = getSalePriceDAO().find(catalogModel.getId());
         Assert.assertNull(tmp);
@@ -160,7 +160,7 @@ public class SalePriceDAOImplTest extends
 
     @Test
     public void testValidateRemove() {
-        Product product = createProduct(3L, createStore(1L));
+        Product product = createProduct(3L, createOrganization(1L));
         SalePrice salePrice = getSalePriceDAO().findInactive(product, BigDecimal.TEN);
         deleteHistory(salePrice);
     }
@@ -186,15 +186,15 @@ public class SalePriceDAOImplTest extends
         return builder.build();
     }
 
-    public Product createProduct(Long id, Store store) {
+    public Product createProduct(Long id, Organization store) {
         Product product = new Product();
         product.setId(id);
-        product.setStore(store);
+        product.setOrganization(store);
         return product;
     }
 
-    public Store createStore(Long id) {
-        Store store = new Store();
+    public Organization createOrganization(Long id) {
+        Organization store = new Organization();
         store.setId(id);
         return store;
     }

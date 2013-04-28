@@ -9,7 +9,7 @@ import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.business.ProductType;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.product.ProductHistory;
 
@@ -52,9 +52,9 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
     @Column(name = "idProduct")
     private Long id;
 
-    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Store store;
+    private Organization organization;
 
     @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
             nullable = false)
@@ -109,12 +109,12 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         this.wastable = Preconditions.checkNotNull(wastable);
     }
 
-    public Store getStore() {
-        return store;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setStore(Store store) {
-        this.store = Preconditions.checkNotNull(store);
+    public void setOrganization(Organization organization) {
+        this.organization = Preconditions.checkNotNull(organization);
     }
 
     public ProductDefinition getProductDefinition() {
@@ -176,7 +176,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         private BigInteger referenceId;
         private String name;
         private ProductDefinition productDefinition;
-        private Store store;
+        private Organization organization;
         private ProductType productType;
         private TaxType taxType;
         private ProductMeasureUnit productMeasureUnit;
@@ -194,8 +194,8 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             return this;
         }
 
-        public Product.Buider setStore(Store store) {
-            this.store = Preconditions.checkNotNull(store);
+        public Product.Buider setOrganization(Organization organization) {
+            this.organization = Preconditions.checkNotNull(organization);
             return this;
         }
 
@@ -246,7 +246,7 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
             product.setWastable(wastable);
             product.setAutoStock(autoStock);
             product.setQuantity(quantity);
-            product.setStore(store);
+            product.setOrganization(organization);
             product.setProductDefinition(productDefinition);
             product.setProductType(productType);
             product.setTaxType(taxType);

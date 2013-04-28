@@ -8,7 +8,7 @@ import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.stock.WarehouseHistory;
 
 import com.google.common.base.Preconditions;
@@ -45,9 +45,9 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
     @Column(name = "idWarehouse")
     private Long id;
 
-    @JoinColumn(name = "idStore", referencedColumnName = "idStore", nullable = false)
+    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Store store;
+    private Organization organization;
 
     @Override
     public Long getId() {
@@ -59,12 +59,12 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
         this.id = checkPositive(id);
     }
 
-    public Store getStore() {
-        return store;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setStore(Store store) {
-        this.store = Preconditions.checkNotNull(store);
+    public void setOrganization(Organization organization) {
+        this.organization = Preconditions.checkNotNull(organization);
     }
 
     /**
@@ -85,7 +85,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
 
         private Integer referenceId;
         private String name;
-        private Store store;
+        private Organization organization;
 
         public Warehouse.Buider setReferenceId(Integer referenceId) {
             this.referenceId = checkPositive(referenceId);
@@ -97,8 +97,8 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
             return this;
         }
 
-        public Warehouse.Buider setStore(Store store) {
-            this.store = Preconditions.checkNotNull(store);
+        public Warehouse.Buider setOrganization(Organization organization) {
+            this.organization = Preconditions.checkNotNull(organization);
             return this;
         }
 
@@ -111,7 +111,7 @@ public class Warehouse extends AbstractCatalogTenantModel<Long, Integer> {
             Warehouse warehouse = new Warehouse();
             warehouse.setReferenceId(referenceId);
             warehouse.setName(name);
-            warehouse.setStore(store);
+            warehouse.setOrganization(organization);
             return warehouse;
         }
     }

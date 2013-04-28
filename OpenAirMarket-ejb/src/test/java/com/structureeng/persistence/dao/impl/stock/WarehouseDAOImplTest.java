@@ -6,7 +6,7 @@ import com.structureeng.persistence.dao.CatalogDAO;
 import com.structureeng.persistence.dao.WarehouseDAO;
 import com.structureeng.persistence.dao.impl.AbstractCatalogDAOImplTest;
 import com.structureeng.persistence.model.Model;
-import com.structureeng.persistence.model.business.Store;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.stock.WarehouseHistory;
 import com.structureeng.persistence.model.history.stock.WarehouseHistory_;
 import com.structureeng.persistence.model.stock.Warehouse;
@@ -47,9 +47,9 @@ public class WarehouseDAOImplTest extends
 
     @Override
     public Warehouse build(Integer referenceId, String name) {
-        Store store = new Store();
-        store.setId(1L);
-        return Warehouse.newBuilder().setReferenceId(referenceId).setName(name).setStore(store)
+        Organization organization = new Organization();
+        organization.setId(1L);
+        return Warehouse.newBuilder().setReferenceId(referenceId).setName(name).setOrganization(organization)
                 .build();
     }
 
