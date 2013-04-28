@@ -4,7 +4,7 @@ package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.Company;
+import com.structureeng.persistence.model.product.ProductManufacturer;
 import com.structureeng.persistence.model.product.Division;
 import com.structureeng.persistence.model.product.ProductDefinition;
 
@@ -57,9 +57,10 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
     @Column(name = "image", length = 500)
     private String image;
 
-    @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
+    @JoinColumn(name = "idProductManufacturer", referencedColumnName = "idProductManufacturer", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Company company;
+    private ProductManufacturer productManufacturer;
 
     @JoinColumn(name = "idDivision", referencedColumnName = "idDivision", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
@@ -115,12 +116,12 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
         this.image = image;
     }
 
-    public Company getCompany() {
-        return company;
+    public ProductManufacturer getProductManufacturer() {
+        return productManufacturer;
     }
 
-    public void setCompany(Company company) {
-        this.company = Preconditions.checkNotNull(company);
+    public void setProductManufacturer(ProductManufacturer productManufacturer) {
+        this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
     }
 
     public Division getDivision() {
@@ -154,7 +155,7 @@ public class ProductDefinitionHistory extends AbstractHistoryTenantModel {
             productDefinitionHistory.setName(productDefinition.getName());
             productDefinitionHistory.setKey(productDefinition.getKey());
             productDefinitionHistory.setImage(productDefinition.getImage());
-            productDefinitionHistory.setCompany(productDefinition.getCompany());
+            productDefinitionHistory.setProductManufacturer(productDefinition.getProductManufacturer());
             productDefinitionHistory.setDivision(productDefinition.getDivision());
             productDefinitionHistory.setActive(productDefinition.getActive());
             productDefinitionHistory.setVersion(productDefinition.getVersion());

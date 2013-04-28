@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao.inject;
 
-import com.structureeng.persistence.dao.CompanyDAO;
+import com.structureeng.persistence.dao.ProductManufacturerDAO;
 import com.structureeng.persistence.dao.DivisionDAO;
 import com.structureeng.persistence.dao.MeasureUnitDAO;
 import com.structureeng.persistence.dao.ProductDAO;
@@ -18,7 +18,7 @@ import com.structureeng.persistence.dao.WarehouseDAO;
 import com.structureeng.persistence.dao.impl.business.ProductTypeDAOImpl;
 import com.structureeng.persistence.dao.impl.business.StoreDAOImpl;
 import com.structureeng.persistence.dao.impl.business.TaxTypeDAOImpl;
-import com.structureeng.persistence.dao.impl.product.CompanyDAOImpl;
+import com.structureeng.persistence.dao.impl.product.ProductManufacturerDAOImpl;
 import com.structureeng.persistence.dao.impl.product.DivisionDAOImpl;
 import com.structureeng.persistence.dao.impl.product.MeasureUnitDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDAOImpl;
@@ -46,9 +46,9 @@ public class DAOModule {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("companyDAO")
-    public CompanyDAO providesCompanyDAO() {
-        return new CompanyDAOImpl();
+    @Named("productManufacturerDAO")
+    public ProductManufacturerDAO providesProductManufacturerDAO() {
+        return new ProductManufacturerDAOImpl();
     }
 
     @Bean

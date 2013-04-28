@@ -4,9 +4,9 @@ package com.structureeng.persistence.history;
 
 import com.structureeng.persistence.model.AbstractPersistenceTest;
 import com.structureeng.persistence.model.history.Audit;
-import com.structureeng.persistence.model.history.product.CompanyHistory;
-import com.structureeng.persistence.model.history.product.CompanyHistory_;
-import com.structureeng.persistence.model.product.Company;
+import com.structureeng.persistence.model.history.product.ProductManufacturerHistory;
+import com.structureeng.persistence.model.history.product.ProductManufacturerHistory_;
+import com.structureeng.persistence.model.product.ProductManufacturer;
 import com.structureeng.persistence.model.tenant.Tenant;
 import com.structureeng.tenancy.context.TenancyContext;
 import com.structureeng.tenancy.context.TenancyContextHolder;
@@ -53,7 +53,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         registerTenancyContext(createTenant(1));
         tx = applicationContext.getBean(PlatformTransactionManager.class);
         TransactionStatus transactionStatus = tx.getTransaction(null);
-        Company company = createCompany(99, "testCompany 99");
+        ProductManufacturer company = createProductManufacturer(99, "testCompany 99");
         entityManager.persist(company);
         tx.commit(transactionStatus);
     }
@@ -61,8 +61,9 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void testPostPersistValidation() {
-        CompanyHistory companyHistory = retrieveCompanyHistory(99, JoinType.INNER);
-        Company company = companyHistory.getCompany();
+        ProductManufacturerHistory companyHistory = 
+                retrieveProductManufacturerHistory(99, JoinType.INNER);
+        ProductManufacturer company = companyHistory.getProductManufacturer();
         Audit historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.CREATE, companyHistory, historyTenant, company);
         deleteCompanyHistory(company, new Long[]{companyHistory.getId()},
@@ -74,7 +75,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         registerTenancyContext(createTenant(1));
         tx = applicationContext.getBean(PlatformTransactionManager.class);
         TransactionStatus transactionStatus = tx.getTransaction(null);
-        Company company = createCompany(100, "testCompany 100");
+        ProductManufacturer company = createProductManufacturer(100, "testCompany 100");
         entityManager.persist(company);
         entityManager.flush();
         company.setReferenceId(101);
@@ -85,14 +86,14 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void testPostUpdateValidation() {
-        CompanyHistory[] companyHistorys = new CompanyHistory[2];
-        companyHistorys[0] = retrieveCompanyHistory(100, JoinType.LEFT);
-        CompanyHistory companyHistory = companyHistorys[0];
+        ProductManufacturerHistory[] companyHistorys = new ProductManufacturerHistory[2];
+        companyHistorys[0] = retrieveProductManufacturerHistory(100, JoinType.LEFT);
+        ProductManufacturerHistory companyHistory = companyHistorys[0];
         Audit historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.CREATE, companyHistory, historyTenant);
-        companyHistorys[1] = retrieveCompanyHistory(101, JoinType.INNER);
+        companyHistorys[1] = retrieveProductManufacturerHistory(101, JoinType.INNER);
         companyHistory = companyHistorys[1];
-        Company tenant = companyHistory.getCompany();
+        ProductManufacturer tenant = companyHistory.getProductManufacturer();
         historyTenant = companyHistory.getHistory();
         assertHistory(HistoryType.UPDATE, companyHistory, historyTenant, tenant);
         deleteCompanyHistory(tenant, new Long[]{companyHistorys[0].getId(),
@@ -100,8 +101,8 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
                 companyHistorys[1].getHistory().getId()});
     }
 
-    private void assertHistory(HistoryType historyType, CompanyHistory companyHistory,
-            Audit historyTenant, Company company) {
+    private void assertHistory(HistoryType historyType, ProductManufacturerHistory companyHistory,
+            Audit historyTenant, ProductManufacturer company) {
         Assert.assertEquals(historyType, companyHistory.getHistoryType());
         Assert.assertEquals(company.getReferenceId(), companyHistory.getReferenceId());
         Assert.assertEquals(company.getName(), companyHistory.getName());
@@ -111,7 +112,7 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         Assert.assertNotNull(historyTenant.getCreatedDate());
     }
 
-    private void assertHistory(HistoryType historyType, CompanyHistory companyHistory,
+    private void assertHistory(HistoryType historyType, ProductManufacturerHistory companyHistory,
             Audit historyNonTenant) {
         Assert.assertEquals(historyType, companyHistory.getHistoryType());
         Assert.assertNotNull(companyHistory.getReferenceId());
@@ -122,11 +123,12 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
         Assert.assertNotNull(historyNonTenant.getCreatedDate());
     }
 
-    private void deleteCompanyHistory(Company company, Long[] companyHistory,
+    private void deleteCompanyHistory(ProductManufacturer company, Long[] companyHistory,
             Long[] historyTenant) {
         Query q = null;
         for (Long id : companyHistory) {
-            q = entityManager.createQuery("DELETE FROM CompanyHistory c WHERE c.id = ?1");
+            q = entityManager
+                    .createQuery("DELETE FROM ProductManufacturerHistory c WHERE c.id = ?1");
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }
@@ -135,24 +137,25 @@ public class TenantHistoryListenerTest extends AbstractPersistenceTest {
             q.setParameter(1, id);
             Assert.assertEquals(1, q.executeUpdate());
         }
-        q = entityManager.createQuery("DELETE FROM Company c WHERE c.id = ?1");
+        q = entityManager.createQuery("DELETE FROM ProductManufacturer c WHERE c.id = ?1");
         q.setParameter(1, company.getId());
         Assert.assertEquals(1, q.executeUpdate());
     }
 
-    private CompanyHistory retrieveCompanyHistory(Integer referenceId, JoinType tenatJoinType) {
+    private ProductManufacturerHistory retrieveProductManufacturerHistory(Integer referenceId, 
+            JoinType tenatJoinType) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<CompanyHistory> cq = entityManager.getCriteriaBuilder()
-                .createQuery(CompanyHistory.class);
-        Root<CompanyHistory> root = cq.from(CompanyHistory.class);
-        root.fetch(CompanyHistory_.audit, JoinType.INNER);
-        root.fetch(CompanyHistory_.company, tenatJoinType);
-        cq.where(cb.equal(root.get(CompanyHistory_.referenceId), referenceId));
+        CriteriaQuery<ProductManufacturerHistory> cq = entityManager.getCriteriaBuilder()
+                .createQuery(ProductManufacturerHistory.class);
+        Root<ProductManufacturerHistory> root = cq.from(ProductManufacturerHistory.class);
+        root.fetch(ProductManufacturerHistory_.audit, JoinType.INNER);
+        root.fetch(ProductManufacturerHistory_.productManufacturer, tenatJoinType);
+        cq.where(cb.equal(root.get(ProductManufacturerHistory_.referenceId), referenceId));
         return entityManager.createQuery(cq).getSingleResult();
     }
 
-    private Company createCompany(int referenceId, String name) {
-        return Company.newBuilder().setReferenceId(referenceId).setName(name).build();
+    private ProductManufacturer createProductManufacturer(int referenceId, String name) {
+        return ProductManufacturer.newBuilder().setReferenceId(referenceId).setName(name).build();
     }
 
     private Tenant createTenant(int id) {

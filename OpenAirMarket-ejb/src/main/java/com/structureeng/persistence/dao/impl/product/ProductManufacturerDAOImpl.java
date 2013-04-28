@@ -4,11 +4,11 @@ package com.structureeng.persistence.dao.impl.product;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.structureeng.persistence.dao.CompanyDAO;
+import com.structureeng.persistence.dao.ProductManufacturerDAO;
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.product.Company;
+import com.structureeng.persistence.model.product.ProductManufacturer;
 import com.structureeng.persistence.model.product.ProductDefinition;
 import com.structureeng.persistence.model.product.ProductDefinition_;
 import org.slf4j.Logger;
@@ -23,36 +23,37 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
 
 /**
- * Data Access Object for {@code Company}.
+ * Data Access Object for {@code ProductManufacturer}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public final class CompanyDAOImpl implements CompanyDAO {
+public final class ProductManufacturerDAOImpl implements ProductManufacturerDAO {
 
     private EntityManager entityManager;
-    private final CatalogDAOImpl<Company, Long, Integer> catalogDAO;
+    private final CatalogDAOImpl<ProductManufacturer, Long, Integer> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public CompanyDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<Company, Long, Integer>(Company.class, Long.class,
-                Integer.class);
+    public ProductManufacturerDAOImpl() {
+        catalogDAO = 
+                new CatalogDAOImpl<ProductManufacturer, Long, Integer> (ProductManufacturer.class, 
+                Long.class, Integer.class);
     }
 
     @Override
-    public void persist(Company entity) throws DAOException {
+    public void persist(ProductManufacturer entity) throws DAOException {
         catalogDAO.persist(entity);
     }
 
     @Override
-    public Company merge(Company entity) throws DAOException {
+    public ProductManufacturer merge(ProductManufacturer entity) throws DAOException {
         return catalogDAO.merge(entity);
     }
 
     @Override
-    public void remove(Company entity) throws DAOException {
+    public void remove(ProductManufacturer entity) throws DAOException {
         if (entity.getActive()) {
-            long count = countProductDefinitionWithCompany(entity);
+            long count = countProductDefinitionWithManufacturer(entity);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.COMPANY_FK);
             }
@@ -61,37 +62,37 @@ public final class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public void refresh(Company entity) {
+    public void refresh(ProductManufacturer entity) {
         catalogDAO.refresh(entity);
     }
 
     @Override
-    public void refresh(Company entity, LockModeType modeType) {
+    public void refresh(ProductManufacturer entity, LockModeType modeType) {
         catalogDAO.refresh(entity, modeType);
     }
 
     @Override
-    public Company find(Long id) {
+    public ProductManufacturer find(Long id) {
         return catalogDAO.find(id);
     }
 
     @Override
-    public Company find(Long id, long version) throws DAOException {
+    public ProductManufacturer find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
 
     @Override
-    public Company findByReferenceId(Integer referenceId) {
+    public ProductManufacturer findByReferenceId(Integer referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
     }
 
     @Override
-    public Company findInactiveByReferenceId(Integer referenceId) {
+    public ProductManufacturer findInactiveByReferenceId(Integer referenceId) {
         return catalogDAO.findInactiveByReferenceId(referenceId);
     }
 
     @Override
-    public List<Company> findRange(int start, int count) {
+    public List<ProductManufacturer> findRange(int start, int count) {
         return catalogDAO.findRange(start, count);
     }
 
@@ -111,17 +112,17 @@ public final class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public boolean hasVersionChanged(Company entity) throws DAOException {
+    public boolean hasVersionChanged(ProductManufacturer entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countProductDefinitionWithCompany(final Company company) {
+    private long countProductDefinitionWithManufacturer(final ProductManufacturer pm) {
         QueryContainer<Long, ProductDefinition> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
-        qc.getRoot().join(ProductDefinition_.company, JoinType.INNER);
+        qc.getRoot().join(ProductDefinition_.productManufacturer, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(ProductDefinition_.company), company),
+                    .equal(qc.getRoot().get(ProductDefinition_.productManufacturer), pm),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

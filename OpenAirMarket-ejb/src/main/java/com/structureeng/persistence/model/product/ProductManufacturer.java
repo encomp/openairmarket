@@ -5,7 +5,7 @@ package com.structureeng.persistence.model.product;
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.history.product.CompanyHistory;
+import com.structureeng.persistence.model.history.product.ProductManufacturerHistory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,16 +23,16 @@ import javax.persistence.UniqueConstraint;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @EntityListeners(value = {HistoryListener.class})
-@Revision(builder = CompanyHistory.Builder.class)
+@Revision(builder = ProductManufacturerHistory.Builder.class)
 @Entity
-@Table(name = "company", uniqueConstraints = {
-    @UniqueConstraint(name = "companyTenantPK", columnNames = {"idTenant", "idReference"}),
-    @UniqueConstraint(name = "companyUK", columnNames = {"idTenant", "name"})})
-public class Company extends AbstractCatalogTenantModel<Long, Integer> {
+@Table(name = "productManufacturer", uniqueConstraints = {
+    @UniqueConstraint(name = "productManufacturerPK", columnNames = {"idTenant", "idReference"}),
+    @UniqueConstraint(name = "productManufacturerUK", columnNames = {"idTenant", "name"})})
+public class ProductManufacturer extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idCompany")
+    @Column(name = "idProductManufacturer")
     private Long id;
 
     @Override
@@ -50,12 +50,12 @@ public class Company extends AbstractCatalogTenantModel<Long, Integer> {
      *
      * @return - new instance
      */
-    public static Company.Buider newBuilder() {
-        return new Company.Buider();
+    public static ProductManufacturer.Buider newBuilder() {
+        return new ProductManufacturer.Buider();
     }
 
     /**
-     * Builder class that creates instances of {@code Company}.
+     * Builder class that creates instances of {@code ProductManufacturer}.
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
@@ -75,12 +75,12 @@ public class Company extends AbstractCatalogTenantModel<Long, Integer> {
         }
 
         /**
-         * Creates a new instance of {@code Company}.
+         * Creates a new instance of {@code ProductManufacturer}.
          *
          * @return - new instance
          */
-        public Company build() {
-            Company company = new Company();
+        public ProductManufacturer build() {
+            ProductManufacturer company = new ProductManufacturer();
             company.setReferenceId(referenceId);
             company.setName(name);
             return company;

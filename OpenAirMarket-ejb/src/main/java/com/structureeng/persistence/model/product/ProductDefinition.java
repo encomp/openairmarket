@@ -48,9 +48,10 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
     @Column(name = "image", length = 500)
     private String image;
 
-    @JoinColumn(name = "idCompany", referencedColumnName = "idCompany", nullable = false)
+    @JoinColumn(name = "idProductManufacturer", referencedColumnName = "idProductManufacturer", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Company company;
+    private ProductManufacturer productManufacturer;
 
     @JoinColumn(name = "idDivision", referencedColumnName = "idDivision", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
@@ -82,12 +83,12 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         this.image = image;
     }
 
-    public Company getCompany() {
-        return company;
+    public ProductManufacturer getProductManufacturer() {
+        return productManufacturer;
     }
 
-    public void setCompany(Company company) {
-        this.company = Preconditions.checkNotNull(company);
+    public void setProductManufacturer(ProductManufacturer productManufacturer) {
+        this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
     }
 
     public Division getDivision() {
@@ -118,7 +119,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
         private String name;
         private String key;
         private String image;
-        private Company company;
+        private ProductManufacturer productManufacturer;
         private Division division;
 
         public Buider setReferenceId(BigInteger referenceId) {
@@ -141,8 +142,8 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             return this;
         }
 
-        public Buider setCompany(Company company) {
-            this.company = Preconditions.checkNotNull(company);
+        public Buider setProductManufacturer(ProductManufacturer productManufacturer) {
+            this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
             return this;
         }
 
@@ -162,7 +163,7 @@ public class ProductDefinition extends AbstractCatalogTenantModel<Long, BigInteg
             productDefinition.setName(name);
             productDefinition.setKey(key);
             productDefinition.setImage(image);
-            productDefinition.setCompany(company);
+            productDefinition.setProductManufacturer(productManufacturer);
             productDefinition.setDivision(division);
             return productDefinition;
         }

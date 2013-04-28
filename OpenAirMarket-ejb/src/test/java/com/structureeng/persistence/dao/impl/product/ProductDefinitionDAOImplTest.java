@@ -8,7 +8,7 @@ import com.structureeng.persistence.dao.impl.AbstractCatalogDAOImplTest;
 import com.structureeng.persistence.model.Model;
 import com.structureeng.persistence.model.history.product.ProductDefinitionHistory;
 import com.structureeng.persistence.model.history.product.ProductDefinitionHistory_;
-import com.structureeng.persistence.model.product.Company;
+import com.structureeng.persistence.model.product.ProductManufacturer;
 import com.structureeng.persistence.model.product.Division;
 import com.structureeng.persistence.model.product.ProductDefinition;
 import java.math.BigInteger;
@@ -51,12 +51,12 @@ public class ProductDefinitionDAOImplTest extends AbstractCatalogDAOImplTest<Lon
 
     @Override
     public ProductDefinition build(BigInteger referenceId, String name) {
-        Company company = new Company();
+        ProductManufacturer company = new ProductManufacturer();
         Division division = new Division();
         company.setId(1L);        
         division.setId(1L);
         ProductDefinition.Buider builder = ProductDefinition.newBuilder();
-        builder.setReferenceId(referenceId).setName(name).setKey(name).setCompany(company)
+        builder.setReferenceId(referenceId).setName(name).setKey(name).setProductManufacturer(company)
                 .setDivision(division);
         return builder.build();
     }
