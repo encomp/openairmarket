@@ -53,11 +53,7 @@ public final class DAOImpl<T extends AbstractModel, S extends Serializable> impl
             return entity;
         } else {
             if (!hasVersionChanged(entity)) {
-                if (!getEntityManager().contains(entity)) {
-                    return getEntityManager().merge(entity);
-                } else {
-                    return entity;
-                }
+                return getEntityManager().merge(entity);
             } else {
                 throw DAOException.Builder.build(DAOErrorCode.OPRIMISTIC_LOCKING);
             }
