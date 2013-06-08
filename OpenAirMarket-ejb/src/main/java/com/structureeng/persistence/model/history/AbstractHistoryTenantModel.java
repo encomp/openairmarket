@@ -18,6 +18,6 @@ import javax.persistence.MappedSuperclass;
 @Multitenant(MultitenantType.SINGLE_TABLE)
 @TenantDiscriminatorColumn(name = "idTenant", discriminatorType = DiscriminatorType.INTEGER)
 @MappedSuperclass
-public abstract class AbstractHistoryTenantModel extends AbstractHistoryModel {
-
+public abstract class AbstractHistoryTenantModel extends AbstractHistoryModel
+        implements HistoryTenantModel<Long> {
 }

@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.SalePrice;
 
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ public interface SalePriceDAO extends ActiveDAO<SalePrice, Long> {
      * @param product the instance that for which the list of prices will be retrieved
      * @return a list of prices or empty if there is any prices available.
      */
-    List<SalePrice> find(Product product);
+    List<SalePrice> find(ProductOrganization product);
 
     /**
      * Provides a {@code SalePrice} for a given {@code Product} and a quantity.
@@ -30,7 +30,7 @@ public interface SalePriceDAO extends ActiveDAO<SalePrice, Long> {
      * @param quantity the desired quantity for which the price will be searched
      * @return a price or null if a price is not defined.
      */
-    SalePrice find(Product product, BigDecimal quantity);
+    SalePrice find(ProductOrganization product, BigDecimal quantity);
 
 
     /**
@@ -40,5 +40,5 @@ public interface SalePriceDAO extends ActiveDAO<SalePrice, Long> {
      * @param quantity the desired quantity for which the price will be searched
      * @return a price or null if a price is not defined.
      */
-    SalePrice findInactive(Product product, BigDecimal quantity);
+    SalePrice findInactive(ProductOrganization product, BigDecimal quantity);
 }

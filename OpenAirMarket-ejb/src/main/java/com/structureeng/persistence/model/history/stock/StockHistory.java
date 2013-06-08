@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Warehouse;
 
@@ -38,16 +38,17 @@ public class StockHistory extends AbstractHistoryTenantModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idProductHistory")
+    @Column(name = "idStockHistory")
     private Long id;
 
     @JoinColumn(name = "idStock", referencedColumnName = "idStock", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Stock stock;
 
-    @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
+    @JoinColumn(name = "idProductOrganization", referencedColumnName = "idProductOrganization", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Product product;
+    private ProductOrganization productOrganization;
 
     @JoinColumn(name = "idWarehouse", referencedColumnName = "idWarehouse", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
@@ -83,12 +84,12 @@ public class StockHistory extends AbstractHistoryTenantModel {
         this.stock = checkNotNull(stock);
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductOrganization getProductOrganization() {
+        return productOrganization;
     }
 
-    public void setProduct(Product product) {
-        this.product = checkNotNull(product);
+    public void setProductOrganization(ProductOrganization productOrganization) {
+        this.productOrganization = checkNotNull(productOrganization);
     }
 
     public Warehouse getWarehouse() {
@@ -148,7 +149,7 @@ public class StockHistory extends AbstractHistoryTenantModel {
         public StockHistory build(Stock stock) {
             StockHistory stockHistory = new StockHistory();
             stockHistory.setStock(stock);
-            stockHistory.setProduct(stock.getProduct());
+            stockHistory.setProductOrganization(stock.getProductOrganization());
             stockHistory.setWarehouse(stock.getWarehouse());
             stockHistory.setStockAmount(stock.getStockAmount());
             stockHistory.setMaximumStock(stock.getMaximumStock());

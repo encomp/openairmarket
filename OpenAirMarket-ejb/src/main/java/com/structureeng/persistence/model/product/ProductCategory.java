@@ -2,15 +2,19 @@
 
 package com.structureeng.persistence.model.product;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
+import com.structureeng.persistence.model.business.Organization;
 import com.structureeng.persistence.model.history.product.ProductCategoryHistory;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +22,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 
 /**
  * Define the different categories in which a
@@ -37,11 +43,10 @@ public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProductCategory")
     private Long id;
-
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "idParentProductCategory", referencedColumnName = "idProductCategory",
-            nullable = true)
-    private ProductCategory parentProductCategory;
+    
+    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Organization organization;
 
     @Override
     public Long getId() {
@@ -53,14 +58,14 @@ public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
         this.id = checkPositive(id);
     }
 
-    public ProductCategory getParentProductCategory() {
-        return parentProductCategory;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setParentProductCategory(ProductCategory parentProductCategory) {
-        this.parentProductCategory = parentProductCategory;
+    public void setOrganization(Organization organization) {
+        this.organization = checkNotNull(organization);
     }
-
+    
     /**
      * Creates a new {@code Builder} instance.
      *
@@ -79,6 +84,7 @@ public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
 
         private Integer referenceId;
         private String name;
+        private Organization organization;
 
         public Buider setReferenceId(Integer referenceId) {
             this.referenceId = checkPositive(referenceId);
@@ -87,6 +93,11 @@ public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
 
         public Buider setName(String name) {
             this.name = checkNotEmpty(name);
+            return this;
+        }
+        
+        public Buider setOrganization(Organization organization) {
+            this.organization = checkNotNull(organization);
             return this;
         }
 
@@ -99,6 +110,7 @@ public class ProductCategory extends AbstractCatalogTenantModel<Long, Integer> {
             ProductCategory division = new ProductCategory();
             division.setReferenceId(referenceId);
             division.setName(name);
+            division.setOrganization(organization);
             return division;
         }
     }

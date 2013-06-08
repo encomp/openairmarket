@@ -3,6 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.ProductManufacturer;
 
@@ -28,7 +29,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "productManufacturerHistory", uniqueConstraints = {
     @UniqueConstraint(name = "productManufacturerHistoryUK",
     columnNames = {"idProductManufacturer", "idAudit"})})
-public class ProductManufacturerHistory extends AbstractHistoryTenantModel {
+public class ProductManufacturerHistory extends AbstractHistoryCatalogTenantModel<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +40,6 @@ public class ProductManufacturerHistory extends AbstractHistoryTenantModel {
             nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductManufacturer productManufacturer;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Override
     public Long getId() {
@@ -62,22 +57,6 @@ public class ProductManufacturerHistory extends AbstractHistoryTenantModel {
 
     public void setProductManufacturer(ProductManufacturer productManufacturer) {
         this.productManufacturer = Preconditions.checkNotNull(productManufacturer);
-    }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     /**

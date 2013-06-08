@@ -6,13 +6,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.QueryContainer;
-import com.structureeng.persistence.dao.TaxTypeDAO;
+import com.structureeng.persistence.dao.TaxCategoryDAO;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductErrorCode;
-import com.structureeng.persistence.model.business.TaxType;
-import com.structureeng.persistence.model.product.Product;
-import com.structureeng.persistence.model.product.ProductDefinition_;
-import com.structureeng.persistence.model.product.Product_;
+import com.structureeng.persistence.model.business.TaxCategory;
+import com.structureeng.persistence.model.product.ProductOrganization;
+import com.structureeng.persistence.model.product.ProductOrganization_;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,32 +29,33 @@ import javax.persistence.criteria.JoinType;
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
-public final class TaxTypeDAOImpl implements TaxTypeDAO {
+public final class TaxCategoryDAOImpl implements TaxCategoryDAO {
 
     private EntityManager entityManager;
-    private final CatalogDAOImpl<TaxType, Long, Integer> catalogDAO;
+    private final CatalogDAOImpl<TaxCategory, Long, String> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public TaxTypeDAOImpl() {
+    public TaxCategoryDAOImpl() {
         catalogDAO = new
-                CatalogDAOImpl<TaxType, Long, Integer>(TaxType.class, Long.class, Integer.class);
+                CatalogDAOImpl<TaxCategory, Long, String>(TaxCategory.class, Long.class, 
+                    String.class);
     }
 
     @Override
-    public void persist(TaxType entity) throws DAOException {
+    public void persist(TaxCategory entity) throws DAOException {
         catalogDAO.persist(entity);
     }
 
     @Override
-    public TaxType merge(TaxType entity) throws DAOException {
+    public TaxCategory merge(TaxCategory entity) throws DAOException {
         return catalogDAO.merge(entity);
     }
 
     @Override
-    public void remove(TaxType entity) throws DAOException {
+    public void remove(TaxCategory entity) throws DAOException {
         if (entity.getActive()) {
-            long count = countProductWithTaxType(entity);
+            long count = countProductWithTaxCategory(entity);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.TAX_TYPE_FK);
             }
@@ -64,37 +64,37 @@ public final class TaxTypeDAOImpl implements TaxTypeDAO {
     }
 
     @Override
-    public void refresh(TaxType entity) {
+    public void refresh(TaxCategory entity) {
         catalogDAO.refresh(entity);
     }
 
     @Override
-    public void refresh(TaxType entity, LockModeType modeType) {
+    public void refresh(TaxCategory entity, LockModeType modeType) {
         catalogDAO.refresh(entity, modeType);
     }
 
     @Override
-    public TaxType find(Long id) {
+    public TaxCategory find(Long id) {
         return catalogDAO.find(id);
     }
 
     @Override
-    public TaxType find(Long id, long version) throws DAOException {
+    public TaxCategory find(Long id, long version) throws DAOException {
         return catalogDAO.find(id, version);
     }
 
     @Override
-    public TaxType findByReferenceId(Integer referenceId) {
+    public TaxCategory findByReferenceId(String referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
     }
 
     @Override
-    public TaxType findInactiveByReferenceId(Integer referenceId) {
+    public TaxCategory findInactiveByReferenceId(String referenceId) {
         return catalogDAO.findInactiveByReferenceId(referenceId);
     }
 
     @Override
-    public List<TaxType> findRange(int start, int count) {
+    public List<TaxCategory> findRange(int start, int count) {
         return catalogDAO.findRange(start, count);
     }
 
@@ -114,17 +114,19 @@ public final class TaxTypeDAOImpl implements TaxTypeDAO {
     }
 
     @Override
-    public boolean hasVersionChanged(TaxType entity) throws DAOException {
+    public boolean hasVersionChanged(TaxCategory entity) throws DAOException {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countProductWithTaxType(TaxType taxType) {
-        QueryContainer<Long, Product> qc =
-                QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
+    private long countProductWithTaxCategory(TaxCategory taxCategory) {
+        QueryContainer<Long, ProductOrganization> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), 
+                    ProductOrganization.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        qc.getRoot().join(Product_.taxType, JoinType.INNER);
+        qc.getRoot().join(ProductOrganization_.taxCategory, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
-                qc.getCriteriaBuilder().equal(qc.getRoot().get(Product_.taxType), taxType),
+                qc.getCriteriaBuilder().equal(qc.getRoot()
+                    .get(ProductOrganization_.taxCategory), taxCategory),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

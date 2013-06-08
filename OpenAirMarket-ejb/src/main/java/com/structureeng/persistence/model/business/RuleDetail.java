@@ -2,14 +2,15 @@
 
 package com.structureeng.persistence.model.business;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 
-import com.google.common.base.Preconditions;
-
 import java.math.BigDecimal;
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
 
 /**
  * Defines the attributes of a {@code Rule}.
@@ -27,7 +27,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "ruleDetail", uniqueConstraints = {
         @UniqueConstraint(name = "ruleDetailTenantPK",
-                columnNames = {"idTenant", "idRule", "code"})})
+                columnNames = {"idTenant", "idRule", "idReference"})})
 public class RuleDetail extends AbstractCatalogTenantModel<Long, String> {
 
     @Id
@@ -36,11 +36,11 @@ public class RuleDetail extends AbstractCatalogTenantModel<Long, String> {
     private Long id;
 
     @JoinColumn(name = "idRule", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Rule rule;
 
     @JoinColumn(name = "idParentRuleDetail", referencedColumnName = "idRuleDetail")
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private RuleDetail ruleDetail;
 
     @Override
@@ -50,7 +50,7 @@ public class RuleDetail extends AbstractCatalogTenantModel<Long, String> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkNotNull(id);
     }
 
     public Rule getRule() {
@@ -58,7 +58,7 @@ public class RuleDetail extends AbstractCatalogTenantModel<Long, String> {
     }
 
     public void setRule(Rule rule) {
-        this.rule = Preconditions.checkNotNull(rule);
+        this.rule = checkNotNull(rule);
     }
 
     public RuleDetail getRuleDetail() {

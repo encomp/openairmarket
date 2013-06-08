@@ -2,26 +2,24 @@
 
 package com.structureeng.persistence.model.history.product;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.business.ProductType;
-import com.structureeng.persistence.model.business.Organization;
-import com.structureeng.persistence.model.business.TaxType;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.ProductMeasureUnit;
+import com.structureeng.persistence.model.product.ProductManufacturer;
 import com.structureeng.persistence.model.product.Product;
-import com.structureeng.persistence.model.product.ProductDefinition;
+import com.structureeng.persistence.model.product.ProductMeasureUnit;
+import com.structureeng.persistence.model.product.ProductType;
 
 import com.google.common.base.Preconditions;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,15 +30,15 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Define the revision for the {@code ProductType} entities.
+ * Define the revision for the {@code Product} entities.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 @Entity
 @Table(name = "productHistory", uniqueConstraints = {
         @UniqueConstraint(name = "productHistoryUK",
-            columnNames = {"idProduct", "idAudit"})})
-public class ProductHistory extends AbstractHistoryTenantModel {
+                columnNames = {"idProduct", "idAudit"})})
+public class ProductHistory extends AbstractHistoryCatalogTenantModel<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,45 +46,28 @@ public class ProductHistory extends AbstractHistoryTenantModel {
     private Long id;
 
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Organization organization;
+    @Column(name = "image", length = 500)
+    private String image;
 
-    @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
-            nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private ProductDefinition productDefinition;
-
-    @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "productType", length = 50, nullable = false)
     private ProductType productType;
 
-    @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private TaxType taxType;
-
-    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit", 
+    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit",
             nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ProductMeasureUnit productMeasureUnit;
 
-    @Column(name = "idReference", nullable = false)
-    private BigInteger referenceId;
+    @JoinColumn(name = "idProductManufacturer", referencedColumnName = "idProductManufacturer",
+            nullable = true)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private ProductManufacturer productManufacturer;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
-    private BigDecimal quantity;
-
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
-
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
+    @Column(name = "stocked", nullable = false)
+    private Boolean stocked;
 
     @Override
     public Long getId() {
@@ -95,7 +76,7 @@ public class ProductHistory extends AbstractHistoryTenantModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
     public Product getProduct() {
@@ -106,60 +87,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
         this.product = Preconditions.checkNotNull(product);
     }
 
-    public BigInteger getReferenceId() {
-        return referenceId;
+    public String getImage() {
+        return image;
     }
 
-    public void setReferenceId(BigInteger referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
-    }
-
-    public Boolean getAutoStock() {
-        return autoStock;
-    }
-
-    public void setAutoStock(Boolean autoStock) {
-        this.autoStock = Preconditions.checkNotNull(autoStock);
-    }
-
-    public Boolean getWastable() {
-        return wastable;
-    }
-
-    public void setWastable(Boolean wastable) {
-        this.wastable = Preconditions.checkNotNull(wastable);
-    }
-
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = Preconditions.checkNotNull(quantity);
-    }
-
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = Preconditions.checkNotNull(organization);
-    }
-
-    public ProductDefinition getProductDefinition() {
-        return productDefinition;
-    }
-
-    public void setProductDefinition(ProductDefinition productDefinition) {
-        this.productDefinition = Preconditions.checkNotNull(productDefinition);
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public ProductType getProductType() {
@@ -170,20 +103,28 @@ public class ProductHistory extends AbstractHistoryTenantModel {
         this.productType = Preconditions.checkNotNull(productType);
     }
 
-    public TaxType getTaxType() {
-        return taxType;
-    }
-
-    public void setTaxType(TaxType taxType) {
-        this.taxType = Preconditions.checkNotNull(taxType);
-    }
-
     public ProductMeasureUnit getProductMeasureUnit() {
         return productMeasureUnit;
     }
 
-    public void setProductMeasureUnit(ProductMeasureUnit measureUnit) {
-        this.productMeasureUnit = measureUnit;
+    public void setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
+        this.productMeasureUnit = productMeasureUnit;
+    }
+
+    public ProductManufacturer getProductManufacturer() {
+        return productManufacturer;
+    }
+
+    public void setProductManufacturer(ProductManufacturer productManufacturer) {
+        this.productManufacturer = productManufacturer;
+    }
+
+    public Boolean getStocked() {
+        return stocked;
+    }
+
+    public void setStocked(Boolean stocked) {
+        this.stocked = checkNotNull(stocked);
     }
 
     /**
@@ -191,7 +132,8 @@ public class ProductHistory extends AbstractHistoryTenantModel {
      *
      * @author Edgar Rico (edgar.martinez.rico@gmail.com)
      */
-    public static class Builder extends HistoryEntityBuilder<Product, ProductHistory> {
+    public static class Builder extends HistoryEntityBuilder<Product,
+            ProductHistory> {
 
         /**
          * Create an instance of {@code ProductHistory}.
@@ -205,15 +147,12 @@ public class ProductHistory extends AbstractHistoryTenantModel {
             productHistory.setProduct(product);
             productHistory.setReferenceId(product.getReferenceId());
             productHistory.setName(product.getName());
-            productHistory.setActive(product.getActive());
-            productHistory.setAutoStock(product.getAutoStock());
-            productHistory.setWastable(product.getWastable());
-            productHistory.setQuantity(product.getQuantity());
-            productHistory.setOrganization(product.getOrganization());
-            productHistory.setProductDefinition(product.getProductDefinition());
+            productHistory.setImage(product.getImage());
             productHistory.setProductType(product.getProductType());
-            productHistory.setTaxType(product.getTaxType());
             productHistory.setProductMeasureUnit(product.getProductMeasureUnit());
+            productHistory.setProductManufacturer(product.getProductManufacturer());
+            productHistory.setStocked(product.getStocked());
+            productHistory.setActive(product.getActive());
             productHistory.setVersion(product.getVersion());
             return productHistory;
         }

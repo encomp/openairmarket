@@ -83,4 +83,32 @@ public abstract class AbstractModel<T extends Serializable> implements Model<T> 
         Preconditions.checkState(!Strings.isNullOrEmpty(value));
         return value.trim().toUpperCase();
     }
+    
+    /**
+     * Ensures that an object reference passed as a parameter to the calling method is
+     * nillable, as well as is not empty.
+     *
+     * @param value an object reference
+     * @return the reference that was validated
+     */
+    public static String checkNillable(String value) {
+        if (!Strings.isNullOrEmpty(value)) {
+            return checkNotEmpty(value);
+        }
+        return value;
+    }
+
+    /**
+     * Ensures that an object reference passed as a parameter to the calling method is
+     * nillable, as well as is not negative.
+     *
+     * @param value an object reference
+     * @return the reference that was validated
+     */
+    public static <E extends Number> E checkNillablePositive(E value) {
+        if (value != null) {
+            return checkPositive(value);
+        }
+        return value;
+    }
 }

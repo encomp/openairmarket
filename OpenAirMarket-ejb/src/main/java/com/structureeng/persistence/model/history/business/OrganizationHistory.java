@@ -2,11 +2,12 @@
 
 package com.structureeng.persistence.model.history.business;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.history.HistoryEntityBuilder;
 import com.structureeng.persistence.model.business.Organization;
-import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 
-import com.google.common.base.Preconditions;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,9 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
-
 /**
  * Define the revision for the {@code Organization} entities.
  *
@@ -29,7 +27,7 @@ import static com.structureeng.persistence.model.AbstractModel.checkPositive;
 @Entity
 @Table(name = "organizationHistory", uniqueConstraints = {
     @UniqueConstraint(name = "organizationHistoryUK", columnNames = {"idOrganization", "idAudit"})})
-public class OrganizationHistory extends AbstractHistoryTenantModel {
+public class OrganizationHistory extends AbstractHistoryCatalogTenantModel<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +37,6 @@ public class OrganizationHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Organization organization;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Override
     public Long getId() {
@@ -61,23 +53,7 @@ public class OrganizationHistory extends AbstractHistoryTenantModel {
     }
 
     public void setOrganization(Organization organization) {
-        this.organization = Preconditions.checkNotNull(organization);
-    }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
+        this.organization = checkNotNull(organization);
     }
 
     /**
@@ -90,7 +66,7 @@ public class OrganizationHistory extends AbstractHistoryTenantModel {
         /**
          * Create an instance of {@code OrganizationHistory}.
          *
-         * @param store the instance that will be used to create a new {@code Organization}.
+         * @param organization the instance that will be used to create a new {@code Organization}.
          * @return a new instance
          */
         @Override

@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
-import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 import com.structureeng.persistence.model.product.ProductCategory;
 
 import com.google.common.base.Preconditions;
@@ -29,7 +29,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "productCategoryHistory", uniqueConstraints = {
         @UniqueConstraint(name = "productCategoryHistoryUK",
             columnNames = {"idProductCategory", "idAudit"})})
-public class ProductCategoryHistory extends AbstractHistoryTenantModel {
+public class ProductCategoryHistory extends AbstractHistoryCatalogTenantModel<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProductCategoryHistory")
@@ -40,16 +40,10 @@ public class ProductCategoryHistory extends AbstractHistoryTenantModel {
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductCategory productCategory;
 
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "idParentProductCategory", referencedColumnName = "idProductCategory",
             nullable = true)
     private ProductCategory parentProductCategory;
-
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Override
     public Long getId() {
@@ -69,28 +63,12 @@ public class ProductCategoryHistory extends AbstractHistoryTenantModel {
         this.productCategory = Preconditions.checkNotNull(productCategory);
     }
 
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
     public ProductCategory getParentProductCategory() {
         return parentProductCategory;
     }
 
     public void setParentProductCategory(ProductCategory parentProductCategory) {
         this.parentProductCategory = parentProductCategory;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     /**

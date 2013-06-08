@@ -8,8 +8,8 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.ProductMeasureUnitDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
-import com.structureeng.persistence.model.product.ProductMeasureUnit;
 import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductMeasureUnit;
 import com.structureeng.persistence.model.product.Product_;
 
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public final class ProductMeasureUnitDAOImpl implements ProductMeasureUnitDAO {
     @Override
     public void remove(ProductMeasureUnit entity) throws DAOException {
         if (entity.getActive()) {
-            long count = countRetailProductWithMeasureUnit(entity);
+            long count = countProductsWithMeasureUnit(entity);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.PRODUCT_MEASURE_UNIT_FK);
             }
@@ -117,7 +117,7 @@ public final class ProductMeasureUnitDAOImpl implements ProductMeasureUnitDAO {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countRetailProductWithMeasureUnit(ProductMeasureUnit measureUnit) {
+    private long countProductsWithMeasureUnit(ProductMeasureUnit measureUnit) {
         QueryContainer<Long, Product> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));

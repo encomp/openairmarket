@@ -8,7 +8,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.PurchasePriceDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.ActiveDAOImpl;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.PurchasePrice;
 import com.structureeng.persistence.model.product.PurchasePrice_;
 
@@ -80,7 +80,7 @@ public class PurchasePriceDAOImpl implements PurchasePriceDAO {
     }
 
     @Override
-    public List<PurchasePrice> find(Product product) {
+    public List<PurchasePrice> find(ProductOrganization product) {
         QueryContainer<PurchasePrice, PurchasePrice> query =
                 QueryContainer.newQueryContainer(getEntityManager(), PurchasePrice.class);
         query.getRoot().fetch(PurchasePrice_.product, JoinType.INNER);
@@ -92,12 +92,12 @@ public class PurchasePriceDAOImpl implements PurchasePriceDAO {
     }
 
     @Override
-    public PurchasePrice find(Product product, BigDecimal quantity) {
+    public PurchasePrice find(ProductOrganization product, BigDecimal quantity) {
         return find(product, quantity, true);
     }
 
     @Override
-    public PurchasePrice findInactive(Product product, BigDecimal quantity) {
+    public PurchasePrice findInactive(ProductOrganization product, BigDecimal quantity) {
         return find(product, quantity, false);
     }
 
@@ -106,15 +106,13 @@ public class PurchasePriceDAOImpl implements PurchasePriceDAO {
         return activeDAO.findRange(start, count);
     }
 
-    private PurchasePrice find(Product product, BigDecimal quantity, boolean active) {
+    private PurchasePrice find(ProductOrganization product, BigDecimal quantity, boolean active) {
         QueryContainer<PurchasePrice, PurchasePrice> query =
                 QueryContainer.newQueryContainer(getEntityManager(), PurchasePrice.class);
         query.getRoot().fetch(PurchasePrice_.product, JoinType.INNER);
         query.getCriteriaQuery().where(query.getCriteriaBuilder().and(
                 query.getCriteriaBuilder()
-                        .equal(query.getRoot().get(PurchasePrice_.product), product),
-                query.getCriteriaBuilder()
-                        .equal(query.getRoot().get(PurchasePrice_.quantity), quantity),
+                        .equal(query.getRoot().get(PurchasePrice_.product), product),                
                 active
                         ? query.activeEntities(query.getRoot())
                         : query.inactiveEntities(query.getRoot())));
@@ -161,9 +159,7 @@ public class PurchasePriceDAOImpl implements PurchasePriceDAO {
         qc.getRoot().join(PurchasePrice_.product, JoinType.INNER);
         ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
         builder.add(qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(PurchasePrice_.product), purchasePrice.getProduct()));
-        builder.add(qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(PurchasePrice_.quantity), purchasePrice.getQuantity()));
+                .equal(qc.getRoot().get(PurchasePrice_.product), purchasePrice.getProduct()));        
         if (purchasePrice.getId() != null) {
             builder.add(qc.getCriteriaBuilder()
                     .notEqual(qc.getRoot().get(PurchasePrice_.id), purchasePrice.getId()));

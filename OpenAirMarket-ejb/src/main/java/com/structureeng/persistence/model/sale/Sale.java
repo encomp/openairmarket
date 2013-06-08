@@ -16,6 +16,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -59,7 +60,7 @@ public class Sale extends AbstractTenantModel<Long> {
     private BigDecimal total;
 
     @JoinColumn(name = "idSystemUser", referencedColumnName = "idSystemUser", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SystemUser systemUser;
 
     @Override

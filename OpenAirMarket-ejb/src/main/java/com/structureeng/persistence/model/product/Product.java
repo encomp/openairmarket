@@ -2,26 +2,21 @@
 
 package com.structureeng.persistence.model.product;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.history.HistoryListener;
 import com.structureeng.persistence.history.Revision;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
-import com.structureeng.persistence.model.business.ProductType;
-import com.structureeng.persistence.model.business.Organization;
-import com.structureeng.persistence.model.business.TaxType;
 import com.structureeng.persistence.model.history.product.ProductHistory;
 
 import com.google.common.base.Preconditions;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,7 +27,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Defines the way a {@code ProductDe} will be bought.
+ * Specifies the characteristics of a product.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
@@ -42,46 +37,34 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "productTenantPK",
                 columnNames = {"idTenant", "idReference"}),
-        @UniqueConstraint(name = "productNameUK", columnNames = {"idTenant", "name"}),
-        @UniqueConstraint(name = "productUK",
-                columnNames = {"idTenant", "idStore", "idProductDefinition", "idProductType"})})
-public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
+        @UniqueConstraint(name = "productPK", columnNames = {"idTenant", "name"}),
+        @UniqueConstraint(name = "productUK", columnNames = {"idTenant", "idKey"})})
+public class Product extends AbstractCatalogTenantModel<Long, String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProduct")
     private Long id;
 
-    @JoinColumn(name = "idOrganization", referencedColumnName = "idOrganization", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Organization organization;
+    @Column(name = "image", length = 500)
+    private String image;
 
-    @JoinColumn(name = "idProductDefinition", referencedColumnName = "idProductDefinition",
-            nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private ProductDefinition productDefinition;
-
-    @JoinColumn(name = "idProductType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "productType", length = 50, nullable = false)
     private ProductType productType;
 
-    @JoinColumn(name = "idTaxType", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private TaxType taxType;
-
-    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit", 
+    @JoinColumn(name = "idProductMeasureUnit", referencedColumnName = "idProductMeasureUnit",
             nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductMeasureUnit productMeasureUnit;
 
-    @Column(name = "autoStock", nullable = false)
-    private Boolean autoStock;
+    @JoinColumn(name = "idProductManufacturer", referencedColumnName = "idProductManufacturer",
+            nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductManufacturer productManufacturer;
 
-    @Column(name = "wastable", nullable = false)
-    private Boolean wastable;
-
-    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
-    private BigDecimal quantity;
+    @Column(name = "stocked", nullable = false)
+    private Boolean stocked;
 
     @Override
     public Long getId() {
@@ -90,39 +73,15 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkPositive(id);
     }
 
-    public Boolean getAutoStock() {
-        return autoStock;
+    public String getImage() {
+        return image;
     }
 
-    public void setAutoStock(Boolean autoStock) {
-        this.autoStock = Preconditions.checkNotNull(autoStock);
-    }
-
-    public Boolean getWastable() {
-        return wastable;
-    }
-
-    public void setWastable(Boolean wastable) {
-        this.wastable = Preconditions.checkNotNull(wastable);
-    }
-
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = Preconditions.checkNotNull(organization);
-    }
-
-    public ProductDefinition getProductDefinition() {
-        return productDefinition;
-    }
-
-    public void setProductDefinition(ProductDefinition productDefinition) {
-        this.productDefinition = Preconditions.checkNotNull(productDefinition);
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public ProductType getProductType() {
@@ -133,14 +92,6 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         this.productType = Preconditions.checkNotNull(productType);
     }
 
-    public TaxType getTaxType() {
-        return taxType;
-    }
-
-    public void setTaxType(TaxType taxType) {
-        this.taxType = Preconditions.checkNotNull(taxType);
-    }
-
     public ProductMeasureUnit getProductMeasureUnit() {
         return productMeasureUnit;
     }
@@ -149,16 +100,24 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
         this.productMeasureUnit = productMeasureUnit;
     }
 
-    public BigDecimal getQuantity() {
-        return quantity;
+    public ProductManufacturer getProductManufacturer() {
+        return productManufacturer;
     }
 
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = checkPositive(quantity);
+    public void setProductManufacturer(ProductManufacturer productManufacturer) {
+        this.productManufacturer = productManufacturer;
+    }
+
+    public Boolean getStocked() {
+        return stocked;
+    }
+
+    public void setStocked(Boolean stocked) {
+        this.stocked = checkNotNull(stocked);
     }
 
     /**
-     * Creates a new {@code Product.Builder} instance.
+     * Creates a new {@code Builder} instance.
      *
      * @return - new instance
      */
@@ -173,64 +132,46 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
      */
     public static class Buider {
 
-        private BigInteger referenceId;
+        private String referenceId;
         private String name;
-        private ProductDefinition productDefinition;
-        private Organization organization;
+        private String image;
         private ProductType productType;
-        private TaxType taxType;
         private ProductMeasureUnit productMeasureUnit;
-        private BigDecimal quantity;
-        private Boolean autoStock = Boolean.FALSE;
-        private Boolean wastable = Boolean.FALSE;
+        private ProductManufacturer productManufacturer;
+        private Boolean stocked;
 
-        public Product.Buider setReferenceId(BigInteger referenceId) {
-            this.referenceId = checkPositive(referenceId);
+        public Buider setReferenceId(String referenceId) {
+            this.referenceId = checkNotEmpty(referenceId);
             return this;
         }
 
-        public Product.Buider setName(String name) {
+        public Buider setName(String name) {
             this.name = checkNotEmpty(name);
             return this;
         }
 
-        public Product.Buider setOrganization(Organization organization) {
-            this.organization = Preconditions.checkNotNull(organization);
+        public Buider setImage(String image) {
+            this.image = image;
             return this;
         }
 
-        public Product.Buider setProductDefinition(ProductDefinition productDefinition) {
-            this.productDefinition = Preconditions.checkNotNull(productDefinition);
+        public Buider setProductType(ProductType productType) {
+            this.productType = checkNotNull(productType);
             return this;
         }
 
-        public Product.Buider setProductType(ProductType productType) {
-            this.productType = Preconditions.checkNotNull(productType);
-            return this;
-        }
-
-        public Product.Buider setTaxType(TaxType taxType) {
-            this.taxType = Preconditions.checkNotNull(taxType);
-            return this;
-        }
-
-        public Product.Buider setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
+        public Buider setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
             this.productMeasureUnit = Preconditions.checkNotNull(productMeasureUnit);
             return this;
         }
 
-        public Product.Buider setQuantity(BigDecimal quantity) {
-            this.quantity = checkPositive(quantity);
+        public Buider setProductManufacturer(ProductManufacturer productManufacturer) {
+            this.productManufacturer = productManufacturer;
             return this;
         }
 
-        public Product.Buider setAutoStock(Boolean autoStock) {
-            this.autoStock = Preconditions.checkNotNull(autoStock);
-            return this;
-        }
-
-        public Product.Buider setWastable(Boolean wastable) {
-            this.wastable = Preconditions.checkNotNull(wastable);
+        public Buider setStocked(Boolean stocked) {
+            this.stocked = checkNotNull(stocked);
             return this;
         }
 
@@ -240,18 +181,15 @@ public class Product extends AbstractCatalogTenantModel<Long, BigInteger> {
          * @return - new instance
          */
         public Product build() {
-            Product product = new Product();
-            product.setReferenceId(referenceId);
-            product.setName(name);
-            product.setWastable(wastable);
-            product.setAutoStock(autoStock);
-            product.setQuantity(quantity);
-            product.setOrganization(organization);
-            product.setProductDefinition(productDefinition);
-            product.setProductType(productType);
-            product.setTaxType(taxType);
-            product.setProductMeasureUnit(productMeasureUnit);
-            return product;
+            Product productDefinition = new Product();
+            productDefinition.setReferenceId(referenceId);
+            productDefinition.setName(name);
+            productDefinition.setImage(image);
+            productDefinition.setProductType(productType);
+            productDefinition.setProductMeasureUnit(productMeasureUnit);
+            productDefinition.setProductManufacturer(productManufacturer);
+            productDefinition.setStocked(stocked);
+            return productDefinition;
         }
     }
 }

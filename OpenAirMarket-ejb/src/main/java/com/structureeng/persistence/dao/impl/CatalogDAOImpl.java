@@ -30,8 +30,8 @@ import javax.persistence.PersistenceContext;
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractActiveModel}
  * @param <RID> specifies the {@code Number} identifier of the {@code AbstractCatalogModel}
  */
-public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, RID extends Number>
-        implements CatalogDAO<T, S, RID> {
+public final class CatalogDAOImpl<T extends AbstractCatalogModel, S extends Serializable, 
+        RID extends Serializable> implements CatalogDAO<T, S, RID> {
 
     private EntityManager entityManager;
     private final Class<T> entityClass;

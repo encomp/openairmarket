@@ -8,12 +8,10 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.ProductDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization_;
 import com.structureeng.persistence.model.product.Product_;
-import com.structureeng.persistence.model.product.ProductPrice;
-import com.structureeng.persistence.model.product.ProductPrice_;
-import com.structureeng.persistence.model.stock.Stock;
-import com.structureeng.persistence.model.stock.Stock_;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,36 +26,36 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
 
 /**
- * Data Access Object for {@code Product}.
+ * Data Access Object for {@code ProductDefinition}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public final class ProductDAOImpl implements ProductDAO {
 
     private EntityManager entityManager;
-    private final CatalogDAOImpl<Product, Long, BigInteger> catalogDAO;
+    private final CatalogDAOImpl<Product, Long, String> catalogDAO;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     public ProductDAOImpl() {
-        catalogDAO = new CatalogDAOImpl<Product, Long, BigInteger>(Product.class, Long.class,
-                BigInteger.class);
+        catalogDAO = new CatalogDAOImpl<Product, Long, String>(Product.class, Long.class, 
+                String.class);
     }
 
     @Override
     public void persist(Product entity) throws DAOException {
-        long count = countProductstWithSameDefinitionAndType(entity);
+        long count = countEntitiesWithKey(entity);
         if (count > 0) {
-            throw DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
+            throw DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK);
         }
         catalogDAO.persist(entity);
     }
 
     @Override
     public Product merge(Product entity) throws DAOException {
-        long count = countProductstWithSameDefinitionAndTypeButDiffId(entity);
+        long count = countEntitiesWithSameKeyButDiffReferenceId(entity);
         if (count > 0) {
-            throw DAOException.Builder.build(ProductErrorCode.PRODUCT_TYPE_UK);
+            throw DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_KEY_UK);
         }
         return catalogDAO.merge(entity);
     }
@@ -65,16 +63,9 @@ public final class ProductDAOImpl implements ProductDAO {
     @Override
     public void remove(Product entity) throws DAOException {
         if (entity.getActive()) {
-            DAOException daoException = null;
-            if (countProductPricesForProduct(entity) > 0) {
-                daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_PRICES_FK);
-            }
-            if (countStocksWithProduct(entity) > 0) {
-                daoException = DAOException.Builder.build(ProductErrorCode.PRODUCT_FK_STOCK,
-                        daoException);
-            }
-            if (daoException != null) {
-                throw daoException;
+            long count = countProductOrganizationsWithProduct(entity);
+            if (count > 0) {
+                throw DAOException.Builder.build(ProductErrorCode.PRODUCT_DEFFINITION_FK);
             }
         }
         catalogDAO.remove(entity);
@@ -101,12 +92,12 @@ public final class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public Product findByReferenceId(BigInteger referenceId) {
+    public Product findByReferenceId(String referenceId) {
         return catalogDAO.findByReferenceId(referenceId);
     }
 
     @Override
-    public Product findInactiveByReferenceId(BigInteger referenceId) {
+    public Product findInactiveByReferenceId(String referenceId) {
         return catalogDAO.findInactiveByReferenceId(referenceId);
     }
 
@@ -135,52 +126,34 @@ public final class ProductDAOImpl implements ProductDAO {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countProductstWithSameDefinitionAndType(Product product) {
-        QueryContainer<Long, Product> qc = QueryContainer.newQueryContainerCount(
-                getEntityManager(), Product.class);
-        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.organization), product.getOrganization()),
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.productDefinition),
-                        product.getProductDefinition()),
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.productType), product.getProductType())));
+    private long countEntitiesWithKey(Product productDefinition) {
+        QueryContainer<Long, Product> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
+        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().equal(
+                        qc.getRoot().get(Product_.referenceId), 
+                        productDefinition.getReferenceId()));
         return qc.getSingleResult();
     }
 
-    private long countProductstWithSameDefinitionAndTypeButDiffId(Product product) {
-        QueryContainer<Long, Product> qc = QueryContainer.newQueryContainerCount(
-                getEntityManager(), Product.class);
+    private long countEntitiesWithSameKeyButDiffReferenceId(Product entity) {
+        QueryContainer<Long, Product> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.organization), product.getOrganization()),
-                qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(Product_.productType), product.getProductType()),
-                qc.getCriteriaBuilder()
-                    .notEqual(qc.getRoot().get(Product_.productDefinition),
-                        product.getProductDefinition())));
+                qc.getCriteriaBuilder().equal(qc.getRoot().get(Product_.referenceId),
+                    entity.getName()),
+                qc.getCriteriaBuilder().notEqual(qc.getRoot().get(Product_.referenceId),
+                    entity.getReferenceId())));
         return qc.getSingleResult();
     }
 
-    private long countProductPricesForProduct(final Product product) {
-        QueryContainer<Long, ProductPrice> qc = QueryContainer.newQueryContainerCount(
-                getEntityManager(), ProductPrice.class);
-        qc.getRoot().join(ProductPrice_.product, JoinType.INNER);
+    private long countProductOrganizationsWithProduct(final Product entity) {
+        QueryContainer<Long, ProductOrganization> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), ProductOrganization.class);
+        qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
+        qc.getRoot().join(ProductOrganization_.product, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(ProductPrice_.product), product),
-                qc.activeEntities(qc.getRoot())));
-        return qc.getSingleResult();
-    }
-
-    private long countStocksWithProduct(final Product product) {
-        QueryContainer<Long, Stock> qc = QueryContainer.newQueryContainerCount(getEntityManager(),
-                Stock.class);
-        qc.getRoot().join(Stock_.product, JoinType.INNER);
-        qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
-                qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(Stock_.product), product),
+                    .equal(qc.getRoot().get(ProductOrganization_.product), entity),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

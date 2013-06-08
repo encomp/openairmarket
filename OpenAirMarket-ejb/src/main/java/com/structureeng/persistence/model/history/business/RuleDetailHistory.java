@@ -2,13 +2,11 @@
 
 package com.structureeng.persistence.model.history.business;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.model.business.Rule;
 import com.structureeng.persistence.model.business.RuleDetail;
-import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-
-import com.google.common.base.Preconditions;
-
-import java.math.BigDecimal;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,8 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-
 /**
  * Define the revision for the {@code RuleDetail} entities.
  *
@@ -31,7 +27,7 @@ import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
 @Entity
 @Table(name = "ruleDetailHistory", uniqueConstraints = {
         @UniqueConstraint(name = "rulePK", columnNames = {"idRuleDetail", "idAudit"})})
-public class RuleDetailHistory extends AbstractHistoryTenantModel {
+public class RuleDetailHistory extends AbstractHistoryCatalogTenantModel<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,12 +46,6 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private RuleDetail ruleDetailParent;
 
-    @Column(name = "code", nullable = false)
-    private String code;
-
-    @Column(name = "value", nullable = false)
-    private String value;
-
     @Override
     public Long getId() {
         return id;
@@ -63,7 +53,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkNotNull(id);
     }
 
     public RuleDetail getRuleDetail() {
@@ -71,7 +61,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     }
 
     public void setRuleDetail(RuleDetail ruleDetail) {
-        this.ruleDetail = Preconditions.checkNotNull(ruleDetail);
+        this.ruleDetail = checkNotNull(ruleDetail);
     }
 
     public Rule getRule() {
@@ -79,31 +69,7 @@ public class RuleDetailHistory extends AbstractHistoryTenantModel {
     }
 
     public void setRule(Rule rule) {
-        this.rule = Preconditions.checkNotNull(rule);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = checkNotEmpty(code);
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = checkNotEmpty(value);
-    }
-
-    public BigDecimal getBigDecimalValue() {
-        return new BigDecimal(value);
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value = checkPositive(value).toPlainString();
+        this.rule = checkNotNull(rule);
     }
 
     public RuleDetail getRuleDetailParent() {

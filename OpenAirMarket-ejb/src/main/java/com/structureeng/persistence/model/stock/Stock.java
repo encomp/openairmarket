@@ -9,7 +9,7 @@ import com.structureeng.persistence.history.Revision;
 
 import com.structureeng.persistence.model.AbstractTenantModel;
 import com.structureeng.persistence.model.history.stock.StockHistory;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 
 import java.math.BigDecimal;
 
@@ -27,7 +27,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Stores the stock for a {@code Product}.
+ * Stores the stock for a {@code ProductOrganization}.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
@@ -36,7 +36,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "stock", uniqueConstraints = {
         @UniqueConstraint(name = "stockTenantPK",
-                columnNames = {"idTenant", "idWareHouse", "idProduct"})})
+                columnNames = {"idTenant", "idWareHouse", "idProductOrganization"})})
 public class Stock extends AbstractTenantModel<Long> {
 
     @Id
@@ -44,9 +44,10 @@ public class Stock extends AbstractTenantModel<Long> {
     @Column(name = "idStock")
     private Long id;
 
-    @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
+    @JoinColumn(name = "idProductOrganization", referencedColumnName = "idProductOrganization", 
+            nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private Product product;
+    private ProductOrganization productOrganization;
 
     @JoinColumn(name = "idWarehouse", referencedColumnName = "idWarehouse", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
@@ -74,12 +75,12 @@ public class Stock extends AbstractTenantModel<Long> {
         this.id = checkPositive(id);
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductOrganization getProductOrganization() {
+        return productOrganization;
     }
 
-    public void setProduct(Product product) {
-        this.product = checkNotNull(product);
+    public void setProductOrganization(ProductOrganization productOrganization) {
+        this.productOrganization = checkNotNull(productOrganization);
     }
 
     public Warehouse getWarehouse() {
@@ -138,15 +139,15 @@ public class Stock extends AbstractTenantModel<Long> {
      */
     public static class Buider {
 
-        private Product product;
+        private ProductOrganization productOrganization;
         private Warehouse warehouse;
         private BigDecimal stockAmount;
         private BigDecimal maximumStock;
         private BigDecimal minimumStock;
         private BigDecimal waste;
 
-        public Stock.Buider setProduct(Product product) {
-            this.product = checkNotNull(product);
+        public Stock.Buider setProductOrganization(ProductOrganization productOrganization) {
+            this.productOrganization = checkNotNull(productOrganization);
             return this;
         }
 
@@ -182,7 +183,7 @@ public class Stock extends AbstractTenantModel<Long> {
          */
         public Stock build() {
             Stock stock = new Stock();
-            stock.setProduct(product);
+            stock.setProductOrganization(productOrganization);
             stock.setWarehouse(warehouse);
             stock.setStockAmount(stockAmount);
             stock.setMaximumStock(maximumStock);

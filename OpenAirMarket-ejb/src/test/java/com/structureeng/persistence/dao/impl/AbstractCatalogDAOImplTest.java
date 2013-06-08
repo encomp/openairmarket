@@ -9,6 +9,7 @@ import com.structureeng.persistence.model.AbstractCatalogModel;
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.Model;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
+import com.structureeng.persistence.model.history.HistoryTenantModel;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -29,8 +30,8 @@ import javax.persistence.PersistenceException;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID extends Number, 
-        T extends AbstractCatalogTenantModel<S, RID>, H extends AbstractHistoryTenantModel> 
+public abstract class AbstractCatalogDAOImplTest<S extends Serializable, RID extends Serializable, 
+        T extends AbstractCatalogTenantModel<S, RID>, H extends HistoryTenantModel>
             extends AbstractTenantModelDAOImplTest<T, H> {
     
     private static AbstractCatalogModel tempCatalogModel;

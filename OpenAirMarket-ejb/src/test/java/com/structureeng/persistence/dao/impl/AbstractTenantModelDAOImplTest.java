@@ -5,6 +5,7 @@ package com.structureeng.persistence.dao.impl;
 import com.structureeng.persistence.model.AbstractPersistenceTest;
 import com.structureeng.persistence.model.TenantModel;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
+import com.structureeng.persistence.model.history.HistoryTenantModel;
 import com.structureeng.persistence.model.tenant.Tenant;
 import com.structureeng.tenancy.context.TenancyContext;
 import com.structureeng.tenancy.context.TenancyContextHolder;
@@ -26,7 +27,7 @@ import javax.persistence.Query;
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  */
 public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel, 
-        H extends AbstractHistoryTenantModel> extends AbstractPersistenceTest {
+        H extends HistoryTenantModel> extends AbstractPersistenceTest {
     
     private EntityManager entityManager;    
     private PlatformTransactionManager tx;
@@ -63,7 +64,7 @@ public abstract class AbstractTenantModelDAOImplTest<T extends TenantModel,
     
     protected void deleteTenantHistories(T tenantModel, List<H> tenantHistories) {
         Query q = null;
-        for (AbstractHistoryTenantModel historyTenant:  tenantHistories) {
+        for (HistoryTenantModel historyTenant:  tenantHistories) {
             q = getEntityManager().createQuery(String.format("DELETE FROM %s a WHERE a.id = ?1", 
                     getClassName(historyTenant)));
             q.setParameter(1, historyTenant.getId());

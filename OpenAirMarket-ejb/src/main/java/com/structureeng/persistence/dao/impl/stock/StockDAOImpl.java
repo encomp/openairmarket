@@ -9,8 +9,8 @@ import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.impl.ActiveDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductErrorCode;
-import com.structureeng.persistence.model.product.Product;
-import com.structureeng.persistence.model.product.Product_;
+import com.structureeng.persistence.model.product.ProductOrganization;
+import com.structureeng.persistence.model.product.ProductOrganization_;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Stock_;
 import com.structureeng.persistence.model.stock.Warehouse;
@@ -89,32 +89,35 @@ public class StockDAOImpl implements StockDAO {
     }
 
     @Override
-    public Stock find(Product product, Warehouse warehouse) {
+    public Stock find(ProductOrganization product, Warehouse warehouse) {
         return find(Boolean.TRUE, product, warehouse);
     }
 
     @Override
-    public Stock findInactive(Product product, Warehouse warehouse) {
+    public Stock findInactive(ProductOrganization product, Warehouse warehouse) {
         return find(Boolean.FALSE, product, warehouse);
     }
 
-    private Stock find(Boolean stockActive, Product product, Warehouse warehouse) {
+    private Stock find(Boolean stockActive, ProductOrganization productOrganization,
+            Warehouse warehouse) {
         try {
             QueryContainer<Stock, Stock> query =
                     QueryContainer.newQueryContainer(getEntityManager(), Stock.class);
-            query.getRoot().fetch(Stock_.product, JoinType.INNER)
-                    .fetch(Product_.organization, JoinType.INNER);
+            query.getRoot().fetch(Stock_.productOrganization, JoinType.INNER)
+                    .fetch(ProductOrganization_.organization, JoinType.INNER);
             query.getRoot().fetch(Stock_.warehouse, JoinType.INNER)
                     .fetch(Warehouse_.organization, JoinType.INNER);
             ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
             builder.add(query.getCriteriaBuilder()
-                            .equal(query.getRoot().get(Stock_.product), product));
+                            .equal(query.getRoot().get(Stock_.productOrganization), productOrganization));
             builder.add(query.getCriteriaBuilder()
                             .equal(query.getRoot().get(Stock_.warehouse), warehouse));
             builder.add(query.getCriteriaBuilder()
                             .equal(
-                                query.getRoot().get(Stock_.product).get(Product_.organization),
-                                query.getRoot().get(Stock_.warehouse).get(Warehouse_.organization)));
+                                query.getRoot().get(Stock_.productOrganization)
+                                    .get(ProductOrganization_.organization),
+                                query.getRoot().get(Stock_.warehouse)
+                                    .get(Warehouse_.organization)));
             builder.addAll(getActivePredicates(query, stockActive));
             query.getCriteriaQuery().where(
                     query.getCriteriaBuilder().and(builder.build().toArray(new Predicate[]{})));
@@ -122,7 +125,8 @@ public class StockDAOImpl implements StockDAO {
         } catch (NoResultException exc) {
             logger.warn(String.format(
                     "The Stock [%s] for the Product [%d] in the Warehouse [%d] does not exist.",
-                    stockActive ? "ACTIVE" : "INACTIVE", product.getId(), warehouse.getId()));
+                    stockActive ? "ACTIVE" : "INACTIVE", productOrganization.getId(),
+                    warehouse.getId()));
         }
         return null;
     }
@@ -130,10 +134,10 @@ public class StockDAOImpl implements StockDAO {
     private List<Predicate> getActivePredicates(QueryContainer<Stock, Stock> qc, boolean active) {
         ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
         if (active) {
-            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.productOrganization)));
             builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)));
-            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.product)
-                    .get(Product_.organization)));
+            builder.add(qc.activeEntities(qc.getRoot().get(Stock_.productOrganization)
+                    .get(ProductOrganization_.organization)));
             builder.add(qc.activeEntities(qc.getRoot().get(Stock_.warehouse)
                     .get(Warehouse_.organization)));
             builder.add(qc.activeEntities(qc.getRoot()));
@@ -176,7 +180,7 @@ public class StockDAOImpl implements StockDAO {
     }
 
     /**
-     * Validates that the {@code Product} and {@code Warehosue} belongs to the same 
+     * Validates that the {@code Product} and {@code Warehosue} belongs to the same
      * {@code Organization}.
      *
      * @param stock         the instance that will be validated.
@@ -184,7 +188,7 @@ public class StockDAOImpl implements StockDAO {
      *                      {@code Warehouse} are different.
      */
     private DAOException isSameOrganization(Stock stock, DAOException exc) {
-        if (!stock.getProduct().getOrganization().equals(stock.getWarehouse().getOrganization())) {
+        if (!stock.getProductOrganization().getOrganization().equals(stock.getWarehouse().getOrganization())) {
             return DAOException.Builder.build(ProductErrorCode.STOCK_CONSTRAINT_ORGANIZATION, exc);
         }
         return exc;
@@ -193,11 +197,11 @@ public class StockDAOImpl implements StockDAO {
     private Long countStocks(Stock stock) {
         QueryContainer<Long, Stock> qc =
                 QueryContainer.newQueryContainerCount(getEntityManager(), Stock.class);
-        qc.getRoot().join(Stock_.product, JoinType.INNER);
+        qc.getRoot().join(Stock_.productOrganization, JoinType.INNER);
         qc.getRoot().join(Stock_.warehouse, JoinType.INNER);
         ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
         builder.add(qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(Stock_.product), stock.getProduct()));
+                .equal(qc.getRoot().get(Stock_.productOrganization), stock.getProductOrganization()));
         builder.add(qc.getCriteriaBuilder()
                 .equal(qc.getRoot().get(Stock_.warehouse), stock.getWarehouse()));
         if (stock.getId() != null) {

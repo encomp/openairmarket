@@ -8,7 +8,7 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.SalePriceDAO;
 import com.structureeng.persistence.dao.impl.ActiveDAOImpl;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.SalePrice;
 import com.structureeng.persistence.model.product.SalePrice_;
 import com.structureeng.persistence.model.sale.SaleDetail;
@@ -84,7 +84,7 @@ public class SalePriceDAOImpl implements SalePriceDAO {
     }
 
     @Override
-    public List<SalePrice> find(Product product) {
+    public List<SalePrice> find(ProductOrganization product) {
         QueryContainer<SalePrice, SalePrice> query =
                 QueryContainer.newQueryContainer(getEntityManager(), SalePrice.class);
         query.getRoot().fetch(SalePrice_.product, JoinType.INNER);
@@ -96,7 +96,7 @@ public class SalePriceDAOImpl implements SalePriceDAO {
     }
 
     @Override
-    public SalePrice find(Product product, BigDecimal quantity) {
+    public SalePrice find(ProductOrganization product, BigDecimal quantity) {
         return find(product, quantity, true);
     }
 
@@ -106,19 +106,17 @@ public class SalePriceDAOImpl implements SalePriceDAO {
     }
 
     @Override
-    public SalePrice findInactive(Product product, BigDecimal quantity) {
+    public SalePrice findInactive(ProductOrganization product, BigDecimal quantity) {
         return find(product, quantity, false);
     }
 
-    private SalePrice find(Product product, BigDecimal quantity, boolean active) {
+    private SalePrice find(ProductOrganization product, BigDecimal quantity, boolean active) {
         QueryContainer<SalePrice, SalePrice> query =
                 QueryContainer.newQueryContainer(getEntityManager(), SalePrice.class);
         query.getRoot().fetch(SalePrice_.product, JoinType.INNER);
         query.getCriteriaQuery().where(query.getCriteriaBuilder().and(
                 query.getCriteriaBuilder()
-                .equal(query.getRoot().get(SalePrice_.product), product),
-                query.getCriteriaBuilder()
-                .equal(query.getRoot().get(SalePrice_.quantity), quantity),
+                .equal(query.getRoot().get(SalePrice_.product), product),                
                 active
                 ? query.activeEntities(query.getRoot()) : query.inactiveEntities(query.getRoot())));
         try {
@@ -164,9 +162,7 @@ public class SalePriceDAOImpl implements SalePriceDAO {
         qc.getRoot().join(SalePrice_.product, JoinType.INNER);
         ImmutableList.Builder<Predicate> builder = ImmutableList.builder();
         builder.add(qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(SalePrice_.product), salePrice.getProduct()));
-        builder.add(qc.getCriteriaBuilder()
-                .equal(qc.getRoot().get(SalePrice_.quantity), salePrice.getQuantity()));
+                .equal(qc.getRoot().get(SalePrice_.product), salePrice.getProduct()));        
         if (salePrice.getId() != null) {
             builder.add(qc.getCriteriaBuilder()
                 .notEqual(qc.getRoot().get(SalePrice_.id), salePrice.getId()));

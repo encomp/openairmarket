@@ -2,11 +2,6 @@
 
 package com.structureeng.persistence.model;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
-
-import com.google.common.base.Preconditions;
-
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -22,31 +17,10 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class AbstractCatalogModel <T extends Serializable, RID extends Serializable>
-    extends AbstractActiveModel<T> implements CatalogModel<T, RID> {
-
-    @Column(name = "idReference", nullable = false)
-    private RID referenceId;
+    extends AbstractSimpleCatalogModel<T, RID> implements CatalogModel<T, RID> {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    @Override
-    public RID getReferenceId() {
-        return referenceId;
-    }
-   
-    @SuppressWarnings("unchecked")
-    @Override
-    public void setReferenceId(RID referenceId) {
-        if (referenceId instanceof Number) {
-            checkPositive(Number.class.cast(referenceId));
-            this.referenceId = referenceId;
-        } else if (referenceId instanceof String) {
-           this.referenceId = (RID) checkNotEmpty(String.class.cast(referenceId));
-        } else {
-            this.referenceId = Preconditions.checkNotNull(referenceId);
-        }
-    }
 
     @Override
     public String getName() {

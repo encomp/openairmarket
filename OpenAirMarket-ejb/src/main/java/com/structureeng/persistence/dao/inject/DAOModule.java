@@ -5,24 +5,22 @@ package com.structureeng.persistence.dao.inject;
 import com.structureeng.persistence.dao.ProductManufacturerDAO;
 import com.structureeng.persistence.dao.ProductCategoryDAO;
 import com.structureeng.persistence.dao.ProductMeasureUnitDAO;
+import com.structureeng.persistence.dao.ProductOrganizationDAO;
 import com.structureeng.persistence.dao.ProductDAO;
-import com.structureeng.persistence.dao.ProductDefinitionDAO;
-import com.structureeng.persistence.dao.ProductTypeDAO;
 import com.structureeng.persistence.dao.PurchasePriceDAO;
 import com.structureeng.persistence.dao.SalePriceDAO;
 import com.structureeng.persistence.dao.StockDAO;
 import com.structureeng.persistence.dao.OrganizationDAO;
-import com.structureeng.persistence.dao.TaxTypeDAO;
+import com.structureeng.persistence.dao.TaxCategoryDAO;
 import com.structureeng.persistence.dao.TenantDAO;
 import com.structureeng.persistence.dao.WarehouseDAO;
-import com.structureeng.persistence.dao.impl.business.ProductTypeDAOImpl;
 import com.structureeng.persistence.dao.impl.business.OrganizationDAOImpl;
-import com.structureeng.persistence.dao.impl.business.TaxTypeDAOImpl;
+import com.structureeng.persistence.dao.impl.business.TaxCategoryDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductManufacturerDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductCategoryDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductMeasureUnitDAOImpl;
+import com.structureeng.persistence.dao.impl.product.ProductOrganizationDAOImpl;
 import com.structureeng.persistence.dao.impl.product.ProductDAOImpl;
-import com.structureeng.persistence.dao.impl.product.ProductDefinitionDAOImpl;
 import com.structureeng.persistence.dao.impl.product.PurchasePriceDAOImpl;
 import com.structureeng.persistence.dao.impl.product.SalePriceDAOImpl;
 import com.structureeng.persistence.dao.impl.stock.StockDAOImpl;
@@ -67,13 +65,6 @@ public class DAOModule {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("productDefinitionDAO")
-    public ProductDefinitionDAO providesProductDefinitionDAO() {
-        return new ProductDefinitionDAOImpl();
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @Named("productDAO")
     public ProductDAO providesProductDAO() {
         return new ProductDAOImpl();
@@ -81,9 +72,9 @@ public class DAOModule {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("productTypeDAO")
-    public ProductTypeDAO providesProductTypeDAO() {
-        return new ProductTypeDAOImpl();
+    @Named("productOrganizationDAO")
+    public ProductOrganizationDAO providesProductOrganizationDAO() {
+        return new ProductOrganizationDAOImpl();
     }
 
     @Bean
@@ -116,9 +107,9 @@ public class DAOModule {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    @Named("taxTypeDAO")
-    public TaxTypeDAO providesTaxTypeDAO() {
-        return new TaxTypeDAOImpl();
+    @Named("taxCategoryDAO")
+    public TaxCategoryDAO providesTaxCategoryDAO() {
+        return new TaxCategoryDAOImpl();
     }
 
     @Bean

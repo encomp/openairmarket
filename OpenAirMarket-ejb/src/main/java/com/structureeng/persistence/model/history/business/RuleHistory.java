@@ -3,6 +3,7 @@
 package com.structureeng.persistence.model.history.business;
 
 import com.structureeng.persistence.model.business.Rule;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 
 import com.google.common.base.Preconditions;
@@ -32,7 +33,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(name = "rulePK", columnNames = {"idRule", "idAudit"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ruleType", discriminatorType = DiscriminatorType.STRING, length = 50)
-public abstract class RuleHistory extends AbstractHistoryTenantModel {
+public abstract class RuleHistory extends AbstractHistoryCatalogTenantModel<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +47,6 @@ public abstract class RuleHistory extends AbstractHistoryTenantModel {
     @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
     @ManyToOne(cascade = CascadeType.REFRESH)
     private Rule parentRule;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -80,22 +75,6 @@ public abstract class RuleHistory extends AbstractHistoryTenantModel {
 
     public void setParentRule(Rule parentRule) {
         this.parentRule = parentRule;
-    }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     public String getDescription() {

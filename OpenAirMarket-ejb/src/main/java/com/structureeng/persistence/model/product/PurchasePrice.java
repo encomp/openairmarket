@@ -41,17 +41,11 @@ public class PurchasePrice extends ProductPrice {
      */
     public static class Builder {
 
-        private Product product;
-        private BigDecimal quantity;
+        private ProductOrganization product;
         private BigDecimal price;
 
-        public Builder setProduct(Product product) {
+        public Builder setProduct(ProductOrganization product) {
             this.product = checkNotNull(product);
-            return this;
-        }
-
-        public Builder setQuantity(BigDecimal quantity) {
-            this.quantity = checkPositive(quantity);
             return this;
         }
 
@@ -68,7 +62,6 @@ public class PurchasePrice extends ProductPrice {
         public PurchasePrice build() {
             PurchasePrice purchasePrice = new PurchasePrice();
             purchasePrice.setProduct(product);
-            purchasePrice.setQuantity(quantity);
             purchasePrice.setPrice(price);
             return purchasePrice;
         }

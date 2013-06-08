@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,7 +40,7 @@ public class SaleDetail extends AbstractTenantModel<Long> {
 
     @JoinColumn(name = "idProductPrice", referencedColumnName = "idProductPrice",
             nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductPrice productPrice;
 
     @Column(name = "lineOrder", nullable = false)

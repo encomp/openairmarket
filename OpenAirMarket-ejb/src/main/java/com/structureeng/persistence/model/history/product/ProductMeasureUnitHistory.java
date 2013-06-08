@@ -3,6 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.history.HistoryEntityBuilder;
+import com.structureeng.persistence.model.history.AbstractHistoryCatalogTenantModel;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.product.ProductMeasureUnit;
 
@@ -28,7 +29,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "productMeasureUnitHistory", uniqueConstraints = {
         @UniqueConstraint(name = "productMeasureUnitHistoryUK",
             columnNames = {"idProductMeasureUnit", "idAudit"})})
-public class ProductMeasureUnitHistory extends AbstractHistoryTenantModel {
+public class ProductMeasureUnitHistory extends AbstractHistoryCatalogTenantModel<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +40,6 @@ public class ProductMeasureUnitHistory extends AbstractHistoryTenantModel {
             nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductMeasureUnit productMeasureUnit;
-
-    @Column(name = "idReference", nullable = false)
-    private Integer referenceId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Column(name = "countable", nullable = false)
     private Boolean countable;
@@ -68,22 +63,6 @@ public class ProductMeasureUnitHistory extends AbstractHistoryTenantModel {
 
     public void setProductMeasureUnit(ProductMeasureUnit productMeasureUnit) {
         this.productMeasureUnit = Preconditions.checkNotNull(productMeasureUnit);
-    }
-
-    public Integer getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(Integer referenceId) {
-        this.referenceId = checkPositive(referenceId);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = checkNotEmpty(name);
     }
 
     public Boolean getCountable() {

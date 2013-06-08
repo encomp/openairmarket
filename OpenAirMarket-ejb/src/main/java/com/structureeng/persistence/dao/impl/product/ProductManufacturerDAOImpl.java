@@ -9,8 +9,8 @@ import com.structureeng.persistence.dao.DAOException;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.ProductManufacturer;
-import com.structureeng.persistence.model.product.ProductDefinition;
-import com.structureeng.persistence.model.product.ProductDefinition_;
+import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.Product_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public final class ProductManufacturerDAOImpl implements ProductManufacturerDAO 
     @Override
     public void remove(ProductManufacturer entity) throws DAOException {
         if (entity.getActive()) {
-            long count = countProductDefinitionWithManufacturer(entity);
+            long count = countProductsWithManufacturer(entity);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.PRODUCT_MANUFACTURER_FK);
             }
@@ -116,13 +116,13 @@ public final class ProductManufacturerDAOImpl implements ProductManufacturerDAO 
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countProductDefinitionWithManufacturer(final ProductManufacturer pm) {
-        QueryContainer<Long, ProductDefinition> qc =
-                QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
-        qc.getRoot().join(ProductDefinition_.productManufacturer, JoinType.INNER);
+    private long countProductsWithManufacturer(final ProductManufacturer pm) {
+        QueryContainer<Long, Product> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), Product.class);
+        qc.getRoot().join(Product_.productManufacturer, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder()
-                    .equal(qc.getRoot().get(ProductDefinition_.productManufacturer), pm),
+                    .equal(qc.getRoot().get(Product_.productManufacturer), pm),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

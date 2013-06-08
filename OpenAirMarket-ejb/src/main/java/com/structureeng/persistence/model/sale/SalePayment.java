@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.sale;
 
 import com.structureeng.persistence.model.AbstractTenantModel;
-import com.structureeng.persistence.model.business.SalePaymentType;
+import com.structureeng.persistence.model.business.PaymentMethod;
 
 import com.google.common.base.Preconditions;
 
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,12 +35,12 @@ public class SalePayment extends AbstractTenantModel<Long> {
     private Long id;
 
     @JoinColumn(name = "idSale", referencedColumnName = "idSale", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Sale sale;
 
     @JoinColumn(name = "idRule", referencedColumnName = "idRule", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private SalePaymentType salePaymentType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PaymentMethod salePaymentType;
 
     @Column(name = "amout", precision = 13, scale = 4, nullable = false)
     private BigDecimal amount;
@@ -62,11 +63,11 @@ public class SalePayment extends AbstractTenantModel<Long> {
         this.sale = Preconditions.checkNotNull(sale);
     }
 
-    public SalePaymentType getSalePaymentType() {
+    public PaymentMethod getSalePaymentType() {
         return salePaymentType;
     }
 
-    public void setSalePaymentType(SalePaymentType salePaymentType) {
+    public void setSalePaymentType(PaymentMethod salePaymentType) {
         this.salePaymentType = Preconditions.checkNotNull(salePaymentType);
     }
 

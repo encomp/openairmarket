@@ -53,18 +53,12 @@ public class SalePrice extends ProductPrice {
      */
     public static class Builder {
 
-        private Product product;
-        private BigDecimal quantity;
+        private ProductOrganization product;
         private BigDecimal price;
         private BigDecimal profit;
 
-        public Builder setProduct(Product product) {
+        public Builder setProduct(ProductOrganization product) {
             this.product = checkNotNull(product);
-            return this;
-        }
-
-        public Builder setQuantity(BigDecimal quantity) {
-            this.quantity = checkPositive(quantity);
             return this;
         }
 
@@ -86,7 +80,6 @@ public class SalePrice extends ProductPrice {
         public SalePrice build() {
             SalePrice salePrice = new SalePrice();
             salePrice.setProduct(product);
-            salePrice.setQuantity(quantity);
             salePrice.setPrice(price);
             salePrice.setProfit(profit);
             return salePrice;

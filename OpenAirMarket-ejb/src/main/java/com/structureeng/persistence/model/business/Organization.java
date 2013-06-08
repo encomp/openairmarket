@@ -16,9 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static com.structureeng.persistence.model.AbstractModel.checkNotEmpty;
-import static com.structureeng.persistence.model.AbstractModel.checkPositive;
-
 /**
  * Define the organizations that a {@code com.structureeng.persistence.model.tenant.Tenant} owns.
  *

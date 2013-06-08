@@ -3,7 +3,7 @@
 package com.structureeng.persistence.model.history.product;
 
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.ProductPrice;
 
 import com.google.common.base.Preconditions;
@@ -49,7 +49,7 @@ public abstract class ProductPriceHistory extends AbstractHistoryTenantModel {
 
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private Product product;
+    private ProductOrganization product;
 
     @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
     private BigDecimal quantity;
@@ -92,11 +92,11 @@ public abstract class ProductPriceHistory extends AbstractHistoryTenantModel {
         this.price = Preconditions.checkNotNull(price);
     }
 
-    public Product getProduct() {
+    public ProductOrganization getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductOrganization product) {
         this.product = Preconditions.checkNotNull(product);
     }
 }

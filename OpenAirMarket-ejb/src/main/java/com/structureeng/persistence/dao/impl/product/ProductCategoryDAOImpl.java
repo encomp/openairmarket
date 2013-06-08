@@ -7,8 +7,10 @@ import com.structureeng.persistence.dao.ProductCategoryDAO;
 import com.structureeng.persistence.dao.QueryContainer;
 import com.structureeng.persistence.dao.impl.CatalogDAOImpl;
 import com.structureeng.persistence.model.product.ProductCategory;
-import com.structureeng.persistence.model.product.ProductDefinition;
-import com.structureeng.persistence.model.product.ProductDefinition_;
+import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
+import com.structureeng.persistence.model.product.ProductOrganization_;
+import com.structureeng.persistence.model.product.Product_;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +55,7 @@ public final class ProductCategoryDAOImpl implements ProductCategoryDAO {
     @Override
     public void remove(ProductCategory entity) throws DAOException {
         if (entity.getActive()) {
-            long count = countProductDefinitionWithCategory(entity);
+            long count = countProductsWithCategory(entity);
             if (count > 0) {
                 throw DAOException.Builder.build(ProductErrorCode.PRODUCT_CATEGORY_FK);
             }
@@ -116,14 +118,14 @@ public final class ProductCategoryDAOImpl implements ProductCategoryDAO {
         return catalogDAO.hasVersionChanged(entity);
     }
 
-    private long countProductDefinitionWithCategory(ProductCategory division) {
-        QueryContainer<Long, ProductDefinition> qc =
-                QueryContainer.newQueryContainerCount(getEntityManager(), ProductDefinition.class);
+    private long countProductsWithCategory(ProductCategory division) {
+        QueryContainer<Long, ProductOrganization> qc =
+                QueryContainer.newQueryContainerCount(getEntityManager(), ProductOrganization.class);
         qc.getCriteriaQuery().select(qc.getCriteriaBuilder().countDistinct(qc.getRoot()));
-        qc.getRoot().join(ProductDefinition_.productCategory, JoinType.INNER);
+        qc.getRoot().join(ProductOrganization_.productCategory, JoinType.INNER);
         qc.getCriteriaQuery().where(qc.getCriteriaBuilder().and(
                 qc.getCriteriaBuilder().equal(
-                    qc.getRoot().get(ProductDefinition_.productCategory), division),
+                    qc.getRoot().get(ProductOrganization_.productCategory), division),
                 qc.activeEntities(qc.getRoot())));
         return qc.getSingleResult();
     }

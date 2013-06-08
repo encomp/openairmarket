@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @param <S> specifies the {@code Serializable} identifier of the {@code AbstractCatalogModel}
  */
 public interface CatalogDAO<T extends CatalogModel, S extends Serializable, 
-        RID extends Number> extends ActiveDAO<T, S> {
+        RID extends Serializable> extends ActiveDAO<T, S> {
 
     /**
      * Find by reference id.

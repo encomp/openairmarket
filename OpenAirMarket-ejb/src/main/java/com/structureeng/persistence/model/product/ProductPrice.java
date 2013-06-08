@@ -2,17 +2,18 @@
 
 package com.structureeng.persistence.model.product;
 
-import com.structureeng.persistence.model.AbstractTenantModel;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Preconditions;
+import com.structureeng.persistence.model.AbstractTenantModel;
+import com.structureeng.persistence.model.price.PriceListVersion;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(name = "retailProductTenantPK",
                 columnNames = {"idTenant", "idReference"}),
         @UniqueConstraint(name = "retailProductPK",
-                columnNames = {"idTenant", "idProduct", "priceType", "quantity"})})
+                columnNames = {"idTenant", "idProduct", "idPriceListVersion", "priceType"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "priceType", discriminatorType = DiscriminatorType.STRING, length = 50)
 public abstract class ProductPrice extends AbstractTenantModel<Long> {
@@ -43,15 +44,32 @@ public abstract class ProductPrice extends AbstractTenantModel<Long> {
     @Column(name = "idProductPrice")
     private Long id;
 
+    @JoinColumn(name = "idPriceListVersion", referencedColumnName = "idPriceListVersion",
+            nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PriceListVersion priceListVersion;
+
     @JoinColumn(name = "idProduct", referencedColumnName = "idProduct", nullable = false)
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductOrganization product;
 
-    @Column(name = "quantity", nullable = false, precision = 13, scale = 4)
-    private BigDecimal quantity;
+    /**
+     * The official net price of a product in a specified currency.
+     */
+    @Column(name = "listPrice", nullable = false, precision = 15, scale = 6)
+    private BigDecimal listPrice;
 
-    @Column(name = "price", nullable = false, precision = 13, scale = 4)
+    /**
+     * The regular or normal price of a product in the respective price list.
+     */
+    @Column(name = "price", nullable = false, precision = 15, scale = 6)
     private BigDecimal price;
+
+    /**
+     * The lowest net price a specified item may be sold for.
+     */
+    @Column(name = "limitPrice", nullable = false, precision = 15, scale = 6)
+    private BigDecimal limitPrice;
 
     @Override
     public Long getId() {
@@ -63,12 +81,28 @@ public abstract class ProductPrice extends AbstractTenantModel<Long> {
         this.id = checkPositive(id);
     }
 
-    public BigDecimal getQuantity() {
-        return quantity;
+    public PriceListVersion getPriceListVersion() {
+        return priceListVersion;
     }
 
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = checkPositive(quantity);
+    public void setPriceListVersion(PriceListVersion priceListVersion) {
+        this.priceListVersion = checkNotNull(priceListVersion);
+    }
+
+    public ProductOrganization getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductOrganization product) {
+        this.product = checkNotNull(product);
+    }
+
+    public BigDecimal getListPrice() {
+        return listPrice;
+    }
+
+    public void setListPrice(BigDecimal listPrice) {
+        this.listPrice = checkPositive(listPrice);
     }
 
     public BigDecimal getPrice() {
@@ -79,11 +113,11 @@ public abstract class ProductPrice extends AbstractTenantModel<Long> {
         this.price = checkPositive(price);
     }
 
-    public Product getProduct() {
-        return product;
+    public BigDecimal getLimitPrice() {
+        return limitPrice;
     }
 
-    public void setProduct(Product product) {
-        this.product = Preconditions.checkNotNull(product);
+    public void setLimitPrice(BigDecimal limitPrice) {
+        this.limitPrice = checkPositive(limitPrice);
     }
 }

@@ -36,8 +36,7 @@ public class PurchasePriceHistory extends ProductPriceHistory {
             PurchasePriceHistory purchasePriceHistory = new PurchasePriceHistory();
             purchasePriceHistory.setProductPrice(purchasePrice);
             purchasePriceHistory.setProduct(purchasePrice.getProduct());
-            purchasePriceHistory.setPrice(purchasePrice.getPrice());
-            purchasePriceHistory.setQuantity(purchasePrice.getQuantity());
+            purchasePriceHistory.setPrice(purchasePrice.getPrice());            
             purchasePriceHistory.setActive(purchasePrice.getActive());
             purchasePriceHistory.setVersion(purchasePrice.getVersion());
             return purchasePriceHistory;

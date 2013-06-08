@@ -2,15 +2,15 @@
 
 package com.structureeng.persistence.model.business;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 
-import com.google.common.base.Preconditions;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +28,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "rule", uniqueConstraints = {
-        @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType",
-            "idReference"}),
-        @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "name"})})
+    @UniqueConstraint(name = "ruleTenantPK", columnNames = {"idTenant", "ruleType","idReference"}),
+    @UniqueConstraint(name = "ruleUK", columnNames = {"idTenant", "ruleType", "name"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "ruleType", discriminatorType = DiscriminatorType.STRING, length = 50)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 100)
 public abstract class Rule extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Id
@@ -44,7 +43,7 @@ public abstract class Rule extends AbstractCatalogTenantModel<Long, Integer> {
     private String description;
 
     @JoinColumn(name = "idParentRule", referencedColumnName = "idRule")
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Rule parentRule;
 
     @Override
@@ -54,7 +53,7 @@ public abstract class Rule extends AbstractCatalogTenantModel<Long, Integer> {
 
     @Override
     public void setId(Long id) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = checkNotNull(id);
     }
 
     public Rule getParentRule() {

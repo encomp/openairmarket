@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.dao;
 
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.stock.Stock;
 import com.structureeng.persistence.model.stock.Warehouse;
 
@@ -20,7 +20,7 @@ public interface StockDAO extends ActiveDAO<Stock, Long> {
      * @param warehouse the {@code Warehouse} instance that is being requested.
      * @return the instance of {@code Stock} if exist on the database.
      */
-    Stock find(Product product, Warehouse warehouse);
+    Stock find(ProductOrganization product, Warehouse warehouse);
     
     /**
      * Search for a specific INACTIVE Stock based on the {@code Product} and {@code Warehouse}.
@@ -29,5 +29,5 @@ public interface StockDAO extends ActiveDAO<Stock, Long> {
      * @param warehouse the {@code Warehouse} instance that is being requested.
      * @return the instance of {@code Stock} if exist on the database.
      */
-    Stock findInactive(Product product, Warehouse warehouse);
+    Stock findInactive(ProductOrganization product, Warehouse warehouse);
 }

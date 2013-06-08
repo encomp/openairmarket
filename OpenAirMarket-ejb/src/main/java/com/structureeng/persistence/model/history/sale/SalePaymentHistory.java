@@ -2,7 +2,7 @@
 
 package com.structureeng.persistence.model.history.sale;
 
-import com.structureeng.persistence.model.business.SalePaymentType;
+import com.structureeng.persistence.model.business.PaymentMethod;
 import com.structureeng.persistence.model.history.AbstractHistoryTenantModel;
 import com.structureeng.persistence.model.sale.Sale;
 import com.structureeng.persistence.model.sale.SalePayment;
@@ -48,7 +48,7 @@ public class SalePaymentHistory extends AbstractHistoryTenantModel {
 
     @JoinColumn(name = "idRule", referencedColumnName = "idRule", nullable = false)
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private SalePaymentType salePaymentType;
+    private PaymentMethod salePaymentType;
 
     @Column(name = "amout", precision = 13, scale = 4, nullable = false)
     private BigDecimal amount;
@@ -79,11 +79,11 @@ public class SalePaymentHistory extends AbstractHistoryTenantModel {
         this.sale = Preconditions.checkNotNull(sale);
     }
 
-    public SalePaymentType getSalePaymentType() {
+    public PaymentMethod getSalePaymentType() {
         return salePaymentType;
     }
 
-    public void setSalePaymentType(SalePaymentType salePaymentType) {
+    public void setSalePaymentType(PaymentMethod salePaymentType) {
         this.salePaymentType = Preconditions.checkNotNull(salePaymentType);
     }
 

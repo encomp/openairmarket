@@ -11,7 +11,7 @@ import com.structureeng.persistence.model.history.product.PurchasePriceHistory;
 import com.structureeng.persistence.model.history.product.PurchasePriceHistory_;
 import com.structureeng.persistence.model.history.product.SalePriceHistory;
 import com.structureeng.persistence.model.history.product.SalePriceHistory_;
-import com.structureeng.persistence.model.product.Product;
+import com.structureeng.persistence.model.product.ProductOrganization;
 import com.structureeng.persistence.model.product.PurchasePrice;
 
 import org.junit.Assert;
@@ -44,14 +44,14 @@ public class PurchasePriceDAOImplTest extends
 
     @Test
     public void testPersistA() throws DAOException {
-        Product product = createProduct(1L, createOrganization(1L));
+        ProductOrganization product = createProduct(1L, createOrganization(1L));
         PurchasePrice purchasePrice = build(product, BigDecimal.ONE);
         getPurchasePriceDAO().merge(purchasePrice);
     }
 
     @Test
     public void testPersistB() throws DAOException {
-        Product product = createProduct(2L, createOrganization(1L));
+        ProductOrganization product = createProduct(2L, createOrganization(1L));
         purchasePrice = build(product, BigDecimal.TEN);
         getPurchasePriceDAO().persist(purchasePrice);
     }
@@ -65,7 +65,6 @@ public class PurchasePriceDAOImplTest extends
     @Test(expected = DAOException.class)
     public void testPersistMerge() throws DAOException {
         purchasePrice.setProduct(createProduct(1L, createOrganization(1L)));
-        purchasePrice.setQuantity(BigDecimal.ONE);
         try {
             getPurchasePriceDAO().merge(purchasePrice);
             getPurchasePriceDAO().flush();
@@ -78,7 +77,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test(expected = PersistenceException.class)
     public void testPersistMergeDirty() throws DAOException {
-        Product product = createProduct(3L, createOrganization(1L));
+        ProductOrganization product = createProduct(3L, createOrganization(1L));
         PurchasePrice purchasePrice = build(product, BigDecimal.ONE);
         getPurchasePriceDAO().persist(purchasePrice);
         getPurchasePriceDAO().flush();
@@ -94,7 +93,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test(expected = DAOException.class)
     public void testPersistUK() throws DAOException {
-        Product product = createProduct(1L, createOrganization(1L));
+        ProductOrganization product = createProduct(1L, createOrganization(1L));
         PurchasePrice purchasePrice = build(product, BigDecimal.ONE);
         try {
             getPurchasePriceDAO().persist(purchasePrice);
@@ -115,7 +114,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test
     public void testUpdate() throws DAOException {
-        Product product = createProduct(1L, createOrganization(1L));
+        ProductOrganization product = createProduct(1L, createOrganization(1L));
         PurchasePrice purchasePriceTmp = getPurchasePriceDAO().find(product, BigDecimal.ONE);
         purchasePriceTmp.setProduct(createProduct(3L, createOrganization(1L)));
         purchasePrice = getPurchasePriceDAO().merge(purchasePriceTmp);
@@ -123,7 +122,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test
     public void testUpdateFind() throws DAOException {
-        Product product = createProduct(3L, createOrganization(1L));
+        ProductOrganization product = createProduct(3L, createOrganization(1L));
         PurchasePrice purchasePrice = getPurchasePriceDAO().find(product, BigDecimal.ONE);
         Model tmp = getPurchasePriceDAO().find(purchasePrice.getId());
         Assert.assertEquals(purchasePrice, tmp);
@@ -132,14 +131,13 @@ public class PurchasePriceDAOImplTest extends
     }
 
     @Test
-    public void testUpdateMerge() throws DAOException {
-        purchasePrice.setQuantity(BigDecimal.TEN);
+    public void testUpdateMerge() throws DAOException {        
         getPurchasePriceDAO().merge(purchasePrice);
     }
 
     @Test
     public void testUpdateRemove() throws DAOException {
-        Product product = createProduct(3L, createOrganization(1L));
+        ProductOrganization product = createProduct(3L, createOrganization(1L));
         PurchasePrice purchasePrice = getPurchasePriceDAO().find(product, BigDecimal.TEN);
         getPurchasePriceDAO().remove(purchasePrice);
     }
@@ -152,7 +150,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test
     public void testUpdateRemoveFind() throws DAOException {
-        Product product = createProduct(3L, createOrganization(1L));
+        ProductOrganization product = createProduct(3L, createOrganization(1L));
         PurchasePrice price = getPurchasePriceDAO().findInactive(product, BigDecimal.TEN);
         PurchasePrice tmp = getPurchasePriceDAO().find(price.getId());
         Assert.assertNull(tmp);
@@ -162,7 +160,7 @@ public class PurchasePriceDAOImplTest extends
 
     @Test
     public void testValidateRemove() {
-        Product product = createProduct(3L, createOrganization(1L));
+        ProductOrganization product = createProduct(3L, createOrganization(1L));
         PurchasePrice price = getPurchasePriceDAO().findInactive(product, BigDecimal.TEN);
         deleteHistory(price);
     }
@@ -178,17 +176,16 @@ public class PurchasePriceDAOImplTest extends
         deleteTenantHistories(purchasePrice, histories);
     }
 
-    public PurchasePrice build(Product product, BigDecimal quantity) {
+    public PurchasePrice build(ProductOrganization product, BigDecimal quantity) {
         PurchasePrice.Builder builder = PurchasePrice.newBuilder();
         builder.setProduct(product);
-        builder.setQuantity(quantity);
         builder.setPrice(BigDecimal.ONE);
         builder.setProduct(product);
         return builder.build();
     }
 
-    public Product createProduct(Long id, Organization store) {
-        Product product = new Product();
+    public ProductOrganization createProduct(Long id, Organization store) {
+        ProductOrganization product = new ProductOrganization();
         product.setId(id);
         product.setOrganization(store);
         return product;

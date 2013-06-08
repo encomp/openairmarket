@@ -5,7 +5,8 @@ package com.structureeng.persistence.model;
 import java.io.Serializable;
 
 /**
- * Specifies the behavior for the entities that are catalogs.
+ * Specifies the behavior for the entities that are catalogs that required two alternate unique 
+ * keys.
  *
  * @author Edgar Rico (edgar.martinez.rico@gmail.com)
  * @param <T> specifies the {@link Class} of the id for the {@link javax.persistence.Entity}.
@@ -13,22 +14,8 @@ import java.io.Serializable;
  *        {@link javax.persistence.Entity}.
  */
 public interface CatalogModel <T extends Serializable, RID extends Serializable> extends 
-        ActiveModel<T> {
-    
-    /**
-     * Provides the specified key that identifies uniquely this entity on the database.
-     * 
-     * @return the unique of this entity.
-     */
-    RID getReferenceId();    
-    
-    /**
-     * Specifies the key that identifies uniquely this entity on the database.
-     * 
-     * @param referenceId the unique key.
-     */
-    void setReferenceId(RID referenceId);
-    
+        SimpleCatalogModel<T, RID> {
+        
     /**
      * Provides the description for the unique key of this entity on the database.
      * 
