@@ -7,7 +7,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.structureeng.persistence.model.AbstractSimpleCatalogTenantModel;
 import com.structureeng.persistence.model.location.State;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -56,7 +55,6 @@ public abstract class BusinessPartnerAddress extends
     @JoinColumn(name = "idState", referencedColumnName = "idState", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private State state;
-    
 
     @Column(name = "city")
     private String city;
