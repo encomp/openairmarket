@@ -6,8 +6,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.structureeng.persistence.model.AbstractCatalogTenantModel;
 import com.structureeng.persistence.model.business.Organization;
-import javax.persistence.Column;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,7 +40,8 @@ public class BusinessPartner extends AbstractCatalogTenantModel<String, String> 
     @ManyToOne(fetch = FetchType.LAZY)
     private Organization organization;
 
-    @JoinColumn(name = "idBusinessPartnerCategory", referencedColumnName = "idRuleOrganization", nullable = false)
+    @JoinColumn(name = "idBusinessPartnerCategory", referencedColumnName = "idRuleOrganization",
+            nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private BusinessPartnerCategory businessPartnerCategory;
 
